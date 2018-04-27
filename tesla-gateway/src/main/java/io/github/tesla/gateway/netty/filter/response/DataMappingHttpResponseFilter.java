@@ -28,7 +28,6 @@ import io.github.tesla.filter.ResponseFilterTypeEnum;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpRequest;
@@ -70,7 +69,7 @@ public class DataMappingHttpResponseFilter extends HttpResponseFilter {
       if (index > -1) {
         url = url.substring(0, index);
       }
-      CompositeByteBuf contentBuf = (CompositeByteBuf) fullHttpResonse.content();
+      ByteBuf contentBuf = fullHttpResonse.content();
       Boolean canDataMapping = isCanDataMapping(contentBuf);
       if (canDataMapping) {
         Map<String, Set<String>> rules = super.getUrlRule(DataMappingHttpResponseFilter.this);
