@@ -8,7 +8,7 @@
 	<modules>
 		<module>tesla-ops</module>
 		<module>tesla-gateway</module>
-		<module>tesla-filter</module>
+		<module>tesla-common</module>
 		<module>tesla-authz</module>
     <module>backend-example</module>
   </modules>
@@ -27,7 +27,7 @@
 			</dependency>
 			<dependency>
 				<groupId>io.github.tesla</groupId>
-				<artifactId>tesla-filter</artifactId>
+				<artifactId>tesla-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
