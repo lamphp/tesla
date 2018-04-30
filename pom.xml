@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>io.github.tesla</groupId>
 	<artifactId>tesla</artifactId>
@@ -10,13 +11,14 @@
 		<module>tesla-gateway</module>
 		<module>tesla-common</module>
 		<module>tesla-authz</module>
-    <module>backend-example</module>
-  </modules>
+		<module>backend-example</module>
+	</modules>
 	<properties>
 		<springboot.version>1.5.4.RELEASE</springboot.version>
 		<saluki.version>1.5.7.RELEASE</saluki.version>
 		<dubbo.version>2.6.0</dubbo.version>
 		<netty.version>4.1.16.Final</netty.version>
+		<drools.version>7.7.0.Final</drools.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -161,6 +163,29 @@
 				<version>${springboot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.kie</groupId>
+				<artifactId>kie-spring</artifactId>
+				<version>${drools.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-tx</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
