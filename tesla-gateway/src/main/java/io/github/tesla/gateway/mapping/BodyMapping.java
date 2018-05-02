@@ -17,7 +17,6 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
-import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
@@ -35,7 +34,6 @@ public class BodyMapping {
     this.body = content.toString(CharsetUtil.UTF_8);;
     this.document = Configuration.builder()//
         .options(Option.DEFAULT_PATH_LEAF_TO_NULL)//
-        .jsonProvider(JsonUtils.jsonProvider)//
         .build()//
         .jsonProvider().parse(body);
   }

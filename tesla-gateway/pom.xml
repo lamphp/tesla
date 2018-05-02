@@ -13,10 +13,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.kie</groupId>
-			<artifactId>kie-spring</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.github.tesla</groupId>
 			<artifactId>tesla-common</artifactId>
 		</dependency>
@@ -78,16 +74,20 @@
 			<artifactId>fastjson</artifactId>
 		</dependency>
 		<!-- spring cloud support -->
-
 		<!-- data mapping -->
 		<dependency>
 			<groupId>com.jayway.jsonpath</groupId>
 			<artifactId>json-path</artifactId>
+			<version>2.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.freemarker</groupId>
 			<artifactId>freemarker</artifactId>
 		</dependency>
-
+		<!-- drools -->
+		<dependency>
+			<groupId>org.drools</groupId>
+			<artifactId>knowledge-api</artifactId>
+		</dependency>
 	</dependencies>
 </project>

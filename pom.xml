@@ -18,7 +18,7 @@
 		<saluki.version>1.5.7.RELEASE</saluki.version>
 		<dubbo.version>2.6.0</dubbo.version>
 		<netty.version>4.1.16.Final</netty.version>
-		<drools.version>7.7.0.Final</drools.version>
+		<drools.version>6.4.0.Final</drools.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -165,27 +165,9 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.kie</groupId>
-				<artifactId>kie-spring</artifactId>
+				<groupId>org.drools</groupId>
+				<artifactId>knowledge-api</artifactId>
 				<version>${drools.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-tx</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-beans</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-core</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-context</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

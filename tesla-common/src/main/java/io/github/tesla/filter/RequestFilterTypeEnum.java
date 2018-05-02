@@ -31,7 +31,8 @@ public enum RequestFilterTypeEnum {
   BlackIpHttpRequesFilter(5), // IP黑名单
   SecurityScannerHttpRequestFilter(6), // 扫描
   RateLimitHttpRequestFilter(7), // 限流
-  DataMappingRequestFilter(8), // 数据格式转化Mapping
+  DroolsRequestFilter(8), // 规则转换
+  DataMappingRequestFilter(9), // 数据格式转化Mapping
 
 
 

@@ -1,0 +1,35 @@
+package io.github.rules;
+
+import io.github.tesla.gateway.mapping.HeaderMapping;
+import io.github.tesla.gateway.mapping.BodyMapping;
+import io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter.ForWardAction;
+
+global io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter requestFilter
+
+declare User
+    name : String
+    phone : String
+end
+
+rule "condition: call userService to judge user is normal"
+no-loop true
+when
+    $body:BodyMapping()
+    $header:HeaderMapping()
+then
+    User user = new User();
+    user.setName($body.json("$.photos[0].owner"));
+    user.setPhone($body.json("$.photos[0].id"));
+    Object userInfo = requestFilter.callRemoteService(user,User.class);
+    System.out.println(userInfo);
+    insert(userInfo);
+end
+
+rule "condition: judge to jingdong or internal service"
+no-loop true
+when
+     $user:User(name=="test",phone=="18616705342");
+     $forwardAction:ForWardAction();
+then
+     $forwardAction.setTargetUrl("http://www.baidu.com");
+end
