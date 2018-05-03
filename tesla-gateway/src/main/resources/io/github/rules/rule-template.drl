@@ -28,7 +28,7 @@ rule "condition: judge to jingdong or internal service"
 no-loop true
 when
      $user:User(name=="test",phone=="18616705342");
-     $forwardAction:ForWardAction();
+     $forwardAction:ForWardAction("www.baidu.com");
 then
-     $forwardAction.setTargetUrl("http://www.baidu.com");
+     $forwardAction.setTargetUrl("www.jingdong.com");
 end
