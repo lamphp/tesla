@@ -20,8 +20,7 @@ then
     User user = new User();
     user.setName($body.json("$.photos[0].owner"));
     user.setPhone($body.json("$.photos[0].id"));
-    Object userInfo = requestFilter.callRemoteService(user,User.class);
-    System.out.println(userInfo);
+    Object userInfo = requestFilter.recurseCall("/userapi",user,User.class);
     insert(userInfo);
 end
 

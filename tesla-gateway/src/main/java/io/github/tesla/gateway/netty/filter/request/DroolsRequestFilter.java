@@ -13,6 +13,7 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,8 +27,15 @@ import org.drools.builder.KnowledgeBuilderFactory;
 import org.drools.builder.ResourceType;
 import org.drools.io.ResourceFactory;
 import org.drools.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+import com.squareup.okhttp.Response;
 
 import io.github.tesla.filter.RequestFilterTypeEnum;
 import io.github.tesla.gateway.mapping.BodyMapping;
@@ -48,7 +56,14 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class DroolsRequestFilter extends HttpRequestFilter {
 
+  private static Logger LOG = LoggerFactory.getLogger(DroolsRequestFilter.class);
+
+
   private final KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+  private static final OkHttpClient okHttpClient = new OkHttpClient();
+
+  private static String gatewayHost = null;
 
   public static HttpRequestFilter newFilter() {
     return new DroolsRequestFilter();
@@ -58,6 +73,7 @@ public class DroolsRequestFilter extends HttpRequestFilter {
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
+      gatewayHost = originalRequest.headers().get(HttpHeaderNames.HOST);
       FullHttpRequest fullHttpRequest = (FullHttpRequest) httpObject;
       String url = originalRequest.uri();
       int index = url.indexOf("?");
@@ -130,9 +146,35 @@ public class DroolsRequestFilter extends HttpRequestFilter {
     }
   }
 
-  public static <T> T callRemoteService(Object inputJson, Class<T> classOfT) {
-    String json = "{\"name\": \"test\",\"phone\": \"18616705342\"}";
-    return JSON.parseObject(json, classOfT);
+  /**
+   * 递归调回到网关
+   */
+  public static <T> T recurseCall(String remoteUrl, Object intpuObj, Class<T> classOfT) {
+    String httpUrl = buildUrl(remoteUrl);
+    String httpJson = JSON.toJSONString(intpuObj);
+    try {
+      MediaType medialType = MediaType.parse("application/json; charset=utf-8");
+      RequestBody requestBody = RequestBody.create(medialType, httpJson);
+      Request request = new Request.Builder().url(httpUrl).post(requestBody).build();
+      Response response = okHttpClient.newCall(request).execute();
+      return response.isSuccessful() ? JSON.parseObject(response.body().string(), classOfT) : null;
+    } catch (IOException e) {
+      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + httpJson, e);
+    }
+    return null;
+  }
+
+  private static String buildUrl(String remoteUrl) {
+    String hostAndPort = ProxyUtils.parseHostAndPort(remoteUrl);
+    if (StringUtils.isBlank(hostAndPort)) {
+      if (remoteUrl.startsWith("/")) {
+        return "http://" + gatewayHost + remoteUrl;
+      } else {
+        return "http://" + gatewayHost + "/" + remoteUrl;
+      }
+    } else {
+      return remoteUrl;
+    }
   }
 
 }
