@@ -1,4 +1,3 @@
-
 package io.github.tesla.gateway.protocol.grpc;
 
 import com.google.common.base.Joiner;

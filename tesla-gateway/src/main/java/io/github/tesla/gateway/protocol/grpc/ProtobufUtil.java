@@ -22,7 +22,6 @@ import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.MethodDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
-import com.quancheng.saluki.core.grpc.exception.RpcBizException;
 
 import io.github.tesla.filter.domain.ApiRpcDO;
 
@@ -60,8 +59,7 @@ public class ProtobufUtil {
             protoMethodDesc.getOutputType());
       } catch (InvalidProtocolBufferException e) {
         LOG.error(e.getMessage(), e);
-        throw new RpcBizException(
-            "protobuf service definition is invalid,the descriptorSet is: " + descriptorSet, e);
+        throw new RuntimeException(e);
       }
     }
     return null;

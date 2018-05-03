@@ -67,17 +67,4 @@ public class BodyMapping {
     return body;
   }
 
-  /**
-   * 在给定参数名称字符串name的情况下，返回路径中的方法请求参数值、查询字符串或标头值 (按照该顺序)。
-   */
-  public String params(String name) {
-    if (this.document instanceof com.google.gson.JsonObject) {
-      com.google.gson.JsonObject jsonObject = (com.google.gson.JsonObject) document;
-      return jsonObject.get(name).toString();
-    } else {
-      return null;
-    }
-
-  }
-
 }

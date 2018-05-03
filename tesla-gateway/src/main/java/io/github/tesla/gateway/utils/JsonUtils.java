@@ -13,9 +13,6 @@
  */
 package io.github.tesla.gateway.utils;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 
 /**
@@ -28,15 +25,6 @@ public class JsonUtils {
 
   public static Object parse(String json) {
     return jsonProvider.parse(json);
-  }
-
-  private static final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
-      .enableComplexMapKeySerialization().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss:SSS")
-      .setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).setPrettyPrinting().setVersion(1.0)
-      .create();
-
-  public static Gson getGson() {
-    return gson;
   }
 
 
