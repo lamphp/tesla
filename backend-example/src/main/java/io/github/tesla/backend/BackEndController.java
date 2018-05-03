@@ -30,7 +30,8 @@ public class BackEndController {
   @RequestMapping(value = "test", method = RequestMethod.POST)
   public String setterMessage1(@RequestBody Photos messages) {
     System.out.println(messages);
-    return "yes";
+    String json = "{\"name\": \"test\",\"phone\": \"18616705342\"}";
+    return json;
   }
   //
   // @RequestMapping(value = "test", method = RequestMethod.POST)
