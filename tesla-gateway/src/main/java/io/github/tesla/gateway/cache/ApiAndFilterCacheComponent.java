@@ -13,11 +13,9 @@
  */
 package io.github.tesla.gateway.cache;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -51,24 +49,20 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   private static final PathMatcher pathMatcher = new AntPathMatcher();
 
   // 直接路由
-  private static final Map<String, Pair<String, String>> REDIRECT_ROUTE =
-      Collections.synchronizedMap(new WeakHashMap<String, Pair<String, String>>());
+  private static final Map<String, Pair<String, String>> REDIRECT_ROUTE = Maps.newConcurrentMap();
 
   // RPC服务发现
-  private static final Map<String, ApiRpcDO> RPC_ROUTE =
-      Collections.synchronizedMap(new WeakHashMap<String, ApiRpcDO>());
+  private static final Map<String, ApiRpcDO> RPC_ROUTE = Maps.newConcurrentMap();
 
   // SpringCloud服务发现
-  private static final Map<String, ApiSpringCloudDO> SPRINGCLOUD_ROUTE =
-      Collections.synchronizedMap(new WeakHashMap<String, ApiSpringCloudDO>());
+  private static final Map<String, ApiSpringCloudDO> SPRINGCLOUD_ROUTE = Maps.newConcurrentMap();
 
   // 针对所有url的过滤规则,Key是Filter类型
-  private static final Map<String, Set<String>> COMMUNITY_RULE_CACHE =
-      Collections.synchronizedMap(new WeakHashMap<String, Set<String>>());
+  private static final Map<String, Set<String>> COMMUNITY_RULE_CACHE = Maps.newConcurrentMap();
 
   // 针对特定url的过滤规则，外部的Key是Filter类型，内部的key是url
   private static final Map<String, Map<String, Set<String>>> URL_RULE_CACHE =
-      Collections.synchronizedMap(new WeakHashMap<String, Map<String, Set<String>>>());
+      Maps.newConcurrentMap();
 
   private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 

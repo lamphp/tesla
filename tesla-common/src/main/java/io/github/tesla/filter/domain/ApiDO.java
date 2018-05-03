@@ -132,5 +132,11 @@ public class ApiDO implements Serializable {
     return target;
   }
 
+  @Override
+  public String toString() {
+    return "ApiDO [id=" + id + ", name=" + name + ", describe=" + describe + ", routes=" + routes
+        + ", url=" + url + ", path=" + path + ", apiGroup=" + apiGroup + ", gmtCreate=" + gmtCreate
+        + ", gmtModified=" + gmtModified + "]";
+  }
 
 }

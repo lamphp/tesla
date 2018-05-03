@@ -107,10 +107,11 @@ public class DroolsRequestFilter extends HttpRequestFilter {
           kSession.fireAllRules();
           String targetUrl = forwardAction.getTargetUrl();
           if (targetUrl != null) {
+            String requestUrl = ProxyUtils.parseUrl(targetUrl);
+            fullHttpRequest.setUri(requestUrl);
             String hostAndPort = ProxyUtils.parseHostAndPort(targetUrl);
-            if (StringUtils.isBlank(hostAndPort)) {
+            if (!StringUtils.isBlank(hostAndPort)) {
               fullHttpRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
-              fullHttpRequest.setUri(targetUrl);
             }
           }
         } catch (Throwable e) {

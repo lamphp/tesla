@@ -129,6 +129,22 @@ public class ProxyUtils {
     return hostAndPort;
   }
 
+  public static String parseUrl(final String uri) {
+    final String tempUri;
+    if (!HTTP_PREFIX.matcher(uri).matches()) {
+      tempUri = uri;
+    } else {
+      tempUri = StringUtils.substringAfter(uri, "://");
+    }
+    final String hostAndPort;
+    if (tempUri.contains("/")) {
+      hostAndPort = tempUri.substring(tempUri.indexOf("/"));
+    } else {
+      hostAndPort = tempUri;
+    }
+    return hostAndPort;
+  }
+
 
   public static HttpResponse copyMutableResponseFields(final HttpResponse original) {
 
@@ -347,8 +363,8 @@ public class ProxyUtils {
   }
 
   public static void main(String[] args) {
-    String url = "http://www.baidu.com:8080";
-    // String url = "/test";
-    System.out.println(stripHost(url));
+    // String url = "http://www.baidu.com:8080/index";
+    String url = "/test";
+    System.out.println(parseUrl(url));
   }
 }
