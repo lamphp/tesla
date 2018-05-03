@@ -17,23 +17,35 @@ import java.net.InetSocketAddress;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
+import io.github.tesla.gateway.netty.filter.HttpRequestFilterChain;
+import io.github.tesla.gateway.netty.filter.HttpResponseFilterChain;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
 
 /**
  * @author liushiming
  * @version HttpFiltersAdapter.java, v 0.0.1 2018年1月24日 下午3:06:25 liushiming
  */
 public class HttpFiltersAdapter {
+  private static Logger logger = LoggerFactory.getLogger(HttpFiltersAdapter.class);
 
   protected final HttpRequest originalRequest;
+
   protected final ChannelHandlerContext ctx;
+
   private final ApiAndFilterCacheComponent dynamicsRouteCache;
 
   public HttpFiltersAdapter(HttpRequest originalRequest, ChannelHandlerContext ctx) {
@@ -48,15 +60,32 @@ public class HttpFiltersAdapter {
 
 
   public HttpResponse clientToProxyRequest(HttpObject httpObject) {
-    return null;
+    HttpResponse httpResponse = null;
+    try {
+      httpResponse =
+          HttpRequestFilterChain.requestFilterChain().doFilter(originalRequest, httpObject, ctx);
+    } catch (Exception e) {
+      httpResponse = createResponse(HttpResponseStatus.BAD_GATEWAY, originalRequest);
+      logger.error("client's request failed", e);
+    }
+    return httpResponse;
   }
 
-
-  public HttpResponse proxyToServerRequest(HttpObject httpObject) {
-    return null;
+  public HttpObject proxyToClientResponse(HttpObject httpObject) {
+    if (httpObject instanceof HttpResponse) {
+      HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest,
+          (HttpResponse) httpObject);
+    }
+    return httpObject;
   }
 
-  // dynamics route
+  public void proxyToServerResolutionSucceeded(String serverHostAndPort,
+      InetSocketAddress resolvedRemoteAddress) {
+    if (resolvedRemoteAddress == null) {
+      ctx.writeAndFlush(createResponse(HttpResponseStatus.BAD_GATEWAY, originalRequest));
+    }
+  }
+
   public void dynamicsRouting(HttpRequest httpRequest) {
     String actorPath = httpRequest.uri();
     int index = actorPath.indexOf("?");
@@ -74,30 +103,33 @@ public class HttpFiltersAdapter {
     }
   }
 
+  private HttpResponse createResponse(HttpResponseStatus httpResponseStatus,
+      HttpRequest originalRequest) {
+    HttpHeaders httpHeaders = new DefaultHttpHeaders();
+    httpHeaders.add("Transfer-Encoding", "chunked");
+    HttpResponse httpResponse =
+        new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, httpResponseStatus);
+    httpResponse.headers().add(httpHeaders);
+    return httpResponse;
+  }
+
+  public HttpResponse proxyToServerRequest(HttpObject httpObject) {
+    return null;
+  }
+
   public void proxyToServerRequestSending() {}
 
-
   public void proxyToServerRequestSent() {}
-
 
   public HttpObject serverToProxyResponse(HttpObject httpObject) {
     return httpObject;
   }
 
-
   public void serverToProxyResponseTimedOut() {}
-
 
   public void serverToProxyResponseReceiving() {}
 
-
   public void serverToProxyResponseReceived() {}
-
-
-  public HttpObject proxyToClientResponse(HttpObject httpObject) {
-    return httpObject;
-  }
-
 
   public void proxyToServerConnectionQueued() {}
 
@@ -106,22 +138,14 @@ public class HttpFiltersAdapter {
     return null;
   }
 
-
   public void proxyToServerResolutionFailed(String hostAndPort) {}
-
-
-  public void proxyToServerResolutionSucceeded(String serverHostAndPort,
-      InetSocketAddress resolvedRemoteAddress) {}
-
 
   public void proxyToServerConnectionStarted() {}
 
-
   public void proxyToServerConnectionSSLHandshakeStarted() {}
-
 
   public void proxyToServerConnectionFailed() {}
 
-
   public void proxyToServerConnectionSucceeded(ChannelHandlerContext serverCtx) {}
+
 }
