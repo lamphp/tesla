@@ -64,9 +64,9 @@ public class HttpFiltersAdapter {
     try {
       httpResponse =
           HttpRequestFilterChain.requestFilterChain().doFilter(originalRequest, httpObject, ctx);
-    } catch (Exception e) {
+    } catch (Throwable e) {
       httpResponse = createResponse(HttpResponseStatus.BAD_GATEWAY, originalRequest);
-      logger.error("client's request failed", e);
+      logger.error("Client connectTo proxy request failed", e);
     }
     return httpResponse;
   }
