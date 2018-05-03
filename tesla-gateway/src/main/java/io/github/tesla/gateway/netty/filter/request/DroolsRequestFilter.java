@@ -110,11 +110,11 @@ public class DroolsRequestFilter extends HttpRequestFilter {
             String hostAndPort = ProxyUtils.parseHostAndPort(targetUrl);
             if (StringUtils.isBlank(hostAndPort)) {
               fullHttpRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
+              fullHttpRequest.setUri(targetUrl);
             }
-            fullHttpRequest.setUri(targetUrl);
           }
         } catch (Throwable e) {
-          e.printStackTrace();
+          LOG.error(e.getMessage(), e);
           super.writeFilterLog(droolsDrlRule, this.getClass(), "droolsDrlRule");
           return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, originalRequest,
               "Drools Rule Error");
@@ -151,15 +151,21 @@ public class DroolsRequestFilter extends HttpRequestFilter {
    */
   public static <T> T recurseCall(String remoteUrl, Object intpuObj, Class<T> classOfT) {
     String httpUrl = buildUrl(remoteUrl);
-    String httpJson = JSON.toJSONString(intpuObj);
     try {
-      MediaType medialType = MediaType.parse("application/json; charset=utf-8");
-      RequestBody requestBody = RequestBody.create(medialType, httpJson);
-      Request request = new Request.Builder().url(httpUrl).post(requestBody).build();
-      Response response = okHttpClient.newCall(request).execute();
+      Response response = null;
+      if (intpuObj != null) {
+        MediaType medialType = MediaType.parse("application/json; charset=utf-8");
+        String httpJson = JSON.toJSONString(intpuObj);
+        RequestBody requestBody = RequestBody.create(medialType, httpJson);
+        Request request = new Request.Builder().url(httpUrl).post(requestBody).build();
+        response = okHttpClient.newCall(request).execute();
+      } else {
+        Request request = new Request.Builder().url(httpUrl).build();
+        response = okHttpClient.newCall(request).execute();
+      }
       return response.isSuccessful() ? JSON.parseObject(response.body().string(), classOfT) : null;
     } catch (IOException e) {
-      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + httpJson, e);
+      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + intpuObj, e);
     }
     return null;
   }

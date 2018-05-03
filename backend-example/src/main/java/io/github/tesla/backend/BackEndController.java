@@ -33,6 +33,12 @@ public class BackEndController {
     String json = "{\"name\": \"test\",\"phone\": \"18616705342\"}";
     return json;
   }
+
+  @RequestMapping(value = "user", method = RequestMethod.POST)
+  public String user(@RequestBody User messages) {
+    String json = "{\"name\": \"test\",\"phone\": \"18616705342\"}";
+    return json;
+  }
   //
   // @RequestMapping(value = "test", method = RequestMethod.POST)
   // public String setterMessage1(HttpServletRequest request) throws IOException {

@@ -347,8 +347,8 @@ public class ProxyUtils {
   }
 
   public static void main(String[] args) {
-    // String url = "http://www.baidu.com:8080";
-    String url = "/test";
-    System.out.println(parseHostAndPort(url));
+    String url = "http://www.baidu.com:8080";
+    // String url = "/test";
+    System.out.println(stripHost(url));
   }
 }
