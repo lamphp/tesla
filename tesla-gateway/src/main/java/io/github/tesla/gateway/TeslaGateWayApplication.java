@@ -43,7 +43,9 @@ public class TeslaGateWayApplication implements CommandLineRunner {
 
   @Override
   public void run(String... arg0) throws Exception {
-    HttpProxyServer.bootstrap().withPort(httpPort).withFiltersSource(new HttpFiltersSourceAdapter())//
+    HttpProxyServer.bootstrap()//
+        .withPort(httpPort)//
+        .withFiltersSource(new HttpFiltersSourceAdapter())//
         .withAllowRequestToOriginServer(true)//
         .start();
   }
