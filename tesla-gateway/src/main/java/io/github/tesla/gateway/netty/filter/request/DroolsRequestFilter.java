@@ -13,7 +13,6 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,15 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import io.github.tesla.filter.RequestFilterTypeEnum;
+import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.mapping.HeaderMapping;
+import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 import io.github.tesla.gateway.utils.ProxyUtils;
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -58,12 +54,7 @@ public class DroolsRequestFilter extends HttpRequestFilter {
 
   private static Logger LOG = LoggerFactory.getLogger(DroolsRequestFilter.class);
 
-
   private final KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-  private static final OkHttpClient okHttpClient = new OkHttpClient();
-
-  private static String gatewayHost = null;
 
   public static HttpRequestFilter newFilter() {
     return new DroolsRequestFilter();
@@ -73,7 +64,6 @@ public class DroolsRequestFilter extends HttpRequestFilter {
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      gatewayHost = originalRequest.headers().get(HttpHeaderNames.HOST);
       FullHttpRequest fullHttpRequest = (FullHttpRequest) httpObject;
       String url = originalRequest.uri();
       int index = url.indexOf("?");
@@ -147,41 +137,13 @@ public class DroolsRequestFilter extends HttpRequestFilter {
     }
   }
 
-  /**
-   * 递归调回到网关
-   */
-  public static <T> T recurseCall(String remoteUrl, Object intpuObj, Class<T> classOfT) {
-    String httpUrl = buildUrl(remoteUrl);
-    try {
-      Response response = null;
-      if (intpuObj != null) {
-        MediaType medialType = MediaType.parse("application/json; charset=utf-8");
-        String httpJson = JSON.toJSONString(intpuObj);
-        RequestBody requestBody = RequestBody.create(medialType, httpJson);
-        Request request = new Request.Builder().url(httpUrl).post(requestBody).build();
-        response = okHttpClient.newCall(request).execute();
-      } else {
-        Request request = new Request.Builder().url(httpUrl).build();
-        response = okHttpClient.newCall(request).execute();
-      }
-      return response.isSuccessful() ? JSON.parseObject(response.body().string(), classOfT) : null;
-    } catch (IOException e) {
-      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + intpuObj, e);
-    }
-    return null;
-  }
 
-  private static String buildUrl(String remoteUrl) {
-    String hostAndPort = ProxyUtils.parseHostAndPort(remoteUrl);
-    if (StringUtils.isBlank(hostAndPort)) {
-      if (remoteUrl.startsWith("/")) {
-        return "http://" + gatewayHost + remoteUrl;
-      } else {
-        return "http://" + gatewayHost + "/" + remoteUrl;
-      }
-    } else {
-      return remoteUrl;
-    }
+  public static <T> T callRemoteService(String serviceId, String path, Object request,
+      String httpMethod, Class<T> responseType) {
+    DynamicSpringCloudClient springCloudClient =
+        SpringContextHolder.getBean(DynamicSpringCloudClient.class);
+    String response = springCloudClient.doHttpRemoteCall(serviceId, path, httpMethod, request);
+    return JSON.parseObject(response, responseType);
   }
 
 }

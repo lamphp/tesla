@@ -29,7 +29,7 @@ import com.quancheng.saluki.core.grpc.exception.RpcServiceException;
 import com.quancheng.saluki.core.grpc.service.GenericService;
 
 import io.github.tesla.filter.domain.ApiRpcDO;
-import io.github.tesla.gateway.protocol.RpcDynamicClient;
+import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
 import io.grpc.MethodDescriptor;
 import io.grpc.MethodDescriptor.Marshaller;
 import io.grpc.MethodDescriptor.MethodType;
@@ -40,7 +40,7 @@ import io.netty.util.CharsetUtil;
  * @author liushiming
  * @version DynamicGrpcClient1.java, v 0.0.1 2018年1月5日 下午5:38:46 liushiming
  */
-public class DynamicGrpcClient extends RpcDynamicClient {
+public class DynamicGrpcClient extends MicroserviceDynamicClient {
 
   private final GenericService genricService;
 
@@ -57,7 +57,7 @@ public class DynamicGrpcClient extends RpcDynamicClient {
   }
 
   @Override
-  public String doRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
+  public String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
     String outPutJson = null;
     try {
       outPutJson = httpRequest.content().toString(CharsetUtil.UTF_8);

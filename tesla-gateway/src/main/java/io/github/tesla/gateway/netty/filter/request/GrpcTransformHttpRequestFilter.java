@@ -55,7 +55,7 @@ public class GrpcTransformHttpRequestFilter extends HttpRequestFilter {
       }
       ApiRpcDO rpc = routeRuleCache.getRpcRoute(actorPath);
       if (rpc != null && rpc.getProtoContext() != null) {
-        String jsonOutput = grpcClient.doRemoteCall(rpc, httpRequest);
+        String jsonOutput = grpcClient.doRpcRemoteCall(rpc, httpRequest);
         return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
             Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
       } else {

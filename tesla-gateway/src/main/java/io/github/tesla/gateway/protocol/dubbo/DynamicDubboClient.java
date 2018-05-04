@@ -45,14 +45,14 @@ import freemarker.template.TemplateNotFoundException;
 import io.github.tesla.filter.domain.ApiRpcDO;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.mapping.HeaderMapping;
-import io.github.tesla.gateway.protocol.RpcDynamicClient;
+import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * @author liushiming
  * @version DynamicDubboClient.java, v 0.0.1 2018年1月29日 下午2:38:28 liushiming
  */
-public class DynamicDubboClient extends RpcDynamicClient {
+public class DynamicDubboClient extends MicroserviceDynamicClient {
 
   private final ApplicationConfig applicationConfig;
 
@@ -120,7 +120,7 @@ public class DynamicDubboClient extends RpcDynamicClient {
   }
 
   @Override
-  public String doRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
+  public String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
     try {
       final String serviceName = rpcDo.getServiceName();
       final String methodName = rpcDo.getMethodName();

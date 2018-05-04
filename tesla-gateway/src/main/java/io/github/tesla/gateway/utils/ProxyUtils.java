@@ -134,15 +134,15 @@ public class ProxyUtils {
     if (!HTTP_PREFIX.matcher(uri).matches()) {
       tempUri = uri;
     } else {
-      tempUri = StringUtils.substringAfter(uri, "://");
+      tempUri = java.net.URI.create(uri).getPath();
     }
-    final String hostAndPort;
-    if (tempUri.contains("/")) {
-      hostAndPort = tempUri.substring(tempUri.indexOf("/"));
+    final String url;
+    if (tempUri.startsWith("/")) {
+      url = tempUri;
     } else {
-      hostAndPort = tempUri;
+      url = "/" + tempUri;
     }
-    return hostAndPort;
+    return url;
   }
 
 
@@ -364,7 +364,7 @@ public class ProxyUtils {
 
   public static void main(String[] args) {
     // String url = "http://www.baidu.com:8080/index";
-    String url = "/test";
+    String url = "test/test123";
     System.out.println(parseUrl(url));
   }
 }

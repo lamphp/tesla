@@ -47,7 +47,7 @@ public class GateWayProxyConfig {
   @Configuration
   @ConditionalOnClass(com.alibaba.dubbo.rpc.service.GenericService.class)
   protected class DubboCoonfig {
-    @Value("${saluki.dubbo.registryAddress}")
+    @Value("${dubbo.registryAddress}")
     private String registry;
 
     @Value("${spring.application.name}")
