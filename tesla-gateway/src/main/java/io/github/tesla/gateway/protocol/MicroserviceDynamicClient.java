@@ -13,11 +13,7 @@
  */
 package io.github.tesla.gateway.protocol;
 
-import java.net.URI;
-
-import io.github.tesla.filter.domain.ApiDO;
 import io.github.tesla.filter.domain.ApiRpcDO;
-import io.github.tesla.filter.domain.ApiSpringCloudDO;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
@@ -26,14 +22,6 @@ import io.netty.handler.codec.http.FullHttpRequest;
  */
 public abstract class MicroserviceDynamicClient {
 
-  public String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest jsonInput) {
-    return null;
-  }
-
-  public URI doHttpRemoteCall(final ApiDO apiDo, final ApiSpringCloudDO springCloudDo,
-      final FullHttpRequest jsonInput) {
-    return null;
-  }
-
+  public abstract String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest jsonInput);
 
 }

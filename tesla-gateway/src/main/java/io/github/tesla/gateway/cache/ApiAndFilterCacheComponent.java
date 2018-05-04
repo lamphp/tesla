@@ -55,7 +55,8 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   private static final Map<String, ApiRpcDO> RPC_ROUTE = Maps.newConcurrentMap();
 
   // SpringCloud服务发现
-  private static final Map<String, ApiSpringCloudDO> SPRINGCLOUD_ROUTE = Maps.newConcurrentMap();
+  private static final Map<String, Pair<String, ApiSpringCloudDO>> SPRINGCLOUD_ROUTE =
+      Maps.newConcurrentMap();
 
   // 针对所有url的过滤规则,Key是Filter类型
   private static final Map<String, Set<String>> COMMUNITY_RULE_CACHE = Maps.newConcurrentMap();
@@ -137,8 +138,8 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
     String backEndHost = group.getBackendHost();
     String backEndPort = group.getBackendPort();
     if (backEndHost != null && backEndPort != null) {
-      String backEndPath = group.getBackendPath();
-      String urlPath = "";
+      final String backEndPath = group.getBackendPath();
+      final String urlPath;
       if (backEndPath != null) {
         urlPath = path(backEndPath) + path(apiClone.getPath());
       } else {
@@ -152,8 +153,15 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
       RPC_ROUTE.put(url, rpc);
     } // SpringCloud路由
     else if (apiClone.isSpringCloud()) {
+      final String backEndPath = group.getBackendPath();
+      final String urlPath;
+      if (backEndPath != null) {
+        urlPath = path(backEndPath) + path(apiClone.getPath());
+      } else {
+        urlPath = apiClone.getPath();
+      }
       ApiSpringCloudDO springCloud = springCloudDao.get(apiId);
-      SPRINGCLOUD_ROUTE.put(url, springCloud);
+      SPRINGCLOUD_ROUTE.put(url, new MutablePair<String, ApiSpringCloudDO>(urlPath, springCloud));
     }
   }
 
@@ -195,7 +203,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
     }
   }
 
-  public ApiSpringCloudDO getSpringCloudRoute(String actorPath) {
+  public Pair<String, ApiSpringCloudDO> getSpringCloudRoute(String actorPath) {
     try {
       readWriteLock.readLock().lock();
       return SPRINGCLOUD_ROUTE.get(actorPath);

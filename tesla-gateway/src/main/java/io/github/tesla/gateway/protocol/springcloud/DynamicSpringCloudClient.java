@@ -28,16 +28,13 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import io.github.tesla.filter.domain.ApiDO;
 import io.github.tesla.filter.domain.ApiSpringCloudDO;
-import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * @author liushiming
  * @version DynamicSpringCloudClient.java, v 0.0.1 2018年5月4日 上午11:53:15 liushiming
  */
-public class DynamicSpringCloudClient extends MicroserviceDynamicClient {
+public class DynamicSpringCloudClient {
 
   private static Logger LOG = LoggerFactory.getLogger(DynamicSpringCloudClient.class);
 
@@ -55,8 +52,7 @@ public class DynamicSpringCloudClient extends MicroserviceDynamicClient {
   }
 
 
-  public URI doHttpRemoteCall(final ApiDO apiDo, final ApiSpringCloudDO springCloudDo,
-      final FullHttpRequest jsonInput) {
+  public URI loadBalanceCall(final ApiSpringCloudDO springCloudDo) {
     String serviceId = springCloudDo.getInstanceId();
     ServiceInstance serviceInstance = loadBalanceClient.choose(serviceId);
     return serviceInstance.getUri();
@@ -110,5 +106,10 @@ public class DynamicSpringCloudClient extends MicroserviceDynamicClient {
       url = String.format("http://%s:%s%s", httpHost, httpPort, path);
     }
     return url;
+  }
+
+  public static void main(String[] args) {
+    URI uri = URI.create("http://www.baidu.com/test/test");
+    System.out.println(uri.getHost() + ":" + uri.getPort());
   }
 }

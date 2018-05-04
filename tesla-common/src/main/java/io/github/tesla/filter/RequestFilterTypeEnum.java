@@ -40,7 +40,9 @@ public enum RequestFilterTypeEnum {
    * 协议适配
    */
   GRPC(100), //
-  DUBBO(101);
+  SPRINGCLOUD(101), //
+  DUBBO(102);
+
   private int filterOrder;
 
   RequestFilterTypeEnum(int filteOrder) {

@@ -13,11 +13,18 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
+import java.net.URI;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import io.github.tesla.filter.RequestFilterTypeEnum;
+import io.github.tesla.filter.domain.ApiSpringCloudDO;
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -31,18 +38,49 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
   private final DynamicSpringCloudClient springCloudClient =
       SpringContextHolder.getBean(DynamicSpringCloudClient.class);
 
-  private final ApiAndFilterCacheComponent routeRuleCache =
+  private final ApiAndFilterCacheComponent apiCache =
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
+
+
+  public static HttpRequestFilter newFilter() {
+    return new SpringCloudHttpRequestFilter();
+  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
+    if (httpObject instanceof FullHttpRequest && springCloudClient != null) {
+      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
+      String actorPath = httpRequest.uri();
+      int index = actorPath.indexOf("?");
+      if (index > -1) {
+        actorPath = actorPath.substring(0, index);
+      }
+      Pair<String, ApiSpringCloudDO> springCloudPair = apiCache.getSpringCloudRoute(actorPath);
+      if (springCloudPair != null) {
+        String changedPath = springCloudPair.getLeft();
+        ApiSpringCloudDO springCloudDo = springCloudPair.getRight();
+        URI loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
+        httpRequest.setUri(changedPath);
+        httpRequest.headers().set(HttpHeaderNames.HOST, buildHost(loadbalanceHostAndPort));
+      } else {
+        return null;
+      }
+    }
     return null;
+  }
+
+  private String buildHost(URI uri) {
+    if (uri.getPort() != -1) {
+      return uri.getHost() + ":" + uri.getPort();
+    } else {
+      return uri.getHost();
+    }
   }
 
   @Override
   public RequestFilterTypeEnum filterType() {
-    return null;
+    return RequestFilterTypeEnum.SPRINGCLOUD;
   }
 
 }
