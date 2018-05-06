@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.gateway.config;
+package io.github.tesla.gateway.config.eureka;
 
 import static io.github.tesla.gateway.config.util.IdUtils.getDefaultInstanceId;
 
@@ -37,9 +37,6 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.squareup.okhttp.OkHttpClient;
 
-import io.github.tesla.gateway.config.eureka.EurekaClientConfigBean;
-import io.github.tesla.gateway.config.eureka.EurekaInstanceConfigBean;
-import io.github.tesla.gateway.config.eureka.InstanceInfoFactory;
 import io.github.tesla.gateway.config.eureka.metadata.DefaultManagementMetadataProvider;
 import io.github.tesla.gateway.config.eureka.metadata.ManagementMetadata;
 import io.github.tesla.gateway.config.util.InetUtils;

@@ -15,14 +15,12 @@ package io.github.tesla.gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.EurekaClientConfig;
 import com.quancheng.saluki.boot.SalukiReference;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -51,8 +49,7 @@ public class GateWayProxyConfig {
 
   }
   @Configuration
-  @EnableConfigurationProperties
-  @ConditionalOnClass(EurekaClientConfig.class)
+  @ConditionalOnClass(com.netflix.discovery.EurekaClientConfig.class)
   protected class SpringCloudConfig {
 
     @Value("${server.port}")
