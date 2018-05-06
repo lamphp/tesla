@@ -3,6 +3,9 @@ spring:
     name: Tesla
   profiles:
     active: dev
+  metrics:
+    servo:
+      enabled: false
 server:
   port: 9000
 mybatis:
@@ -15,7 +18,10 @@ saluki:
 dubbo:
   registryAddress: zookeeper://127.0.0.1:2181
 eureka:
-  client:
-    registerWithEureka: false
-    serviceUrl:
-      defaultZone: http://127.0.0.1:8761/eureka/
+  registration:
+    enabled: false
+  preferSameZone: true
+  shouldUseDns: false
+  serviceUrl:
+    default: http://127.0.0.1:8761/eureka/
+  decoderName: JacksonJson

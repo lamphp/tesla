@@ -13,8 +13,6 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
-import java.net.URI;
-
 import org.apache.commons.lang3.tuple.Pair;
 
 import io.github.tesla.filter.RequestFilterTypeEnum;
@@ -60,22 +58,14 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
       if (springCloudPair != null) {
         String changedPath = springCloudPair.getLeft();
         ApiSpringCloudDO springCloudDo = springCloudPair.getRight();
-        URI loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
+        String loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
         httpRequest.setUri(changedPath);
-        httpRequest.headers().set(HttpHeaderNames.HOST, buildHost(loadbalanceHostAndPort));
+        httpRequest.headers().set(HttpHeaderNames.HOST, loadbalanceHostAndPort);
       } else {
         return null;
       }
     }
     return null;
-  }
-
-  private String buildHost(URI uri) {
-    if (uri.getPort() != -1) {
-      return uri.getHost() + ":" + uri.getPort();
-    } else {
-      return uri.getHost();
-    }
   }
 
   @Override

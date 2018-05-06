@@ -88,9 +88,14 @@
 		</dependency>
 		<!-- spring cloud support -->
 		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
+			<groupId>com.netflix.eureka</groupId>
+			<artifactId>eureka-client</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		   <!-- <dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-eureka</artifactId>
+			<version>1.4.4.RELEASE</version>
+		</dependency>   -->
 	</dependencies>
 </project>

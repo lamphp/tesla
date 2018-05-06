@@ -15,14 +15,20 @@ package io.github.tesla.gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
+import com.netflix.discovery.EurekaClient;
+import com.netflix.discovery.EurekaClientConfig;
 import com.quancheng.saluki.boot.SalukiReference;
+import com.squareup.okhttp.OkHttpClient;
+
 import io.github.tesla.gateway.protocol.dubbo.DynamicDubboClient;
 import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;
+import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 
 /**
  * @author liushiming
@@ -44,6 +50,22 @@ public class GateWayProxyConfig {
     }
 
   }
+  @Configuration
+  @EnableConfigurationProperties
+  @ConditionalOnClass(EurekaClientConfig.class)
+  protected class SpringCloudConfig {
+
+    @Value("${server.port}")
+    private int httpPort;
+
+    @Bean
+    protected DynamicSpringCloudClient dynamicSpringCloudClient1(OkHttpClient okHttpClient,
+        EurekaClient eurekaClient) {
+      return new DynamicSpringCloudClient(okHttpClient, eurekaClient, httpPort);
+    }
+
+  }
+
   @Configuration
   @ConditionalOnClass(com.alibaba.dubbo.rpc.service.GenericService.class)
   protected class DubboCoonfig {

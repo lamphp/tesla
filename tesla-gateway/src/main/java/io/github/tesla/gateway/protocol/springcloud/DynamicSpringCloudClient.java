@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 
 import com.alibaba.fastjson.JSON;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -40,30 +40,41 @@ public class DynamicSpringCloudClient {
 
   private final OkHttpClient okHttpClient;
 
-  private final LoadBalancerClient loadBalanceClient;
+  private final EurekaClient eurekaClient;
 
   private final int httpPort;
 
-  public DynamicSpringCloudClient(OkHttpClient okHttpClient, LoadBalancerClient loadBalanceClient,
+  public DynamicSpringCloudClient(OkHttpClient okHttpClient, EurekaClient eurekaClient,
       int httpPort) {
     this.okHttpClient = okHttpClient;
-    this.loadBalanceClient = loadBalanceClient;
+    this.eurekaClient = eurekaClient;
     this.httpPort = httpPort;
   }
 
+  public DynamicSpringCloudClient(OkHttpClient okHttpClient, int httpPort) {
+    this.okHttpClient = okHttpClient;
+    this.eurekaClient = null;
+    this.httpPort = httpPort;
+  }
 
-  public URI loadBalanceCall(final ApiSpringCloudDO springCloudDo) {
+  private InstanceInfo nextServer(String serviceId) {
+    InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka(serviceId, false);
+    return instanceInfo;
+  }
+
+
+  public String loadBalanceCall(final ApiSpringCloudDO springCloudDo) {
     String serviceId = springCloudDo.getInstanceId();
-    ServiceInstance serviceInstance = loadBalanceClient.choose(serviceId);
-    return serviceInstance.getUri();
+    InstanceInfo instaneinfo = this.nextServer(serviceId);
+    return instaneinfo.getHostName() + ":" + instaneinfo.getPort();
   }
 
   public String doHttpRemoteCall(String submitServiceId, String submitUrl, String submitType,
       Object submitObj) {
     final String httpUrl;
     if (submitServiceId != null) {
-      ServiceInstance serviceInstance = loadBalanceClient.choose(submitServiceId);
-      httpUrl = buildUrl(submitUrl, serviceInstance.getHost(), serviceInstance.getPort());
+      InstanceInfo serviceInstance = this.nextServer(submitServiceId);
+      httpUrl = buildUrl(submitUrl, serviceInstance.getHostName(), serviceInstance.getPort());
     } else {
       httpUrl = buildUrl(submitUrl, "127.0.0.1", httpPort);
     }
