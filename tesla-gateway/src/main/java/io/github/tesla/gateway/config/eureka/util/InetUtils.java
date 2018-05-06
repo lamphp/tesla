@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.gateway.config.util;
+package io.github.tesla.gateway.config.eureka.util;
 
 import java.io.Closeable;
 import java.io.IOException;

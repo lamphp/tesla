@@ -13,7 +13,7 @@
  */
 package io.github.tesla.gateway.config.eureka;
 
-import static io.github.tesla.gateway.config.util.IdUtils.getDefaultInstanceId;
+import static io.github.tesla.gateway.config.eureka.util.IdUtils.getDefaultInstanceId;
 
 import java.net.MalformedURLException;
 import java.util.Map;
@@ -39,8 +39,8 @@ import com.squareup.okhttp.OkHttpClient;
 
 import io.github.tesla.gateway.config.eureka.metadata.DefaultManagementMetadataProvider;
 import io.github.tesla.gateway.config.eureka.metadata.ManagementMetadata;
-import io.github.tesla.gateway.config.util.InetUtils;
-import io.github.tesla.gateway.config.util.InetUtilsProperties;
+import io.github.tesla.gateway.config.eureka.util.InetUtils;
+import io.github.tesla.gateway.config.eureka.util.InetUtilsProperties;
 
 /**
  * @author liushiming
@@ -50,6 +50,7 @@ import io.github.tesla.gateway.config.util.InetUtilsProperties;
 @EnableConfigurationProperties
 @ConditionalOnClass(EurekaClientConfig.class)
 public class EurekaClientAutoConfiguration {
+
   @Bean
   public InetUtilsProperties inetUtilsProperties() {
     return new InetUtilsProperties();

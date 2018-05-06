@@ -27,10 +27,11 @@ import org.springframework.util.StringUtils;
 import com.netflix.appinfo.DataCenterInfo;
 import com.netflix.appinfo.EurekaInstanceConfig;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
-import com.netflix.appinfo.MyDataCenterInfo;
 
-import io.github.tesla.gateway.config.util.InetUtils;
-import io.github.tesla.gateway.config.util.InetUtils.HostInfo;
+import io.github.tesla.gateway.config.eureka.util.InetUtils;
+import io.github.tesla.gateway.config.eureka.util.InetUtils.HostInfo;
+
+import com.netflix.appinfo.MyDataCenterInfo;
 
 /**
  * @author liushiming
