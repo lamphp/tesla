@@ -20,10 +20,10 @@ import org.springframework.context.annotation.Configuration;
 
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
-import com.netflix.discovery.EurekaClient;
 import com.quancheng.saluki.boot.SalukiReference;
-import com.squareup.okhttp.OkHttpClient;
 
+import io.github.tesla.gateway.config.eureka.EurekaClientConfigBean;
+import io.github.tesla.gateway.config.eureka.EurekaInstanceConfigBean;
 import io.github.tesla.gateway.protocol.dubbo.DynamicDubboClient;
 import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
@@ -56,9 +56,9 @@ public class GateWayProxyConfig {
     private int httpPort;
 
     @Bean
-    protected DynamicSpringCloudClient dynamicSpringCloudClient1(OkHttpClient okHttpClient,
-        EurekaClient eurekaClient) {
-      return new DynamicSpringCloudClient(okHttpClient, eurekaClient, httpPort);
+    protected DynamicSpringCloudClient dynamicSpringCloudClient1(
+        EurekaInstanceConfigBean instanceConfig, EurekaClientConfigBean eurekaClientConfig) {
+      return new DynamicSpringCloudClient(instanceConfig, eurekaClientConfig, httpPort);
     }
 
   }

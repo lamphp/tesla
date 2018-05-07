@@ -20,7 +20,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
+import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.DiscoveryClient;
 import com.netflix.discovery.EurekaClient;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -29,6 +31,9 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import io.github.tesla.common.domain.ApiSpringCloudDO;
+import io.github.tesla.gateway.config.eureka.EurekaClientConfigBean;
+import io.github.tesla.gateway.config.eureka.EurekaInstanceConfigBean;
+import io.github.tesla.gateway.config.eureka.InstanceInfoFactory;
 
 /**
  * @author liushiming
@@ -38,26 +43,35 @@ public class DynamicSpringCloudClient {
 
   private static Logger LOG = LoggerFactory.getLogger(DynamicSpringCloudClient.class);
 
-  private final OkHttpClient okHttpClient;
+  private final EurekaInstanceConfigBean instanceConfig;
 
-  private final EurekaClient eurekaClient;
+  private final EurekaClientConfigBean eurekaClientConfig;
 
   private final int httpPort;
 
-  public DynamicSpringCloudClient(OkHttpClient okHttpClient, EurekaClient eurekaClient,
-      int httpPort) {
-    this.okHttpClient = okHttpClient;
-    this.eurekaClient = eurekaClient;
+  private final OkHttpClient okHttpClient;
+
+  private EurekaClient eurekaClient;
+
+  public DynamicSpringCloudClient(EurekaInstanceConfigBean instanceConfig,
+      EurekaClientConfigBean eurekaClientConfig, int httpPort) {
+    this.instanceConfig = instanceConfig;
+    this.eurekaClientConfig = eurekaClientConfig;
+    this.okHttpClient = new OkHttpClient();
     this.httpPort = httpPort;
   }
 
-  public DynamicSpringCloudClient(OkHttpClient okHttpClient, int httpPort) {
-    this.okHttpClient = okHttpClient;
-    this.eurekaClient = null;
-    this.httpPort = httpPort;
+  private synchronized void createEurekaClient() {
+    if (eurekaClient == null) {
+      InstanceInfo instanceInfo = new InstanceInfoFactory().create(instanceConfig);
+      ApplicationInfoManager applicationInfoManager =
+          new ApplicationInfoManager(instanceConfig, instanceInfo);
+      eurekaClient = new DiscoveryClient(applicationInfoManager, eurekaClientConfig);
+    }
   }
 
   private InstanceInfo nextServer(String serviceId) {
+    this.createEurekaClient();
     InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka(serviceId, false);
     return instanceInfo;
   }

@@ -29,13 +29,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertyResolver;
 import org.springframework.util.StringUtils;
 
-import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.EurekaInstanceConfig;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
-import com.squareup.okhttp.OkHttpClient;
 
 import io.github.tesla.gateway.config.eureka.metadata.DefaultManagementMetadataProvider;
 import io.github.tesla.gateway.config.eureka.metadata.ManagementMetadata;
@@ -54,15 +49,6 @@ public class EurekaClientAutoConfiguration {
   @Bean
   public InetUtilsProperties inetUtilsProperties() {
     return new InetUtilsProperties();
-  }
-
-  @Bean
-  public EurekaClient eurekaClient(EurekaInstanceConfigBean instanceConfig,
-      EurekaClientConfigBean eurekaClientConfig, ConfigurableEnvironment env) {
-    InstanceInfo instanceInfo = new InstanceInfoFactory().create(instanceConfig);
-    ApplicationInfoManager applicationInfoManager =
-        new ApplicationInfoManager(instanceConfig, instanceInfo);
-    return new DiscoveryClient(applicationInfoManager, eurekaClientConfig);
   }
 
   @Bean
@@ -164,11 +150,4 @@ public class EurekaClientAutoConfiguration {
       metadataMap.put("jmx.port", String.valueOf(jmxPort));
     }
   }
-
-  @Bean
-  protected OkHttpClient okHttpclient() {
-    return new OkHttpClient();
-  }
-
-
 }
