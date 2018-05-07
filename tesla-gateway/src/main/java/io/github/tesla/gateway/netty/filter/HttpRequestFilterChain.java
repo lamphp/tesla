@@ -19,7 +19,6 @@ import io.github.tesla.gateway.netty.filter.request.BlackUaHttpRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.DataMappingRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.DubboTransformHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.GrpcTransformHttpRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.HttpRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.RateLimitHttpRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.SecurityScannerHttpRequestFilter;
@@ -55,8 +54,8 @@ public class HttpRequestFilterChain {
     filters.put(dataMappingFilter.filterName(), dataMappingFilter);
     HttpRequestFilter dubboAdapterHttpRequestFilter = DubboTransformHttpRequestFilter.newFilter();
     filters.put(dubboAdapterHttpRequestFilter.filterName(), dubboAdapterHttpRequestFilter);
-    HttpRequestFilter grpcAdapterHttpRequestFilter = GrpcTransformHttpRequestFilter.newFilter();
-    filters.put(grpcAdapterHttpRequestFilter.filterName(), grpcAdapterHttpRequestFilter);
+//    HttpRequestFilter grpcAdapterHttpRequestFilter = GrpcTransformHttpRequestFilter.newFilter();
+//    filters.put(grpcAdapterHttpRequestFilter.filterName(), grpcAdapterHttpRequestFilter);
   }
 
   public static HttpRequestFilterChain requestFilterChain() {
