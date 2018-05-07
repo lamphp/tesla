@@ -7,9 +7,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class TeslaBackEndApplication {
+public class EurekaProviderApplication {
   public static void main(String[] args) {
-    SpringApplication.run(TeslaBackEndApplication.class, args);
+    SpringApplication.run(EurekaProviderApplication.class, args);
   }
 
 }

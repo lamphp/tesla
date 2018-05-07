@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("default")
-public class BackEndController {
+public class ProviderController {
 
 
   @RequestMapping(value = "test", method = RequestMethod.POST)
