@@ -333,95 +333,6 @@ INSERT INTO `sys_user_role` VALUES ('1', '1', '1');
 INSERT INTO `sys_user_role` VALUES ('2', '2', '2');
 
 
-DROP TABLE IF EXISTS `gateway_api_group`;
-
-CREATE TABLE `gateway_api_group` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL COMMENT 'api名称',
-  `describe` varchar(500) DEFAULT NULL COMMENT 'api描述',
-  `backend_host` varchar(255) DEFAULT NULL COMMENT '目标地址',
-  `backend_port` varchar(255) DEFAULT NULL COMMENT '目标端口',
-  `backend_path` varchar(255) DEFAULT NULL COMMENT '目标url前缀',
-  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
-
-
-INSERT INTO `gateway_api_group` (`id`, `name`, `describe`, `backend_host`, `backend_port`, `backend_path`, `gmt_create`, `gmt_modified`)
-VALUES
-	(1, 'default', '标准分组', NULL, NULL, NULL, '2018-02-03 03:52:00', '2018-02-03 03:52:00');
-
-
-DROP TABLE IF EXISTS `gateway_api`;
-
-CREATE TABLE `gateway_api` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL COMMENT 'api名称',
-  `describe` varchar(500) DEFAULT NULL COMMENT 'api描述',
-  `url` varchar(255) DEFAULT NULL COMMENT '请求路径',
-  `path` varchar(255) DEFAULT NULL COMMENT '后端请求路径',
-  `routes` tinyint(1) DEFAULT NULL COMMENT '是否RPC请求',
-  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
-  `group_id` bigint(20) unsigned NOT NULL COMMENT '分组Id',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_path` (`url`,`path`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
-
-ALTER TABLE `gateway_api`
-ADD CONSTRAINT `fk_group` FOREIGN KEY (`group_id`) REFERENCES `gateway_api_group` (`id`);
-
-
-DROP TABLE IF EXISTS `gateway_api_springcloud`;
-
-CREATE TABLE `gateway_api_springcloud` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `instance_id` varchar(100) DEFAULT NULL COMMENT '服务ID',
-  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
-  `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_instance` (`instance_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='SpringCloud服务映射表';
-
-ALTER TABLE `gateway_api_springcloud`
-ADD CONSTRAINT `fk_sc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`);
-
-DROP TABLE IF EXISTS `gateway_api_rpc`;
-
-CREATE TABLE `gateway_api_rpc` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `service_name` varchar(255) DEFAULT NULL COMMENT '服务名',
-  `method_name` varchar(100) DEFAULT NULL COMMENT '方法名',
-  `service_group` varchar(100) DEFAULT NULL COMMENT '服务组名',
-  `service_version` varchar(100) DEFAULT NULL COMMENT '服务版本',
-  `proto_context` blob COMMENT 'proto内容',
-  `dubbo_param_template` blob COMMENT 'dubbo请求参数类型',
-  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
-  `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_service` (`service_name`,`method_name`,`service_group`,`service_version`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='rpc服务映射表';
-
-ALTER TABLE `gateway_api_rpc`
-ADD CONSTRAINT `fk_rpc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`);
-
-DROP TABLE IF EXISTS `gateway_filter`;
-
-CREATE TABLE `gateway_filter` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `filter_type` varchar(100) DEFAULT NULL,
-  `rule` varchar(1000) DEFAULT NULL,
-  `api_id` bigint(20) COMMENT 'apiId',
-  `group_id` bigint(20) COMMENT 'groupId',
-  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
-  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
 DROP TABLE IF EXISTS `oauth_access_token`;
 
 CREATE TABLE `oauth_access_token` (
@@ -470,3 +381,109 @@ CREATE TABLE `oauth_code` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
+---------------gateway--------------
+DROP TABLE IF EXISTS `gateway_api_group`;
+
+CREATE TABLE `gateway_api_group` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'api名称',
+  `describe` varchar(500) DEFAULT NULL COMMENT 'api描述',
+  `backend_host` varchar(255) DEFAULT NULL COMMENT '目标地址',
+  `backend_port` varchar(255) DEFAULT NULL COMMENT '目标端口',
+  `backend_path` varchar(255) DEFAULT NULL COMMENT '目标url前缀',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
+
+INSERT INTO `gateway_api_group` (`id`, `name`, `describe`, `backend_host`, `backend_port`, `backend_path`, `gmt_create`, `gmt_modified`)
+VALUES
+	(1,'DefaultGroup','标准分组','127.0.0.1','8080','/default','2018-02-03 03:52:00','2018-02-03 03:52:00');
+ 
+
+
+DROP TABLE IF EXISTS `gateway_api`;
+
+CREATE TABLE `gateway_api` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL COMMENT 'api名称',
+  `describe` varchar(500) DEFAULT NULL COMMENT 'api描述',
+  `url` varchar(255) DEFAULT NULL COMMENT '请求路径',
+  `path` varchar(255) DEFAULT NULL COMMENT '后端请求路径',
+  `routes` tinyint(1) DEFAULT NULL COMMENT '是否RPC请求',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  `group_id` bigint(20) unsigned NOT NULL COMMENT '分组Id',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_path` (`url`,`path`),
+  KEY `fk_group` (`group_id`),
+  CONSTRAINT `fk_group` FOREIGN KEY (`group_id`) REFERENCES `gateway_api_group` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
+
+ 
+INSERT INTO `gateway_api` (`id`, `name`, `describe`, `url`, `path`, `routes`, `gmt_create`, `gmt_modified`, `group_id`)
+VALUES
+	(1,'测试API','测试API','/test','/test',0,'2018-04-28 02:01:29','2018-04-28 02:01:29',1),
+	(2,'测试Drools','测试API','/drools','/drools',3,'2018-04-28 02:01:29','2018-04-28 02:01:29',1),
+	(3,'测试user','测试user','/user','/user',0,'2018-04-28 02:01:29','2018-04-28 02:01:29',1);
+
+DROP TABLE IF EXISTS `gateway_api_rpc`;
+
+CREATE TABLE `gateway_api_rpc` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `service_name` varchar(255) DEFAULT NULL COMMENT '服务名',
+  `method_name` varchar(100) DEFAULT NULL COMMENT '方法名',
+  `service_group` varchar(100) DEFAULT NULL COMMENT '服务组名',
+  `service_version` varchar(100) DEFAULT NULL COMMENT '服务版本',
+  `proto_context` blob COMMENT 'proto内容',
+  `dubbo_param_template` blob COMMENT 'dubbo请求参数类型',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_service` (`service_name`,`method_name`,`service_group`,`service_version`),
+  KEY `fk_rpc_api` (`api_id`),
+  CONSTRAINT `fk_rpc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='rpc服务映射表';
+
+
+DROP TABLE IF EXISTS `gateway_api_springcloud`;
+
+CREATE TABLE `gateway_api_springcloud` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `instance_id` varchar(100) DEFAULT NULL COMMENT '服务ID',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_instance` (`instance_id`),
+  KEY `fk_sc_api` (`api_id`),
+  CONSTRAINT `fk_sc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='SpringCloud服务映射表';
+ 
+INSERT INTO `gateway_api_springcloud` (`id`, `instance_id`, `gmt_create`, `gmt_modified`, `api_id`)
+VALUES
+	(1,'customer-service','2018-04-28 02:01:29','2018-04-28 02:01:29',2);
+ 
+DROP TABLE IF EXISTS `gateway_filter`;
+
+CREATE TABLE `gateway_filter` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `filter_type` varchar(100) DEFAULT NULL,
+  `rule` varchar(5000) DEFAULT NULL,
+  `api_id` bigint(20) DEFAULT NULL COMMENT 'apiId',
+  `group_id` bigint(20) DEFAULT NULL COMMENT 'groupId',
+  `gmt_create` datetime DEFAULT NULL COMMENT '创建时间',
+  `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ 
+INSERT INTO `gateway_filter` (`id`, `filter_type`, `rule`, `api_id`, `group_id`, `gmt_create`, `gmt_modified`)
+VALUES
+	(1,'BlackCookieHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.methodaccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n',NULL,NULL,NULL,NULL),
+	(2,'URLParamHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.MethodAccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n\\<(iframe|script|body|img|layer|div|meta|style|base|object|input)\n(onmouseover|onerror|onload)\\=\n',NULL,NULL,NULL,NULL),
+	(3,'BlackURLHttpRequestFilter','\\.(svn|git|htaccess|bash_history)\n\\.(bak|inc|old|mdb|sql|backup|java|class)$\n(vhost|bbs|host|wwwroot|www|site|root|hytop|flashfxp).*\\.rar\n(phpmyadmin|jmx-console|jmxinvokerservlet)\njava\\.lang\n/(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\\\\w+).(php|jsp)\n',NULL,NULL,NULL,NULL),
+	(4,'DataMappingRequestFilter','<#assign inputRoot= input.path(\"$\")>\n[\n  <#list inputRoot.photos as elem>\n    {\n      \"id\": ${elem.id},\n      \"owner\": ${elem.owner},\n      \"title\": ${elem.title},\n      \"ispublic\": ${elem.ispublic},\n      \"isfriend\": ${elem.isfriend},\n      \"isfamily\": ${elem.isfamily}\n    }<#if (elem_has_next)>,</#if>  \n   </#list>\n]',1,NULL,NULL,NULL),
+	(5,'DroolsRequestFilter','package io.github.tesla.gateway.netty.filter.drools;\n\nimport io.github.tesla.gateway.mapping.HeaderMapping;\nimport io.github.tesla.gateway.mapping.BodyMapping;\nimport io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter.ForWardAction;\n\nglobal io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter requestFilter\n\ndeclare User\n    name : String\n    phone : String\nend\n\nrule \"condition: call userService to judge user is normal\"\nno-loop true\nwhen\n    $body:BodyMapping()\n    $header:HeaderMapping()\nthen\n    User user = new User();\n    user.setName($body.json(\"$.photos[0].owner\"));\n    user.setPhone($body.json(\"$.photos[0].id\"));\n    Object userInfo = requestFilter.callRemoteService(\"customer-service\",\"/default/user\",user, \"POST\", User.class);\n    insert(userInfo);\nend\n\nrule \"condition: judge to jingdong or internal service\"\nno-loop true\nwhen\n     $user:User(name==\"test\",phone==\"18616705342\");\n     $forwardAction:ForWardAction();\nthen\n     $forwardAction.setTargetUrl(\"www.baidu.com\");\nend',2,NULL,NULL,NULL);

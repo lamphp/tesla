@@ -38,22 +38,24 @@ import io.github.tesla.authz.dao.AuthzUserDao;
 public class AuthzConfig {
 
   @Bean
+  public org.apache.shiro.cache.ehcache.EhCacheManager shiroEhcacheManager(
+      org.springframework.cache.ehcache.EhCacheCacheManager cacheManager) {
+    org.apache.shiro.cache.ehcache.EhCacheManager ehcacheManager =
+        new org.apache.shiro.cache.ehcache.EhCacheManager();
+    ehcacheManager.setCacheManager(cacheManager.getCacheManager());
+    return ehcacheManager;
+  }
+
+  @Bean
   public JdbcTemplate jdbcTemplate(DataSource dataSource) {
     return new JdbcTemplate(dataSource, true);
   }
 
   @Bean
-  public EhCacheManager getEhCacheManager() {
-    EhCacheManager em = new EhCacheManager();
-    em.setCacheManagerConfigFile("classpath:config/ehcache.xml");
-    return em;
-  }
-
-  @Bean
-  public TeslaUserRealm userRealm(EhCacheManager cacheManager, DataSource dataSource,
+  public TeslaUserRealm userRealm(EhCacheManager ehcacheManager, DataSource dataSource,
       AuthzUserDao userDao) {
     TeslaUserRealm userRealm = new TeslaUserRealm(userDao);
-    userRealm.setCacheManager(cacheManager);
+    userRealm.setCacheManager(ehcacheManager);
     return userRealm;
   }
 
@@ -74,10 +76,10 @@ public class AuthzConfig {
   }
 
   @Bean
-  public SecurityManager securityManager(TeslaUserRealm userRealm) {
+  public SecurityManager securityManager(TeslaUserRealm userRealm, EhCacheManager cacheManager) {
     DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
     manager.setRealm(userRealm);
-    manager.setCacheManager(getEhCacheManager());
+    manager.setCacheManager(cacheManager);
     manager.setSessionManager(sessionManager());
     return manager;
   }
