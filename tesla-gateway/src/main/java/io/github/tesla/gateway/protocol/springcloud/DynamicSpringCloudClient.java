@@ -43,13 +43,13 @@ public class DynamicSpringCloudClient {
 
   private static Logger LOG = LoggerFactory.getLogger(DynamicSpringCloudClient.class);
 
+  private final OkHttpClient okHttpClient = new OkHttpClient();
+
   private final EurekaInstanceConfigBean instanceConfig;
 
   private final EurekaClientConfigBean eurekaClientConfig;
 
   private final int httpPort;
-
-  private final OkHttpClient okHttpClient;
 
   private EurekaClient eurekaClient;
 
@@ -57,7 +57,6 @@ public class DynamicSpringCloudClient {
       EurekaClientConfigBean eurekaClientConfig, int httpPort) {
     this.instanceConfig = instanceConfig;
     this.eurekaClientConfig = eurekaClientConfig;
-    this.okHttpClient = new OkHttpClient();
     this.httpPort = httpPort;
   }
 
