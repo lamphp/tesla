@@ -19,5 +19,6 @@ dubbo:
   registryAddress: zookeeper://127.0.0.1:2181
 eureka:
   client:
+    registerWithEureka: false
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://127.0.0.1:8761/eureka/

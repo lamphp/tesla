@@ -114,7 +114,7 @@ public class DynamicSpringCloudClient {
       if (!path.startsWith("/")) {
         path = "/" + path;
       }
-      url = String.format("http://%s:%s%s", httpHost, httpPort, path);
+      url = String.format("http://%s:%s%s", httpHost, port, path);
     }
     return url;
   }

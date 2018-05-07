@@ -19,7 +19,7 @@
 		<dubbo.version>2.6.0</dubbo.version>
 		<netty.version>4.1.16.Final</netty.version>
 		<drools.version>6.4.0.Final</drools.version>
-		<eureka.version>1.7.2</eureka.version>
+		<eureka.version>1.6.2</eureka.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>

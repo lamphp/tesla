@@ -20,7 +20,7 @@ then
     User user = new User();
     user.setName($body.json("$.photos[0].owner"));
     user.setPhone($body.json("$.photos[0].id"));
-    Object userInfo = requestFilter.recurseCall("/user",user,User.class);
+    Object userInfo = requestFilter.callRemoteService("customer-service","/default/user",user, "POST", User.class);
     insert(userInfo);
 end
 
@@ -28,7 +28,7 @@ rule "condition: judge to jingdong or internal service"
 no-loop true
 when
      $user:User(name=="test",phone=="18616705342");
-     $forwardAction:ForWardAction("www.baidu.com");
+     $forwardAction:ForWardAction();
 then
-     $forwardAction.setTargetUrl("www.jingdong.com");
+     $forwardAction.setTargetUrl("www.baidu.com");
 end
