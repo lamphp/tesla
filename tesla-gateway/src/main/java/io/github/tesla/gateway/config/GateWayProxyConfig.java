@@ -34,11 +34,11 @@ import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 public class GateWayProxyConfig {
 
 //  @Configuration
-//  @ConditionalOnClass(com.quancheng.saluki.core.grpc.service.GenericService.class)
+//  @ConditionalOnClass(io.github.saluki.grpc.service.GenericService.class)
 //  protected class GrpcConfig {
 //
 //    @SalukiReference
-//    protected com.quancheng.saluki.core.grpc.service.GenericService generciService;
+//    protected io.github.saluki.grpc.service.GenericService generciService;
 //
 //    @Bean
 //    protected DynamicGrpcClient dynamicGrpcClient() {

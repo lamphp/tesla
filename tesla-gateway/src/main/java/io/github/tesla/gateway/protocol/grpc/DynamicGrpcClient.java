@@ -24,9 +24,9 @@
 //import com.google.protobuf.ExtensionRegistryLite;
 //import com.google.protobuf.Message;
 //import com.googlecode.protobuf.format.JsonFormat;
-//import com.quancheng.saluki.core.grpc.exception.RpcFrameworkException;
-//import com.quancheng.saluki.core.grpc.exception.RpcServiceException;
-//import com.quancheng.saluki.core.grpc.service.GenericService;
+//import io.github.saluki.grpc.exception.RpcFrameworkException;
+//import io.github.saluki.grpc.exception.RpcServiceException;
+//import io.github.saluki.grpc.service.GenericService;
 //
 //import io.github.tesla.common.domain.ApiRpcDO;
 //import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;

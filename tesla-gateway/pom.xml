@@ -71,7 +71,7 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- <dependency>
-			<groupId>com.quancheng.saluki</groupId>
+			<groupId>io.github.saluki</groupId>
 			<artifactId>spring-boot-starter-saluki</artifactId>
 			<scope>provided</scope>
 		</dependency> -->
