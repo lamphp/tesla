@@ -13,14 +13,7 @@
  */
 package io.github.tesla.backend;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.IOUtils;
-
-import com.google.gson.Gson;
 
 
 /**
@@ -33,35 +26,6 @@ public class Photos extends ArrayList<Photo> {
 
   public Photos() {
     super();
-  }
-
-  public static void main(String[] args) throws IOException {
-    InputStream in = Photos.class.getClassLoader().getResourceAsStream("Photos.json");
-    String json = IOUtils.toString(in);
-    List s = new Gson().fromJson(json, List.class);
-    System.out.println(s);
-//    Photo p1 = new Photo();
-//    p1.setId("123");
-//    p1.setIsfamily(1);
-//    p1.setIsfriend(1);
-//    p1.setIspublic(1);
-//    p1.setOwner("liushiming");
-//    p1.setTitle("shim");
-//
-//    Photo p = new Photo();
-//    p.setId("123");
-//    p.setIsfamily(1);
-//    p.setIsfriend(1);
-//    p.setIspublic(1);
-//    p.setOwner("liushiming");
-//    p.setTitle("shim");
-//    
-//    Photos photos = new Photos();
-//    photos.add(p1);
-//    photos.add(p);
-//    System.out.println(new Gson().toJson(photos));
-    
-
   }
 
 }
