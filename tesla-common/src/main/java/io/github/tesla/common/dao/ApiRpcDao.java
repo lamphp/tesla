@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.filter.dao;
+package io.github.tesla.common.dao;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.domain.ApiRpcDO;
 
 /**
  * @author liushiming

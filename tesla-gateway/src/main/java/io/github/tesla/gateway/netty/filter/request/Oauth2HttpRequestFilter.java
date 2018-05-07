@@ -16,7 +16,7 @@ package io.github.tesla.gateway.netty.filter.request;
 import org.apache.oltu.oauth2.common.message.types.ParameterStyle;
 import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 
-import io.github.tesla.filter.RequestFilterTypeEnum;
+import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.cache.Oauth2TokenCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;

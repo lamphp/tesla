@@ -32,8 +32,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.collect.Maps;
 
-import io.github.tesla.filter.RouteType;
-import io.github.tesla.filter.domain.ApiGroupDO;
+import io.github.tesla.common.RouteType;
+import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.api.service.ApiGroupService;
 import io.github.tesla.ops.api.service.ApiService;
 import io.github.tesla.ops.api.service.ProtobufService;

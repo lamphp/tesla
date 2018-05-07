@@ -29,7 +29,7 @@ import io.github.tesla.gateway.netty.HttpProxyServer;
  * @author liushiming
  * @version TeslaGateWayApplication.java, v 0.0.1 2018年1月24日 下午4:37:37 liushiming
  */
-@MapperScan(basePackages = {"io.github.tesla.filter"}, annotationClass = Mapper.class)
+@MapperScan(basePackages = {"io.github.tesla.common"}, annotationClass = Mapper.class)
 @SpringBootApplication(
     exclude = {ValidationAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class TeslaGateWayApplication implements CommandLineRunner {

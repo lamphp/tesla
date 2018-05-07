@@ -28,7 +28,7 @@ import com.quancheng.saluki.core.grpc.exception.RpcFrameworkException;
 import com.quancheng.saluki.core.grpc.exception.RpcServiceException;
 import com.quancheng.saluki.core.grpc.service.GenericService;
 
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
 import io.grpc.MethodDescriptor;
 import io.grpc.MethodDescriptor.Marshaller;

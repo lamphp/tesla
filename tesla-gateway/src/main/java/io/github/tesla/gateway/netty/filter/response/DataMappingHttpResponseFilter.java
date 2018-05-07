@@ -24,7 +24,7 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
-import io.github.tesla.filter.ResponseFilterTypeEnum;
+import io.github.tesla.common.ResponseFilterTypeEnum;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;

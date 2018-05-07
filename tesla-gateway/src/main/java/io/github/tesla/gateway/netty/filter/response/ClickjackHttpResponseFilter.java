@@ -1,6 +1,6 @@
 package io.github.tesla.gateway.netty.filter.response;
 
-import io.github.tesla.filter.ResponseFilterTypeEnum;
+import io.github.tesla.common.ResponseFilterTypeEnum;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 

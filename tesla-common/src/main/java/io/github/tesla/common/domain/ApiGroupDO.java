@@ -11,20 +11,16 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.filter.domain;
+package io.github.tesla.common.domain;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import org.springframework.beans.BeanUtils;
-
-import io.github.tesla.filter.RouteType;
-
 /**
  * @author liushiming
- * @version ApiDO.java, v 0.0.1 2018年1月4日 上午10:28:15 liushiming
+ * @version ApiGroupDO.java, v 0.0.1 2018年4月11日 下午5:50:08 liushiming
  */
-public class ApiDO implements Serializable {
+public class ApiGroupDO implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -34,13 +30,11 @@ public class ApiDO implements Serializable {
 
   private String describe;
 
-  private Integer routes;
+  private String backendHost;
 
-  private String url;
+  private String backendPort;
 
-  private String path;
-
-  private ApiGroupDO apiGroup;
+  private String backendPath;
 
   private Timestamp gmtCreate;
 
@@ -70,44 +64,28 @@ public class ApiDO implements Serializable {
     this.describe = describe;
   }
 
-  public String getUrl() {
-    return url;
+  public String getBackendHost() {
+    return backendHost;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setBackendHost(String backendHost) {
+    this.backendHost = backendHost;
   }
 
-  public String getPath() {
-    return path;
+  public String getBackendPort() {
+    return backendPort;
   }
 
-  public void setPath(String path) {
-    this.path = path;
+  public void setBackendPort(String backendPort) {
+    this.backendPort = backendPort;
   }
 
-  public Integer getRoutes() {
-    return routes;
+  public String getBackendPath() {
+    return backendPath;
   }
 
-  public void setRoutes(Integer routes) {
-    this.routes = routes;
-  }
-
-  public ApiGroupDO getApiGroup() {
-    return apiGroup;
-  }
-
-  public void setApiGroup(ApiGroupDO apiGroup) {
-    this.apiGroup = apiGroup;
-  }
-
-  public Boolean isRpc() {
-    return RouteType.isDubbo(this.routes) || RouteType.isGrpc(this.routes);
-  }
-
-  public Boolean isSpringCloud() {
-    return RouteType.isSpringCloud(this.routes);
+  public void setBackendPath(String backendPath) {
+    this.backendPath = backendPath;
   }
 
   public Timestamp getGmtCreate() {
@@ -124,19 +102,6 @@ public class ApiDO implements Serializable {
 
   public void setGmtModified(Timestamp gmtModified) {
     this.gmtModified = gmtModified;
-  }
-
-  public ApiDO copy() {
-    ApiDO target = new ApiDO();
-    BeanUtils.copyProperties(this, target);
-    return target;
-  }
-
-  @Override
-  public String toString() {
-    return "ApiDO [id=" + id + ", name=" + name + ", describe=" + describe + ", routes=" + routes
-        + ", url=" + url + ", path=" + path + ", apiGroup=" + apiGroup + ", gmtCreate=" + gmtCreate
-        + ", gmtModified=" + gmtModified + "]";
   }
 
 }

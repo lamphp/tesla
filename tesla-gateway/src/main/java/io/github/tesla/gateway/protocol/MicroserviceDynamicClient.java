@@ -13,7 +13,7 @@
  */
 package io.github.tesla.gateway.protocol;
 
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.domain.ApiRpcDO;
 import io.netty.handler.codec.http.FullHttpRequest;
 
 /**

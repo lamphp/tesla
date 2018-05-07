@@ -19,8 +19,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.github.tesla.filter.dao.ApiGroupDao;
-import io.github.tesla.filter.domain.ApiGroupDO;
+import io.github.tesla.common.dao.ApiGroupDao;
+import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.api.service.ApiGroupService;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;

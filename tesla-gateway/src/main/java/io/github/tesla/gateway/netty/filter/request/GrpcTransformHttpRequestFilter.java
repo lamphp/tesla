@@ -13,8 +13,8 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
-import io.github.tesla.filter.RequestFilterTypeEnum;
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.RequestFilterTypeEnum;
+import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 
-import io.github.tesla.filter.RequestFilterTypeEnum;
+import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.mapping.HeaderMapping;

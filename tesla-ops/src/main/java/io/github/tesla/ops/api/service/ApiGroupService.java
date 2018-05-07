@@ -16,7 +16,7 @@ package io.github.tesla.ops.api.service;
 import java.util.List;
 import java.util.Map;
 
-import io.github.tesla.filter.domain.ApiGroupDO;
+import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 

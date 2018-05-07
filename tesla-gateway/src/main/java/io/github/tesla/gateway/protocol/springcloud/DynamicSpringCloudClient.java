@@ -28,7 +28,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
-import io.github.tesla.filter.domain.ApiSpringCloudDO;
+import io.github.tesla.common.domain.ApiSpringCloudDO;
 
 /**
  * @author liushiming

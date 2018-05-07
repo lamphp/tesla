@@ -23,7 +23,7 @@ import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.MethodDescriptor;
 import com.google.protobuf.InvalidProtocolBufferException;
 
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.domain.ApiRpcDO;
 
 /**
  * @author liushiming

@@ -16,7 +16,7 @@ package io.github.tesla.gateway.netty.filter.request;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.github.tesla.filter.RequestFilterTypeEnum;
+import io.github.tesla.common.RequestFilterTypeEnum;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;

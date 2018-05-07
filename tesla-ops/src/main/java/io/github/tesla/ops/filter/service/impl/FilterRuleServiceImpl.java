@@ -19,8 +19,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import io.github.tesla.filter.dao.FilterDao;
-import io.github.tesla.filter.domain.FilterDO;
+import io.github.tesla.common.dao.FilterDao;
+import io.github.tesla.common.domain.FilterDO;
 import io.github.tesla.ops.filter.service.FilterRuleService;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;

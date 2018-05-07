@@ -11,31 +11,32 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.filter.dao;
+package io.github.tesla.common.dao;
 
 import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import io.github.tesla.filter.domain.ApiDO;
+import io.github.tesla.common.domain.ApiGroupDO;
 
 /**
  * @author liushiming
- * @version RouteDao.java, v 0.0.1 2018年1月4日 上午10:38:23 liushiming
+ * @version ApiGroupDao.java, v 0.0.1 2018年4月11日 下午5:49:59 liushiming
  */
 @Mapper
-public interface ApiDao {
+public interface ApiGroupDao {
+  ApiGroupDO get(Long id);
 
-  ApiDO get(Long id);
+  ApiGroupDO load(String key);
 
-  List<ApiDO> list(Map<String, Object> map);
+  List<ApiGroupDO> list(Map<String, Object> map);
 
   int count(Map<String, Object> map);
 
-  Long save(ApiDO api);
+  int save(ApiGroupDO apiGroupDO);
 
-  int update(ApiDO api);
+  int update(ApiGroupDO apiGroupDO);
 
   int remove(Long id);
 

@@ -42,7 +42,7 @@ import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
-import io.github.tesla.filter.domain.ApiRpcDO;
+import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.mapping.BodyMapping;
 import io.github.tesla.gateway.mapping.HeaderMapping;
 import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
