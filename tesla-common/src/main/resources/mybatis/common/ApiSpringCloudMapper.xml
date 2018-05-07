@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="io.github.tesla.filter.dao.ApiSpringCloudDao">
+<mapper namespace="io.github.tesla.common.dao.ApiSpringCloudDao">
 
-	<select id="get" resultType="io.github.tesla.filter.domain.ApiSpringCloudDO">
+	<select id="get" resultType="io.github.tesla.common.domain.ApiSpringCloudDO">
 		select
 		`id`,`instance_id`,`api_id`,`gmt_create`,`gmt_modified`
 		from
@@ -11,7 +11,7 @@
 		where api_id = #{apiId}
 	</select>
 
-	<select id="list" resultType="io.github.tesla.filter.domain.ApiSpringCloudDO">
+	<select id="list" resultType="io.github.tesla.common.domain.ApiSpringCloudDO">
 		select
 		`id`,`instance_id`,`api_id`,`gmt_create`,`gmt_modified`
 		from
@@ -33,7 +33,7 @@
 		</if>
 	</select>
 
-	<insert id="save" parameterType="io.github.tesla.filter.domain.ApiSpringCloudDO"
+	<insert id="save" parameterType="io.github.tesla.common.domain.ApiSpringCloudDO"
 		useGeneratedKeys="true" keyProperty="id">
 		<selectKey resultType="java.lang.Long" order="AFTER"
 			keyProperty="id">
@@ -56,7 +56,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="io.github.tesla.filter.domain.ApiSpringCloudDO">
+	<update id="update" parameterType="io.github.tesla.common.domain.ApiSpringCloudDO">
 		update gateway_api_springcloud
 		<set>
 			<if test="instanceId != null and instanceId != ''"> instance_id = #{instanceId} </if>

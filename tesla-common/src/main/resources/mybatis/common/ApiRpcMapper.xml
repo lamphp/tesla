@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="io.github.tesla.filter.dao.ApiRpcDao">
+<mapper namespace="io.github.tesla.common.dao.ApiRpcDao">
 
-	<select id="get" resultType="io.github.tesla.filter.domain.ApiRpcDO">
+	<select id="get" resultType="io.github.tesla.common.domain.ApiRpcDO">
 		select
 		`id`,`service_name`,`method_name`,`service_group`,`service_version`,`proto_context`,`dubbo_param_template`,`gmt_create`,`gmt_modified`
 		from gateway_api_rpc
 		where api_id = #{apiId}
 	</select>
 
-	<select id="loadByService" resultType="io.github.tesla.filter.domain.ApiRpcDO">
+	<select id="loadByService" resultType="io.github.tesla.common.domain.ApiRpcDO">
 		select
 		`id`,`route_id`,`service_name`,`method_name`,`service_group`,`service_version`,`proto_context`,`dubbo_param_template`,`gmt_create`,`gmt_modified`
 		from gateway_api_rpc
@@ -24,7 +24,7 @@
 		service_version = #{version}
 	</select>
 
-	<select id="list" resultType="io.github.tesla.filter.domain.ApiRpcDO">
+	<select id="list" resultType="io.github.tesla.common.domain.ApiRpcDO">
 		select
 		`id`,`service_name`,`method_name`,`service_group`,`service_version`,`proto_context`,`dubbo_param_template`,`gmt_create`,`gmt_modified`
 		from gateway_api_rpc
@@ -47,7 +47,7 @@
 		</if>
 	</select>
 
-	<insert id="save" parameterType="io.github.tesla.filter.domain.ApiRpcDO"
+	<insert id="save" parameterType="io.github.tesla.common.domain.ApiRpcDO"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into gateway_api_rpc
 		(
@@ -75,7 +75,7 @@
 		)
 	</insert>
 
-	<update id="update" parameterType="io.github.tesla.filter.domain.ApiRpcDO">
+	<update id="update" parameterType="io.github.tesla.common.domain.ApiRpcDO">
 		update gateway_api_rpc
 		<set>
 			<if test="serviceName != null and serviceName != ''">`service_name`=#{serviceName},</if>
