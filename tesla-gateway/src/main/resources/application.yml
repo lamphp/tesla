@@ -11,7 +11,7 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-  mapper-locations: classpath*:mybatis/**/*Mapper.xml
+  mapper-locations: classpath*:META-INF/mybatis/**/*Mapper.xml
 dubbo:
   registryAddress: zookeeper://127.0.0.1:2181
 eureka:
