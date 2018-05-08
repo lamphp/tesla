@@ -1,4 +1,4 @@
-var prefix = "gateway/apiGroup";
+var prefix = "gateway/apigroup";
 $(function() {
   load();
 });
@@ -25,6 +25,9 @@ function load() {
     },
     columns: [{
       checkbox: true
+    }, {
+      field: 'id',
+      title: '序号'
     }, {
       field: 'name',
       title: '分组名称'
@@ -56,17 +59,8 @@ function load() {
   });
 }
 
-function ruleDetail(rule) {
-  layer.open({
-    type: 1,
-    maxmin: true,
-    title: '规则详情',
-    area: ['850px', '500px'],
-    content: '<html>' + rule + '</html>'
-  });
-}
 function reLoad() {
-  $('#ruleTable').bootstrapTable('refresh');
+  $('#apiGroupTable').bootstrapTable('refresh');
 }
 function add() {
   var url = prefix + '/add';
@@ -100,7 +94,7 @@ function remove(id) {
   }
 }
 function batchRemove() {
-  var rows = $('#ruleTable').bootstrapTable('getSelections');
+  var rows = $('#apiGroupTable').bootstrapTable('getSelections');
   if (rows.length == 0) {
     $.SmartMessageBox({
       title: "<i class='fa fa-sign-out txt-color-orangeDark'></i> 请选择要删除的记录？",
