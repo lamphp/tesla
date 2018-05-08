@@ -39,7 +39,7 @@ import io.github.tesla.ops.utils.Query;
  * @version APIGroupController.java, v 0.0.1 2018年4月11日 下午4:06:43 liushiming
  */
 @Controller
-@RequestMapping("gateway/apiGroup")
+@RequestMapping("gateway/apigroup")
 public class ApiGroupController extends BaseController {
 
   private final String prefix = "gateway/apigroup";

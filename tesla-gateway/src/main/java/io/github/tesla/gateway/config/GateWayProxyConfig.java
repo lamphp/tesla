@@ -21,9 +21,11 @@ import org.springframework.context.annotation.Configuration;
 import com.alibaba.dubbo.config.ApplicationConfig;
 import com.alibaba.dubbo.config.RegistryConfig;
 
+import io.github.saluki.boot.SalukiReference;
 import io.github.tesla.gateway.config.eureka.EurekaClientConfigBean;
 import io.github.tesla.gateway.config.eureka.EurekaInstanceConfigBean;
 import io.github.tesla.gateway.protocol.dubbo.DynamicDubboClient;
+import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 
 /**
@@ -33,19 +35,19 @@ import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 @Configuration
 public class GateWayProxyConfig {
 
-//  @Configuration
-//  @ConditionalOnClass(io.github.saluki.grpc.service.GenericService.class)
-//  protected class GrpcConfig {
-//
-//    @SalukiReference
-//    protected io.github.saluki.grpc.service.GenericService generciService;
-//
-//    @Bean
-//    protected DynamicGrpcClient dynamicGrpcClient() {
-//      return new DynamicGrpcClient(generciService);
-//    }
-//
-//  }
+  @Configuration
+  @ConditionalOnClass(io.github.saluki.grpc.service.GenericService.class)
+  protected class GrpcConfig {
+
+    @SalukiReference
+    protected io.github.saluki.grpc.service.GenericService generciService;
+
+    @Bean
+    protected DynamicGrpcClient dynamicGrpcClient() {
+      return new DynamicGrpcClient(generciService);
+    }
+
+  }
   @Configuration
   @ConditionalOnClass(com.netflix.discovery.EurekaClientConfig.class)
   protected class SpringCloudConfig {

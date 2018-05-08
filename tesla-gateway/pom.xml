@@ -70,11 +70,11 @@
 			<artifactId>protobuf-java-format</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- <dependency>
-			<groupId>io.github.saluki</groupId>
+		<dependency>
+			<groupId>io.github.frostingwolf</groupId>
 			<artifactId>spring-boot-starter-saluki</artifactId>
 			<scope>provided</scope>
-		</dependency> -->
+		</dependency>
 		<!-- dubbo support -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

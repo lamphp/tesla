@@ -38,7 +38,7 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>io.github.saluki</groupId>
+				<groupId>io.github.frostingwolf</groupId>
 				<artifactId>spring-boot-starter-saluki</artifactId>
 				<version>${saluki.version}</version>
 				<exclusions>

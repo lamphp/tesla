@@ -60,11 +60,11 @@ CREATE TABLE `sys_menu` (
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('1', '0', '系统管理', null, null, '0', 'fa fa-desktop', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('2', '0', '系统监控', null, null, '0', 'fa fa-video-camera', '5', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('3', '0', 'API消费端管理', null, null, '0', 'fa fa-eye', '5', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('4', '0', 'API管理', null, null, '0', 'fa fa-tachometer', '7', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('5', '0', 'Filter管理', null, null, '0', 'fa fa-tachometer', '7', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('1', '0', '系统管理', null, null, '0', 'fa fa-desktop', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('2', '0', '系统监控', null, null, '0', 'fa fa-video-camera', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('3', '0', 'API消费端管理', null, null, '0', 'fa fa-eye', '2', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('4', '0', 'API管理', null, null, '0', 'fa fa-tachometer', '3', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('5', '0', 'Filter管理', null, null, '0', 'fa fa-tachometer', '4', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 
 
 -- ----------------------------
@@ -119,8 +119,8 @@ INSERT INTO `sys_menu` VALUES ('40', '2', '运行监控', 'sys/log/run', 'sys:mo
 -- API管理开始
 -- ----------------------------
 
-INSERT INTO `sys_menu` VALUES ('50', '4', 'API列表', 'gateway/api', 'gateway:api:api', '1', 'fa fa-area-chart', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('51', '4', 'API分组列表', 'gateway/api', 'gateway:apigroup:apigroup', '1', 'fa fa-area-chart', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('50', '4', 'API列表', 'gateway/api', 'gateway:api:api', '1', 'fa fa-area-chart', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('51', '4', 'API分组列表', 'gateway/apigroup', 'gateway:apigroup:apigroup', '1', 'fa fa-area-chart', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 
 INSERT INTO `sys_menu` VALUES ('52', '50', '新增', '', 'gateway:api:add', '2', '', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 INSERT INTO `sys_menu` VALUES ('53', '50', '批量删除', '', 'gateway:api:batchRemove', '2','', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
