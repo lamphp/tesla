@@ -31,9 +31,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class BlackUaHttpRequestFilter extends HttpRequestFilter {
 
-  public static HttpRequestFilter newFilter() {
-    return new BlackUaHttpRequestFilter();
-  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

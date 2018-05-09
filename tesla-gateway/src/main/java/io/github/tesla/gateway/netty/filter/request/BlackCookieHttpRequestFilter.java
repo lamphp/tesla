@@ -31,10 +31,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class BlackCookieHttpRequestFilter extends HttpRequestFilter {
 
-  public static HttpRequestFilter newFilter() {
-    return new BlackCookieHttpRequestFilter();
-  }
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

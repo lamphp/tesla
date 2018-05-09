@@ -30,10 +30,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class BlackURLHttpRequestFilter extends HttpRequestFilter {
 
-  public static HttpRequestFilter newFilter() {
-    return new BlackURLHttpRequestFilter();
-  }
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

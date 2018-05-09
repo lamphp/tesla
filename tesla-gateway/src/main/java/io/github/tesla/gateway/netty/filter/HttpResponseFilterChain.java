@@ -1,20 +1,21 @@
 package io.github.tesla.gateway.netty.filter;
 
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import io.github.tesla.gateway.cache.GroovyFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
-import io.github.tesla.gateway.netty.filter.response.ClickjackHttpResponseFilter;
-import io.github.tesla.gateway.netty.filter.response.DataMappingHttpResponseFilter;
 import io.github.tesla.gateway.netty.filter.response.HttpResponseFilter;
+import io.github.tesla.gateway.utils.ClassUtil;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
@@ -22,12 +23,22 @@ import io.netty.handler.codec.http.HttpResponse;
 public class HttpResponseFilterChain {
   public static final Map<String, HttpResponseFilter> filters = Maps.newTreeMap();
   private static HttpResponseFilterChain filterChain = new HttpResponseFilterChain();
+  private static final String RESPONSE_FILTER_PACKAGENAME =
+      "io.github.tesla.gateway.netty.filter.response";
 
   static {
-    HttpResponseFilter clickjackHttpResponseFilter = ClickjackHttpResponseFilter.newFilter();
-    filters.put(clickjackHttpResponseFilter.filterType().name(), clickjackHttpResponseFilter);
-    HttpResponseFilter dataMapingHttpResonseFilter = DataMappingHttpResponseFilter.newFilter();
-    filters.put(dataMapingHttpResonseFilter.filterType().name(), dataMapingHttpResonseFilter);
+    Set<Class<?>> requestFilterClazzs = ClassUtil.getClassSet(RESPONSE_FILTER_PACKAGENAME);
+    for (Class<?> clazz : requestFilterClazzs) {
+      if (clazz.isAssignableFrom(HttpResponseFilter.class)
+          && !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
+        try {
+          HttpResponseFilter filter = (HttpResponseFilter) clazz.newInstance();
+          filters.put(filter.filterName(), filter);
+        } catch (Throwable e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   public static HttpResponseFilterChain responseFilterChain() {

@@ -50,7 +50,7 @@ public class DataMappingRequestFilter extends HttpRequestFilter {
 
   private final Configuration configuration;
 
-  private DataMappingRequestFilter() {
+  public DataMappingRequestFilter() {
     Configuration configuration_ = new Configuration(Configuration.VERSION_2_3_26);
     configuration_.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_26));
     configuration_.setOutputFormat(JSONOutputFormat.INSTANCE);
@@ -59,10 +59,6 @@ public class DataMappingRequestFilter extends HttpRequestFilter {
     owb.setIterableSupport(true);
     configuration_.setObjectWrapper(owb.build());
     this.configuration = configuration_;
-  }
-
-  public static HttpRequestFilter newFilter() {
-    return new DataMappingRequestFilter();
   }
 
   @Override

@@ -40,11 +40,6 @@ public class DubboTransformHttpRequestFilter extends HttpRequestFilter {
   private final ApiAndFilterCacheComponent routeRuleCache =
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
 
-
-  public static HttpRequestFilter newFilter() {
-    return new DubboTransformHttpRequestFilter();
-  }
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

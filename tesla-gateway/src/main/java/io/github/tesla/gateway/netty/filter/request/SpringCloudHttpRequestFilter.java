@@ -40,10 +40,6 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
 
 
-  public static HttpRequestFilter newFilter() {
-    return new SpringCloudHttpRequestFilter();
-  }
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

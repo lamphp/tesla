@@ -1,28 +1,21 @@
 package io.github.tesla.gateway.netty.filter;
 
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import io.github.tesla.gateway.cache.GroovyFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
-import io.github.tesla.gateway.netty.filter.request.BlackCookieHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.BlackIpHttpRequesFilter;
-import io.github.tesla.gateway.netty.filter.request.BlackURLHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.BlackUaHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.DataMappingRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.DubboTransformHttpRequestFilter;
 import io.github.tesla.gateway.netty.filter.request.HttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.RateLimitHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.SecurityScannerHttpRequestFilter;
-import io.github.tesla.gateway.netty.filter.request.URLParamHttpRequestFilter;
+import io.github.tesla.gateway.utils.ClassUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -31,31 +24,22 @@ import io.netty.handler.codec.http.HttpResponse;
 public class HttpRequestFilterChain {
   public static final Map<String, HttpRequestFilter> filters = Maps.newTreeMap();
   private static final HttpRequestFilterChain filterChain = new HttpRequestFilterChain();
+  private static final String REQUEST_FILTER_PACKAGENAME =
+      "io.github.tesla.gateway.netty.filter.request";
 
   static {
-    HttpRequestFilter blackIpHttpRequesFilter = BlackIpHttpRequesFilter.newFilter();
-    filters.put(blackIpHttpRequesFilter.filterName(), blackIpHttpRequesFilter);
-    HttpRequestFilter blackCookieHttpRequestFilter = BlackCookieHttpRequestFilter.newFilter();
-    filters.put(blackCookieHttpRequestFilter.filterName(), blackCookieHttpRequestFilter);
-    HttpRequestFilter rateLimitHttpRequestFilter = RateLimitHttpRequestFilter.newFilter();
-    filters.put(rateLimitHttpRequestFilter.filterName(), rateLimitHttpRequestFilter);
-    HttpRequestFilter securityScannerHttpRequestFilter =
-        SecurityScannerHttpRequestFilter.newFilter();
-    filters.put(securityScannerHttpRequestFilter.filterName(), securityScannerHttpRequestFilter);
-    HttpRequestFilter blackUaHttpRequestFilter = BlackUaHttpRequestFilter.newFilter();
-    filters.put(blackUaHttpRequestFilter.filterName(), blackUaHttpRequestFilter);
-    HttpRequestFilter blackURLHttpRequestFilter = BlackURLHttpRequestFilter.newFilter();
-    filters.put(blackURLHttpRequestFilter.filterName(), blackURLHttpRequestFilter);
-    HttpRequestFilter uRLParamHttpRequestFilter = URLParamHttpRequestFilter.newFilter();
-    filters.put(uRLParamHttpRequestFilter.filterName(), uRLParamHttpRequestFilter);
-    HttpRequestFilter droolsRequestFilter = DroolsRequestFilter.newFilter();
-    filters.put(droolsRequestFilter.filterName(), droolsRequestFilter);
-    HttpRequestFilter dataMappingFilter = DataMappingRequestFilter.newFilter();
-    filters.put(dataMappingFilter.filterName(), dataMappingFilter);
-    HttpRequestFilter dubboAdapterHttpRequestFilter = DubboTransformHttpRequestFilter.newFilter();
-    filters.put(dubboAdapterHttpRequestFilter.filterName(), dubboAdapterHttpRequestFilter);
-//    HttpRequestFilter grpcAdapterHttpRequestFilter = GrpcTransformHttpRequestFilter.newFilter();
-//    filters.put(grpcAdapterHttpRequestFilter.filterName(), grpcAdapterHttpRequestFilter);
+    Set<Class<?>> requestFilterClazzs = ClassUtil.getClassSet(REQUEST_FILTER_PACKAGENAME);
+    for (Class<?> clazz : requestFilterClazzs) {
+      if (clazz.isAssignableFrom(HttpRequestFilter.class)
+          && !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
+        try {
+          HttpRequestFilter filter = (HttpRequestFilter) clazz.newInstance();
+          filters.put(filter.filterName(), filter);
+        } catch (Throwable e) {
+          e.printStackTrace();
+        }
+      }
+    }
   }
 
   public static HttpRequestFilterChain requestFilterChain() {

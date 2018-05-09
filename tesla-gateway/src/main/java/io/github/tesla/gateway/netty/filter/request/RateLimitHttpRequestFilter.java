@@ -41,7 +41,7 @@ public class RateLimitHttpRequestFilter extends HttpRequestFilter {
 
   private LoadingCache<String, RateLimiter> loadingCache;
 
-  private RateLimitHttpRequestFilter() {
+  public RateLimitHttpRequestFilter() {
     loadingCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(2, TimeUnit.SECONDS)
         .build(new CacheLoader<String, RateLimiter>() {
           @Override
@@ -69,9 +69,6 @@ public class RateLimitHttpRequestFilter extends HttpRequestFilter {
         });
   }
 
-  public static HttpRequestFilter newFilter() {
-    return new RateLimitHttpRequestFilter();
-  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

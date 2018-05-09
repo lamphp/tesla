@@ -31,10 +31,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class URLParamHttpRequestFilter extends HttpRequestFilter {
 
-  public static HttpRequestFilter newFilter() {
-    return new URLParamHttpRequestFilter();
-  }
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

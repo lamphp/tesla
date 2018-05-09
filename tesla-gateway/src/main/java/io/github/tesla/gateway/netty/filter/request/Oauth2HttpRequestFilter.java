@@ -36,9 +36,6 @@ public class Oauth2HttpRequestFilter extends HttpRequestFilter {
   private final Oauth2TokenCacheComponent oauth2TokenCache =
       SpringContextHolder.getBean(Oauth2TokenCacheComponent.class);
 
-  public static HttpRequestFilter newFilter() {
-    return new Oauth2HttpRequestFilter();
-  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

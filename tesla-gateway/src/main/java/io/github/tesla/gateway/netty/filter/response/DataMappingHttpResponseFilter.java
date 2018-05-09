@@ -45,9 +45,6 @@ public class DataMappingHttpResponseFilter extends HttpResponseFilter {
 
   private final Configuration configuration;
 
-  public static HttpResponseFilter newFilter() {
-    return new DataMappingHttpResponseFilter();
-  }
 
   private DataMappingHttpResponseFilter() {
     Configuration configuration_ = new Configuration(Configuration.VERSION_2_3_26);

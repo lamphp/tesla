@@ -56,9 +56,6 @@ public class DroolsRequestFilter extends HttpRequestFilter {
 
   private final KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-  public static HttpRequestFilter newFilter() {
-    return new DroolsRequestFilter();
-  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

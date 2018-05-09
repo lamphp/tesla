@@ -13,9 +13,6 @@ public class ClickjackHttpResponseFilter extends HttpResponseFilter {
     DENY, SAMEORIGIN
   }
 
-  public static HttpResponseFilter newFilter() {
-    return new ClickjackHttpResponseFilter();
-  }
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpResponse httpResponse) {
