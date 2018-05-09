@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.DiscoveryClient;
@@ -83,7 +82,7 @@ public class DynamicSpringCloudClient {
   }
 
   public String doHttpRemoteCall(String submitServiceId, String submitUrl, String submitType,
-      Object submitObj) {
+      String submitJSON) {
     final String httpUrl;
     if (submitServiceId != null) {
       InstanceInfo serviceInstance = this.nextServer(submitServiceId);
@@ -94,10 +93,9 @@ public class DynamicSpringCloudClient {
     final Response response;
     final Request request;
     try {
-      if ("POST".equalsIgnoreCase(submitType) && submitObj != null) {
+      if ("POST".equalsIgnoreCase(submitType) && submitJSON != null) {
         MediaType medialType = MediaType.parse("application/json; charset=utf-8");
-        String httpJson = JSON.toJSONString(submitObj);
-        RequestBody requestBody = RequestBody.create(medialType, httpJson);
+        RequestBody requestBody = RequestBody.create(medialType, submitJSON);
         request = new Request.Builder()//
             .url(httpUrl)//
             .post(requestBody)//
@@ -112,7 +110,7 @@ public class DynamicSpringCloudClient {
       }
       return response.isSuccessful() ? response.body().string() : null;
     } catch (Throwable e) {
-      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + submitObj, e);
+      LOG.error("call Remote service error,url is:" + httpUrl + ",body is:" + submitJSON, e);
     }
     return null;
   }

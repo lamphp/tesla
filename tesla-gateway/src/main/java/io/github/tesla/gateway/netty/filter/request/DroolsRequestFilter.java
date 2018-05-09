@@ -29,22 +29,23 @@ import org.drools.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-
 import io.github.tesla.common.RequestFilterTypeEnum;
-import io.github.tesla.gateway.config.SpringContextHolder;
-import io.github.tesla.gateway.mapping.BodyMapping;
-import io.github.tesla.gateway.mapping.HeaderMapping;
-import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
+import io.github.tesla.gateway.netty.filter.help.BodyMapping;
+import io.github.tesla.gateway.netty.filter.help.DroolsContent;
+import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
 import io.github.tesla.gateway.utils.ProxyUtils;
 import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpVersion;
+import io.netty.util.CharsetUtil;
 
 /**
  * @author liushiming
@@ -86,13 +87,14 @@ public class DroolsRequestFilter extends HttpRequestFilter {
           }
           KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
           kBase.addKnowledgePackages(kb.getKnowledgePackages());
-          ForWardAction forwardAction = new ForWardAction();
           kSession = kBase.newStatefulKnowledgeSession();
+          DroolsContent content = new DroolsContent();
           kSession.insert(new HeaderMapping(fullHttpRequest));
           kSession.insert(new BodyMapping(contentBuf));
-          kSession.insert(forwardAction);
+          kSession.insert(content);
           kSession.fireAllRules();
-          String targetUrl = forwardAction.getTargetUrl();
+          String targetUrl = content.getTargetUrl();
+          String response = content.getResponse();
           if (targetUrl != null) {
             String requestUrl = ProxyUtils.parseUrl(targetUrl);
             fullHttpRequest.setUri(requestUrl);
@@ -100,6 +102,9 @@ public class DroolsRequestFilter extends HttpRequestFilter {
             if (!StringUtils.isBlank(hostAndPort)) {
               fullHttpRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
             }
+          } else if (response != null) {
+            return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                Unpooled.wrappedBuffer(response.getBytes(CharsetUtil.UTF_8)));
           }
         } catch (Throwable e) {
           LOG.error(e.getMessage(), e);
@@ -121,26 +126,5 @@ public class DroolsRequestFilter extends HttpRequestFilter {
     return RequestFilterTypeEnum.DroolsRequestFilter;
   }
 
-
-  public static class ForWardAction {
-    private String targetUrl;
-
-    public String getTargetUrl() {
-      return targetUrl;
-    }
-
-    public void setTargetUrl(String targetUrl) {
-      this.targetUrl = targetUrl;
-    }
-  }
-
-
-  public static <T> T callRemoteService(String serviceId, String path, Object request,
-      String httpMethod, Class<T> responseType) {
-    DynamicSpringCloudClient springCloudClient =
-        SpringContextHolder.getBean(DynamicSpringCloudClient.class);
-    String response = springCloudClient.doHttpRemoteCall(serviceId, path, httpMethod, request);
-    return JSON.parseObject(response, responseType);
-  }
 
 }
