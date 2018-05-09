@@ -31,7 +31,6 @@ import io.github.tesla.gateway.netty.transmit.ConnectionState;
 import io.github.tesla.gateway.netty.transmit.flow.ConnectionFlowStep;
 import io.github.tesla.gateway.netty.transmit.flow.FlowContext;
 import io.github.tesla.gateway.netty.transmit.flow.FullFlowContext;
-import io.github.tesla.gateway.utils.FilterUtil;
 import io.github.tesla.gateway.utils.NetworkUtils;
 import io.github.tesla.gateway.utils.ProxyUtils;
 import io.netty.buffer.ByteBuf;
