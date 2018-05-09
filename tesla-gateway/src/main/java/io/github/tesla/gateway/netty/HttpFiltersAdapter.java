@@ -73,8 +73,8 @@ public class HttpFiltersAdapter {
 
   public HttpObject proxyToClientResponse(HttpObject httpObject) {
     if (httpObject instanceof HttpResponse) {
-      HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest,
-          (HttpResponse) httpObject);
+      HttpResponse response = (HttpResponse) httpObject;
+      HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest, response);
     }
     return httpObject;
   }

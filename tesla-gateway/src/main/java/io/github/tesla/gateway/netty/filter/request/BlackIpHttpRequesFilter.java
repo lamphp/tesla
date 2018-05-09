@@ -31,13 +31,13 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class BlackIpHttpRequesFilter extends HttpRequestFilter {
 
-   
+
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
       FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      String realIp = FilterUtil.getRealIp(httpRequest, channelHandlerContext);
+      String realIp = FilterUtil.getRealIp(httpRequest);
       if (realIp != null) {
         List<Pattern> patterns = super.getCommonRule(this);
         for (Pattern pattern : patterns) {

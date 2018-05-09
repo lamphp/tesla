@@ -487,3 +487,50 @@ VALUES
 	(3,'BlackURLHttpRequestFilter','\\.(svn|git|htaccess|bash_history)\n\\.(bak|inc|old|mdb|sql|backup|java|class)$\n(vhost|bbs|host|wwwroot|www|site|root|hytop|flashfxp).*\\.rar\n(phpmyadmin|jmx-console|jmxinvokerservlet)\njava\\.lang\n/(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\\\\w+).(php|jsp)\n',NULL,NULL,NULL,NULL),
 	(4,'DataMappingRequestFilter','<#assign inputRoot= input.path(\"$\")>\n[\n  <#list inputRoot.photos as elem>\n    {\n      \"id\": ${elem.id},\n      \"owner\": ${elem.owner},\n      \"title\": ${elem.title},\n      \"ispublic\": ${elem.ispublic},\n      \"isfriend\": ${elem.isfriend},\n      \"isfamily\": ${elem.isfamily}\n    }<#if (elem_has_next)>,</#if>  \n   </#list>\n]',1,NULL,NULL,NULL),
 	(5,'DroolsRequestFilter','package io.github.tesla.gateway.netty.filter.drools;\n\nimport io.github.tesla.gateway.mapping.HeaderMapping;\nimport io.github.tesla.gateway.mapping.BodyMapping;\nimport io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter.ForWardAction;\n\nglobal io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter requestFilter\n\ndeclare User\n    name : String\n    phone : String\nend\n\nrule \"condition: call userService to judge user is normal\"\nno-loop true\nwhen\n    $body:BodyMapping()\n    $header:HeaderMapping()\nthen\n    User user = new User();\n    user.setName($body.json(\"$.photos[0].owner\"));\n    user.setPhone($body.json(\"$.photos[0].id\"));\n    Object userInfo = requestFilter.callRemoteService(\"customer-service\",\"/default/user\",user, \"POST\", User.class);\n    insert(userInfo);\nend\n\nrule \"condition: judge to jingdong or internal service\"\nno-loop true\nwhen\n     $user:User(name==\"test\",phone==\"18616705342\");\n     $forwardAction:ForWardAction();\nthen\n     $forwardAction.setTargetUrl(\"www.baidu.com\");\nend',2,NULL,NULL,NULL);
+
+	
+	
+
+
+
+
+
+
+DROP TABLE IF EXISTS logging_event_property;
+DROP TABLE IF EXISTS logging_event_exception;
+DROP TABLE IF EXISTS logging_event;
+
+CREATE TABLE logging_event 
+  (
+    timestmp         BIGINT NOT NULL,
+    formatted_message  TEXT NOT NULL,
+    logger_name       VARCHAR(254) NOT NULL,
+    level_string      VARCHAR(254) NOT NULL,
+    thread_name       VARCHAR(254),
+    reference_flag    SMALLINT,
+    arg0              VARCHAR(254),
+    arg1              VARCHAR(254),
+    arg2              VARCHAR(254),
+    arg3              VARCHAR(254),
+    caller_filename   VARCHAR(254) NOT NULL,
+    caller_class      VARCHAR(254) NOT NULL,
+    caller_method     VARCHAR(254) NOT NULL,
+    caller_line       CHAR(4) NOT NULL,
+    event_id          BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY
+  );
+CREATE TABLE logging_event_property
+  (
+    event_id	      BIGINT NOT NULL,
+    mapped_key        VARCHAR(254) NOT NULL,
+    mapped_value      TEXT,
+    PRIMARY KEY(event_id, mapped_key),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
+  );
+CREATE TABLE logging_event_exception
+  (
+    event_id         BIGINT NOT NULL,
+    i                SMALLINT NOT NULL,
+    trace_line       VARCHAR(254) NOT NULL,
+    PRIMARY KEY(event_id, i),
+    FOREIGN KEY (event_id) REFERENCES logging_event(event_id)
+  );

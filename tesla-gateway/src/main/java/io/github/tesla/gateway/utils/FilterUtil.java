@@ -18,7 +18,6 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpRequest;
 
@@ -41,8 +40,7 @@ public class FilterUtil {
     return list;
   }
 
-  public static String getRealIp(HttpRequest httpRequest,
-      ChannelHandlerContext channelHandlerContext) {
+  public static String getRealIp(HttpRequest httpRequest) {
     List<String> headerValues = getHeaderValues(httpRequest, "X-Real-IP");
     if (headerValues.size() > 0) {
       return headerValues.get(0);

@@ -20,6 +20,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.github.tesla.gateway.netty.ActivityTracker;
 import io.github.tesla.gateway.netty.ChannelThreadLocal;
@@ -29,6 +31,7 @@ import io.github.tesla.gateway.netty.transmit.ConnectionState;
 import io.github.tesla.gateway.netty.transmit.flow.ConnectionFlowStep;
 import io.github.tesla.gateway.netty.transmit.flow.FlowContext;
 import io.github.tesla.gateway.netty.transmit.flow.FullFlowContext;
+import io.github.tesla.gateway.utils.FilterUtil;
 import io.github.tesla.gateway.utils.NetworkUtils;
 import io.github.tesla.gateway.utils.ProxyUtils;
 import io.netty.buffer.ByteBuf;
@@ -57,6 +60,7 @@ import io.netty.util.concurrent.Future;
 
 
 public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
+  private static Logger traceLogger = LoggerFactory.getLogger("gatewaytrace");
   private static final HttpResponseStatus CONNECTION_ESTABLISHED =
       new HttpResponseStatus(200, "Connection established");
   private static final String LOWERCASE_TRANSFER_ENCODING_HEADER =
@@ -74,6 +78,7 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
   private volatile ProxyToServerConnection currentServerConnection;
   private volatile HttpFiltersAdapter currentFilters;
   private volatile HttpRequest currentRequest;
+  private volatile long beginTime;
 
   public ClientToProxyConnection(final HttpProxyServer proxyServer, ChannelPipeline pipeline,
       GlobalTrafficShapingHandler globalTrafficShapingHandler) {
@@ -87,6 +92,7 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
   @Override
   public ConnectionState readHTTPInitial(HttpRequest httpRequest) {
     LOG.debug("Received raw request: {}", httpRequest);
+    beginTime = System.currentTimeMillis();
     ChannelThreadLocal.set(channel);
     if (httpRequest.decoderResult().isFailure()) {
       LOG.debug("Could not parse request from client. Decoder result: {}",
@@ -104,59 +110,84 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
     }
   }
 
+  private void buildTraceLog(HttpRequest httpRequest, String serverHostAndPort) {
+    String clientIp = channel.remoteAddress().toString();
+    String protocol = httpRequest.protocolVersion().protocolName();
+    String httpMethod = httpRequest.method().name();
+    String url = httpRequest.uri();
+    String remoteIp = serverHostAndPort;
+    long respTime = System.currentTimeMillis();
+    traceLogger.info(String.format("[%tc]  - %s  %s %s %s - %s ups_resp_time: %d request_time: %d",
+        new Date(), clientIp, protocol, httpMethod, url, remoteIp, respTime, beginTime));
+  }
+
 
   private ConnectionState doReadHTTPInitial(HttpRequest httpRequest) {
-    this.currentRequest = copy(httpRequest);
-    currentFilters = proxyServer.getFiltersSource().filterRequest(currentRequest, ctx);
-    HttpResponse clientToProxyFilterResponse = currentFilters.clientToProxyRequest(httpRequest);
-    if (clientToProxyFilterResponse != null) {
-      LOG.debug("Responding to client with short-circuit response from filter: {}",
-          clientToProxyFilterResponse);
-      boolean keepAlive = respondWithShortCircuitResponse(clientToProxyFilterResponse);
-      if (keepAlive) {
-        return AWAITING_INITIAL;
-      } else {
-        return DISCONNECT_REQUESTED;
+    String serverHostAndPort = null;
+    try {
+      this.currentRequest = copy(httpRequest);
+      currentFilters = proxyServer.getFiltersSource().filterRequest(currentRequest, ctx);
+      HttpResponse clientToProxyFilterResponse = currentFilters.clientToProxyRequest(httpRequest);
+      if (clientToProxyFilterResponse != null) {
+        LOG.debug("Responding to client with short-circuit response from filter: {}",
+            clientToProxyFilterResponse);
+        boolean keepAlive = respondWithShortCircuitResponse(clientToProxyFilterResponse);
+        if (keepAlive) {
+          return AWAITING_INITIAL;
+        } else {
+          return DISCONNECT_REQUESTED;
+        }
       }
-    }
-    if (!proxyServer.isAllowRequestsToOriginServer() && isRequestToOriginServer(httpRequest)) {
-      boolean keepAlive = writeBadRequest(httpRequest);
-      if (keepAlive) {
-        return AWAITING_INITIAL;
-      } else {
-        return DISCONNECT_REQUESTED;
+      if (!proxyServer.isAllowRequestsToOriginServer() && isRequestToOriginServer(httpRequest)) {
+        boolean keepAlive = writeBadRequest(httpRequest);
+        if (keepAlive) {
+          return AWAITING_INITIAL;
+        } else {
+          return DISCONNECT_REQUESTED;
+        }
       }
-    }
-    String serverHostAndPort = identifyHostAndPort(httpRequest);
-    LOG.debug("Ensuring that hostAndPort are available in {}", httpRequest.uri());
-    if (serverHostAndPort == null || StringUtils.isBlank(serverHostAndPort)
-        || NetworkUtils.equalAddress(this.proxyListenAddress, serverHostAndPort)) {
-      LOG.warn("No host and port found in {}", httpRequest.uri());
-      boolean keepAlive = writeBadGateway(httpRequest);
-      if (keepAlive) {
-        return AWAITING_INITIAL;
-      } else {
-        return DISCONNECT_REQUESTED;
+      serverHostAndPort = identifyHostAndPort(httpRequest);
+      LOG.debug("Ensuring that hostAndPort are available in {}", httpRequest.uri());
+      if (serverHostAndPort == null || StringUtils.isBlank(serverHostAndPort)
+          || NetworkUtils.equalAddress(this.proxyListenAddress, serverHostAndPort)) {
+        LOG.warn("No host and port found in {}", httpRequest.uri());
+        boolean keepAlive = writeBadGateway(httpRequest);
+        if (keepAlive) {
+          return AWAITING_INITIAL;
+        } else {
+          return DISCONNECT_REQUESTED;
+        }
       }
-    }
-    LOG.debug("Finding ProxyToServerConnection for: {}", serverHostAndPort);
-    currentServerConnection = isTunneling() ? this.currentServerConnection
-        : this.serverConnectionsByHostAndPort.get(serverHostAndPort);
-    boolean newConnectionRequired = false;
-    if (ProxyUtils.isCONNECT(httpRequest)) {
-      LOG.debug("Not reusing existing ProxyToServerConnection because request is a CONNECT for: {}",
-          serverHostAndPort);
-      newConnectionRequired = true;
-    } else if (currentServerConnection == null) {
-      LOG.debug("Didn't find existing ProxyToServerConnection for: {}", serverHostAndPort);
-      newConnectionRequired = true;
-    }
-    if (newConnectionRequired) {
-      try {
-        currentServerConnection = ProxyToServerConnection.create(proxyServer, this,
-            serverHostAndPort, currentFilters, httpRequest, globalTrafficShapingHandler);
-        if (currentServerConnection == null) {
-          LOG.debug("Unable to create server connection, probably no chained proxies available");
+      LOG.debug("Finding ProxyToServerConnection for: {}", serverHostAndPort);
+      currentServerConnection = isTunneling() ? this.currentServerConnection
+          : this.serverConnectionsByHostAndPort.get(serverHostAndPort);
+      boolean newConnectionRequired = false;
+      if (ProxyUtils.isCONNECT(httpRequest)) {
+        LOG.debug(
+            "Not reusing existing ProxyToServerConnection because request is a CONNECT for: {}",
+            serverHostAndPort);
+        newConnectionRequired = true;
+      } else if (currentServerConnection == null) {
+        LOG.debug("Didn't find existing ProxyToServerConnection for: {}", serverHostAndPort);
+        newConnectionRequired = true;
+      }
+      if (newConnectionRequired) {
+        try {
+          currentServerConnection = ProxyToServerConnection.create(proxyServer, this,
+              serverHostAndPort, currentFilters, httpRequest, globalTrafficShapingHandler);
+          if (currentServerConnection == null) {
+            LOG.debug("Unable to create server connection, probably no chained proxies available");
+            boolean keepAlive = writeBadGateway(httpRequest);
+            resumeReading();
+            if (keepAlive) {
+              return AWAITING_INITIAL;
+            } else {
+              return DISCONNECT_REQUESTED;
+            }
+          }
+          serverConnectionsByHostAndPort.put(serverHostAndPort, currentServerConnection);
+        } catch (UnknownHostException uhe) {
+          LOG.info("Bad Host {}", httpRequest.uri());
           boolean keepAlive = writeBadGateway(httpRequest);
           resumeReading();
           if (keepAlive) {
@@ -165,42 +196,34 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
             return DISCONNECT_REQUESTED;
           }
         }
-        serverConnectionsByHostAndPort.put(serverHostAndPort, currentServerConnection);
-      } catch (UnknownHostException uhe) {
-        LOG.info("Bad Host {}", httpRequest.uri());
-        boolean keepAlive = writeBadGateway(httpRequest);
-        resumeReading();
+      } else {
+        LOG.debug("Reusing existing server connection: {}", currentServerConnection);
+        numberOfReusedServerConnections.incrementAndGet();
+      }
+      modifyRequestHeadersToReflectProxying(httpRequest);
+      HttpResponse proxyToServerFilterResponse = currentFilters.proxyToServerRequest(httpRequest);
+      if (proxyToServerFilterResponse != null) {
+        LOG.debug("Responding to client with short-circuit response from filter: {}",
+            proxyToServerFilterResponse);
+
+        boolean keepAlive = respondWithShortCircuitResponse(proxyToServerFilterResponse);
         if (keepAlive) {
           return AWAITING_INITIAL;
         } else {
           return DISCONNECT_REQUESTED;
         }
       }
-    } else {
-      LOG.debug("Reusing existing server connection: {}", currentServerConnection);
-      numberOfReusedServerConnections.incrementAndGet();
-    }
-    modifyRequestHeadersToReflectProxying(httpRequest);
-    HttpResponse proxyToServerFilterResponse = currentFilters.proxyToServerRequest(httpRequest);
-    if (proxyToServerFilterResponse != null) {
-      LOG.debug("Responding to client with short-circuit response from filter: {}",
-          proxyToServerFilterResponse);
-
-      boolean keepAlive = respondWithShortCircuitResponse(proxyToServerFilterResponse);
-      if (keepAlive) {
-        return AWAITING_INITIAL;
+      LOG.debug("Writing request to ProxyToServerConnection");
+      currentServerConnection.write(httpRequest, currentFilters);
+      if (ProxyUtils.isCONNECT(httpRequest)) {
+        return NEGOTIATING_CONNECT;
+      } else if (ProxyUtils.isChunked(httpRequest)) {
+        return AWAITING_CHUNK;
       } else {
-        return DISCONNECT_REQUESTED;
+        return AWAITING_INITIAL;
       }
-    }
-    LOG.debug("Writing request to ProxyToServerConnection");
-    currentServerConnection.write(httpRequest, currentFilters);
-    if (ProxyUtils.isCONNECT(httpRequest)) {
-      return NEGOTIATING_CONNECT;
-    } else if (ProxyUtils.isChunked(httpRequest)) {
-      return AWAITING_CHUNK;
-    } else {
-      return AWAITING_INITIAL;
+    } finally {
+      this.buildTraceLog(httpRequest, serverHostAndPort);
     }
   }
 
