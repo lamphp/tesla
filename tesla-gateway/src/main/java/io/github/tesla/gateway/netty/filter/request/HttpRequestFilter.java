@@ -10,7 +10,6 @@ import io.netty.handler.codec.http.HttpResponse;
 
 public abstract class HttpRequestFilter extends AbstractCommonFilter {
 
-
   public abstract HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext);
 

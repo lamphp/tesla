@@ -32,10 +32,8 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class Oauth2HttpRequestFilter extends HttpRequestFilter {
 
-
   private final Oauth2TokenCacheComponent oauth2TokenCache =
       SpringContextHolder.getBean(Oauth2TokenCacheComponent.class);
-
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

@@ -29,7 +29,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class SecurityScannerHttpRequestFilter extends HttpRequestFilter {
 
-
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {

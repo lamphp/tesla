@@ -40,21 +40,18 @@ import io.netty.util.CharsetUtil;
  * @version DataMappingHttpResponseFilter.java, v 0.0.1 2018年4月25日 下午4:21:53 liushiming
  */
 public class DataMappingHttpResponseFilter extends HttpResponseFilter {
+  private static final StringTemplateLoader templateHolder = new StringTemplateLoader();
+  private static final Configuration configuration;
 
-  private final StringTemplateLoader templateHolder = new StringTemplateLoader();
-
-  private final Configuration configuration;
-
-
-  private DataMappingHttpResponseFilter() {
-    Configuration configuration_ = new Configuration(Configuration.VERSION_2_3_26);
-    configuration_.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_26));
-    configuration_.setOutputFormat(JSONOutputFormat.INSTANCE);
-    configuration_.setTemplateLoader(templateHolder);
+  static {
+    Configuration config = new Configuration(Configuration.VERSION_2_3_26);
+    config.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_26));
+    config.setOutputFormat(JSONOutputFormat.INSTANCE);
+    config.setTemplateLoader(templateHolder);
     DefaultObjectWrapperBuilder owb = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_26);
     owb.setIterableSupport(true);
-    configuration_.setObjectWrapper(owb.build());
-    this.configuration = configuration_;
+    config.setObjectWrapper(owb.build());
+    configuration = config;
   }
 
   @Override

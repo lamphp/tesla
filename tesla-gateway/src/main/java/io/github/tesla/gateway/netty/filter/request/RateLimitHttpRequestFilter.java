@@ -39,36 +39,32 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class RateLimitHttpRequestFilter extends HttpRequestFilter {
 
-  private LoadingCache<String, RateLimiter> loadingCache;
+  private final LoadingCache<String, RateLimiter> loadingCache =
+      CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(2, TimeUnit.SECONDS)
+          .build(new CacheLoader<String, RateLimiter>() {
+            @Override
+            public RateLimiter load(String key) throws Exception {
+              Map<String, Set<String>> limiter =
+                  RateLimitHttpRequestFilter.this.getUrlRule(RateLimitHttpRequestFilter.this);
+              List<String> limitValue = Lists.newArrayList(limiter.get(key));
+              if (limitValue != null) {
+                Double limitValueMax =
+                    Collections.max(Lists.transform(limitValue, new Function<String, Double>() {
 
-  public RateLimitHttpRequestFilter() {
-    loadingCache = CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(2, TimeUnit.SECONDS)
-        .build(new CacheLoader<String, RateLimiter>() {
-          @Override
-          public RateLimiter load(String key) throws Exception {
-            Map<String, Set<String>> limiter =
-                RateLimitHttpRequestFilter.this.getUrlRule(RateLimitHttpRequestFilter.this);
-            List<String> limitValue = Lists.newArrayList(limiter.get(key));
-            if (limitValue != null) {
-              Double limitValueMax =
-                  Collections.max(Lists.transform(limitValue, new Function<String, Double>() {
+                      @Override
+                      public Double apply(String input) {
+                        return Double.valueOf(input);
+                      }
 
-                    @Override
-                    public Double apply(String input) {
-                      return Double.valueOf(input);
-                    }
+                    }));
+                RateLimiter rateLimiter = RateLimiter.create(limitValueMax);
+                return rateLimiter;
+              } else {
+                return null;
+              }
 
-                  }));
-              RateLimiter rateLimiter = RateLimiter.create(limitValueMax);
-              return rateLimiter;
-            } else {
-              return null;
             }
-
-          }
-        });
-  }
-
+          });
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,

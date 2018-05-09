@@ -32,13 +32,11 @@ import io.netty.handler.codec.http.HttpResponse;
  * @version SpringCloudHttpRequestFilter.java, v 0.0.1 2018年5月4日 下午2:53:00 liushiming
  */
 public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
-
   private final DynamicSpringCloudClient springCloudClient =
       SpringContextHolder.getBean(DynamicSpringCloudClient.class);
 
   private final ApiAndFilterCacheComponent apiCache =
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
-
 
   @Override
   public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
