@@ -154,10 +154,6 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
     return this.uriParser.getPathInfo();
   }
 
-  @Override
-  public String getPathTranslated() {
-    return null;
-  }
 
 
   @Override
@@ -181,6 +177,10 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
     return false;
   }
 
+  @Override
+  public String getPathTranslated() {
+    throw new UnsupportedOperationException();
+  }
 
   @Override
   public Principal getUserPrincipal() {
@@ -241,7 +241,7 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public boolean isRequestedSessionIdValid() {
-    throw new IllegalStateException("Method 'isRequestedSessionIdValid' not yet implemented!");
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -251,12 +251,12 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public boolean isRequestedSessionIdFromURL() {
-    throw new IllegalStateException("Method 'isRequestedSessionIdFromURL' not yet implemented!");
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean isRequestedSessionIdFromUrl() {
-    throw new IllegalStateException("Method 'isRequestedSessionIdFromUrl' not yet implemented!");
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -266,22 +266,22 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public void login(String username, String password) throws ServletException {
-
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void logout() throws ServletException {
-
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Collection<Part> getParts() throws IOException, IllegalStateException, ServletException {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Part getPart(String name) throws IOException, IllegalStateException, ServletException {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
 
