@@ -41,8 +41,8 @@ public class BlackUaHttpRequestFilter extends HttpRequestFilter {
       Enumeration<String> userAgents = servletRequest.getHeaders("User-Agent");
       List<Pattern> patterns = super.getCommonRule(this);
       while (userAgents.hasMoreElements()) {
+        String userAgent = userAgents.nextElement();
         for (Pattern pattern : patterns) {
-          String userAgent = userAgents.nextElement();
           Matcher matcher = pattern.matcher(userAgent);
           if (matcher.find()) {
             super.writeFilterLog(userAgent, BlackIpHttpRequesFilter.class, pattern.pattern());

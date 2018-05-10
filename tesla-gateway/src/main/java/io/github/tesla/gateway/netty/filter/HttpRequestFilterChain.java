@@ -83,10 +83,10 @@ public class HttpRequestFilterChain {
     final NettyHttpServletRequest servletRequest = new NettyHttpServletRequest(originalRequest);
     for (Iterator<Map.Entry<String, HttpRequestFilter>> it = list.iterator(); it.hasNext();) {
       HttpRequestFilter filter = it.next().getValue();
+      LOGGER.info("do filter,the name is:" + filter.filterName());
       HttpResponse response = filter.doFilter(servletRequest, httpObject, channelHandlerContext);
       // 如果一个filter有返回值，将会中断下一个filter，这里需要注意filter的顺序，默认grpc->dubbo
       if (response != null) {
-        System.out.println(filter);
         LOGGER.debug("hit " + filter);
         return response;
       }
