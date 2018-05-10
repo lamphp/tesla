@@ -9,6 +9,9 @@ $(document).ready(function() {
         },
         backendPath: {
           required: true
+        },
+        describe: {
+          required: true
         }
       },
       messages: {
@@ -17,6 +20,9 @@ $(document).ready(function() {
         },
         backendPath: {
           required: "请输入分组服务通用URL前缀"
+        },
+        describe: {
+          required: "请输入分组描述"
         }
       },
       submitHandler: function(form) {
