@@ -20,7 +20,6 @@ import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.cache.Oauth2TokenCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -36,8 +35,7 @@ public class Oauth2HttpRequestFilter extends HttpRequestFilter {
       SpringContextHolder.getBean(Oauth2TokenCacheComponent.class);
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest) {
       try {
         OAuthAccessResourceRequest oauthRequest =

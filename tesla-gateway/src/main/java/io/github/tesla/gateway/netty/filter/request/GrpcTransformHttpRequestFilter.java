@@ -20,7 +20,6 @@ import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -42,8 +41,7 @@ public class GrpcTransformHttpRequestFilter extends HttpRequestFilter {
 
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest && grpcClient != null) {
       String uri = servletRequest.getRequestURI();
       int index = uri.indexOf("?");

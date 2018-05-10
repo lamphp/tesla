@@ -36,7 +36,6 @@ import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.ProxyUtils;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -59,8 +58,7 @@ public class DroolsRequestFilter extends HttpRequestFilter {
 
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest) {
       final HttpRequest nettyRequst = servletRequest.getNettyRequest();
       String uri = servletRequest.getRequestURI();

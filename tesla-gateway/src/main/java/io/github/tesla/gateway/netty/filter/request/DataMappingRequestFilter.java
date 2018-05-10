@@ -30,7 +30,6 @@ import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -61,8 +60,7 @@ public class DataMappingRequestFilter extends HttpRequestFilter {
   }
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest) {
       final HttpRequest nettyRequst = servletRequest.getNettyRequest();
       String uri = servletRequest.getRequestURI();

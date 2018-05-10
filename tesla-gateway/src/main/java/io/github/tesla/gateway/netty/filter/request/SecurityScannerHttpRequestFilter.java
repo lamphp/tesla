@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
@@ -36,8 +35,7 @@ public class SecurityScannerHttpRequestFilter extends HttpRequestFilter {
   private Map<String, String> headers;
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest) {
       this.headers = this.getAllHeaders(servletRequest);
       boolean acunetixAspect = this.contains("Acunetix-Aspect");

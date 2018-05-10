@@ -21,7 +21,6 @@ import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
@@ -39,8 +38,7 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
 
   @Override
-  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
-      ChannelHandlerContext channelHandlerContext) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
     if (httpObject instanceof FullHttpRequest && springCloudClient != null) {
       String uri = servletRequest.getRequestURI();
       int index = uri.indexOf("?");
