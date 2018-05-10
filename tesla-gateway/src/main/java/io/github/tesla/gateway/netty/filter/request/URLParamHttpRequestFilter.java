@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -32,24 +31,20 @@ public class URLParamHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      String url = null;
-      try {
-        String uri = servletRequest.getRequestURL().toString();
-        url = URLDecoder.decode(uri, "UTF-8");
-      } catch (Exception e) {
-        e.printStackTrace();
+    String url = null;
+    try {
+      String uri = servletRequest.getRequestURL().toString();
+      url = URLDecoder.decode(uri, "UTF-8");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    List<Pattern> patterns = super.getCommonRule(this);
+    for (Pattern pattern : patterns) {
+      Matcher matcher = pattern.matcher(url);
+      if (matcher.find()) {
+        super.writeFilterLog(url, this.getClass(), pattern.pattern());
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       }
-      List<Pattern> patterns = super.getCommonRule(this);
-      for (Pattern pattern : patterns) {
-        Matcher matcher = pattern.matcher(url);
-        if (matcher.find()) {
-          super.writeFilterLog(url, this.getClass(), pattern.pattern());
-          return super.createResponse(HttpResponseStatus.FORBIDDEN,
-              servletRequest.getNettyRequest());
-        }
-      }
-
     }
     return null;
   }

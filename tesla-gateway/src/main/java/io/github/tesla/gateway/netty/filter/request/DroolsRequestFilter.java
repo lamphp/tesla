@@ -59,61 +59,59 @@ public class DroolsRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
-      String uri = servletRequest.getRequestURI();
-      int index = uri.indexOf("?");
-      if (index > -1) {
-        uri = uri.substring(0, index);
-      }
-      StatefulKnowledgeSession kSession = null;
-      Map<String, Set<String>> rules = super.getUrlRule(DroolsRequestFilter.this);
-      Set<String> urlRules = rules.get(uri);
-      if (urlRules != null && urlRules.size() == 1) {
-        String droolsDrlRule = urlRules.iterator().next();
-        try {
-          kb.add(ResourceFactory.newByteArrayResource(droolsDrlRule.getBytes("utf-8")),
-              ResourceType.DRL);
-          KnowledgeBuilderErrors errors = kb.getErrors();
-          String errorstr = null;
-          for (KnowledgeBuilderError error : errors) {
-            errorstr = errorstr + error.getMessage() + "\n";
-          }
-          if (errorstr != null) {
-            throw new java.lang.IllegalArgumentException(errorstr);
-          }
-          KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-          kBase.addKnowledgePackages(kb.getKnowledgePackages());
-          kSession = kBase.newStatefulKnowledgeSession();
-          DroolsContext content = new DroolsContext();
-          kSession.insert(new HeaderMapping(servletRequest));
-          kSession.insert(new BodyMapping(servletRequest));
-          kSession.insert(content);
-          kSession.fireAllRules();
-          String targetUrl = content.getTargetUrl();
-          String response = content.getResponse();
-          // reset url
-          final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
-          if (targetUrl != null) {
-            String requestUrl = ProxyUtils.parseUrl(targetUrl);
-            realRequest.setUri(requestUrl);
-            String hostAndPort = ProxyUtils.parseHostAndPort(targetUrl);
-            if (!StringUtils.isBlank(hostAndPort)) {
-              realRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
-            }
-          } else if (response != null) {
-            return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-                Unpooled.wrappedBuffer(response.getBytes(CharsetUtil.UTF_8)));
-          }
-        } catch (Throwable e) {
-          LOG.error(e.getMessage(), e);
-          super.writeFilterLog(droolsDrlRule, this.getClass(), "droolsDrlRule");
-          return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, nettyRequst,
-              "Drools Rule Error");
-        } finally {
-          if (kSession != null)
-            kSession.dispose();
+    final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+    String uri = servletRequest.getRequestURI();
+    int index = uri.indexOf("?");
+    if (index > -1) {
+      uri = uri.substring(0, index);
+    }
+    StatefulKnowledgeSession kSession = null;
+    Map<String, Set<String>> rules = super.getUrlRule(DroolsRequestFilter.this);
+    Set<String> urlRules = rules.get(uri);
+    if (urlRules != null && urlRules.size() == 1) {
+      String droolsDrlRule = urlRules.iterator().next();
+      try {
+        kb.add(ResourceFactory.newByteArrayResource(droolsDrlRule.getBytes("utf-8")),
+            ResourceType.DRL);
+        KnowledgeBuilderErrors errors = kb.getErrors();
+        String errorstr = null;
+        for (KnowledgeBuilderError error : errors) {
+          errorstr = errorstr + error.getMessage() + "\n";
         }
+        if (errorstr != null) {
+          throw new java.lang.IllegalArgumentException(errorstr);
+        }
+        KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
+        kBase.addKnowledgePackages(kb.getKnowledgePackages());
+        kSession = kBase.newStatefulKnowledgeSession();
+        DroolsContext content = new DroolsContext();
+        kSession.insert(new HeaderMapping(servletRequest));
+        kSession.insert(new BodyMapping(servletRequest));
+        kSession.insert(content);
+        kSession.fireAllRules();
+        String targetUrl = content.getTargetUrl();
+        String response = content.getResponse();
+        // reset url
+        final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
+        if (targetUrl != null) {
+          String requestUrl = ProxyUtils.parseUrl(targetUrl);
+          realRequest.setUri(requestUrl);
+          String hostAndPort = ProxyUtils.parseHostAndPort(targetUrl);
+          if (!StringUtils.isBlank(hostAndPort)) {
+            realRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
+          }
+        } else if (response != null) {
+          return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+              Unpooled.wrappedBuffer(response.getBytes(CharsetUtil.UTF_8)));
+        }
+      } catch (Throwable e) {
+        LOG.error(e.getMessage(), e);
+        super.writeFilterLog(droolsDrlRule, this.getClass(), "droolsDrlRule");
+        return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, nettyRequst,
+            "Drools Rule Error");
+      } finally {
+        if (kSession != null)
+          kSession.dispose();
       }
     }
     return null;

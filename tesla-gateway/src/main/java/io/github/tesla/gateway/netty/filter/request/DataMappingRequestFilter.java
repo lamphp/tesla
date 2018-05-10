@@ -61,40 +61,36 @@ public class DataMappingRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
-      String uri = servletRequest.getRequestURI();
-      int index = uri.indexOf("?");
-      if (index > -1) {
-        uri = uri.substring(0, index);
-      }
-      Map<String, Set<String>> rules = super.getUrlRule(DataMappingRequestFilter.this);
-      Set<String> urlRules = rules.get(uri);
-      if (urlRules != null && urlRules.size() == 1) {
-        String tempalteContent = urlRules.iterator().next();
-        try {
-          templateHolder.putTemplate("template" + uri, tempalteContent);
-          Map<String, Object> templateContext = new HashMap<String, Object>();
-          templateContext.put("header", new HeaderMapping(servletRequest));
-          templateContext.put("input", new BodyMapping(servletRequest));
-          Template template = configuration.getTemplate("template" + uri);
-          StringWriter transformedWriter = new StringWriter();
-          template.process(templateContext, transformedWriter);
-          String transformedJson = transformedWriter.toString();
-          ByteBuf bodyContent = Unpooled.copiedBuffer(transformedJson, CharsetUtil.UTF_8);
-          // reset body
-          final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
-          realRequest.content().clear().writeBytes(bodyContent);
-          HttpUtil.setContentLength(realRequest, bodyContent.readerIndex());
-        } catch (Throwable e) {
-          super.writeFilterLog(tempalteContent, this.getClass(), "dataMapping");
-          return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, nettyRequst,
-              "DataMapping Error");
-        }
-      }
-
+    final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+    String uri = servletRequest.getRequestURI();
+    int index = uri.indexOf("?");
+    if (index > -1) {
+      uri = uri.substring(0, index);
     }
-
+    Map<String, Set<String>> rules = super.getUrlRule(DataMappingRequestFilter.this);
+    Set<String> urlRules = rules.get(uri);
+    if (urlRules != null && urlRules.size() == 1) {
+      String tempalteContent = urlRules.iterator().next();
+      try {
+        templateHolder.putTemplate("template" + uri, tempalteContent);
+        Map<String, Object> templateContext = new HashMap<String, Object>();
+        templateContext.put("header", new HeaderMapping(servletRequest));
+        templateContext.put("input", new BodyMapping(servletRequest));
+        Template template = configuration.getTemplate("template" + uri);
+        StringWriter transformedWriter = new StringWriter();
+        template.process(templateContext, transformedWriter);
+        String transformedJson = transformedWriter.toString();
+        ByteBuf bodyContent = Unpooled.copiedBuffer(transformedJson, CharsetUtil.UTF_8);
+        // reset body
+        final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
+        realRequest.content().clear().writeBytes(bodyContent);
+        HttpUtil.setContentLength(realRequest, bodyContent.readerIndex());
+      } catch (Throwable e) {
+        super.writeFilterLog(tempalteContent, this.getClass(), "dataMapping");
+        return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, nettyRequst,
+            "DataMapping Error");
+      }
+    }
     return null;
   }
 

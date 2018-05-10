@@ -21,7 +21,6 @@ import javax.servlet.http.Cookie;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -34,19 +33,17 @@ public class BlackCookieHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
-      Cookie[] cookies = servletRequest.getCookies();
-      List<Pattern> patterns = super.getCommonRule(this);
-      if (cookies.length > 0) {
-        for (Cookie cookie : cookies) {
-          String cookieValue = cookie.getValue();
-          for (Pattern pattern : patterns) {
-            Matcher matcher = pattern.matcher(cookieValue);
-            if (matcher.find()) {
-              super.writeFilterLog(cookieValue, BlackIpHttpRequesFilter.class, pattern.pattern());
-              return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
-            }
+    final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+    Cookie[] cookies = servletRequest.getCookies();
+    List<Pattern> patterns = super.getCommonRule(this);
+    if (cookies.length > 0) {
+      for (Cookie cookie : cookies) {
+        String cookieValue = cookie.getValue();
+        for (Pattern pattern : patterns) {
+          Matcher matcher = pattern.matcher(cookieValue);
+          if (matcher.find()) {
+            super.writeFilterLog(cookieValue, BlackIpHttpRequesFilter.class, pattern.pattern());
+            return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
           }
         }
       }

@@ -39,23 +39,19 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest && springCloudClient != null) {
-      String uri = servletRequest.getRequestURI();
-      int index = uri.indexOf("?");
-      if (index > -1) {
-        uri = uri.substring(0, index);
-      }
-      Pair<String, ApiSpringCloudDO> springCloudPair = apiCache.getSpringCloudRoute(uri);
-      if (springCloudPair != null) {
-        String changedPath = springCloudPair.getLeft();
-        ApiSpringCloudDO springCloudDo = springCloudPair.getRight();
-        String loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
-        final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
-        realRequest.setUri(changedPath);
-        realRequest.headers().set(HttpHeaderNames.HOST, loadbalanceHostAndPort);
-      } else {
-        return null;
-      }
+    String uri = servletRequest.getRequestURI();
+    int index = uri.indexOf("?");
+    if (index > -1) {
+      uri = uri.substring(0, index);
+    }
+    Pair<String, ApiSpringCloudDO> springCloudPair = apiCache.getSpringCloudRoute(uri);
+    if (springCloudPair != null) {
+      String changedPath = springCloudPair.getLeft();
+      ApiSpringCloudDO springCloudDo = springCloudPair.getRight();
+      String loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
+      final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
+      realRequest.setUri(changedPath);
+      realRequest.headers().set(HttpHeaderNames.HOST, loadbalanceHostAndPort);
     }
     return null;
   }

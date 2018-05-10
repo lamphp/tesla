@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -33,17 +32,15 @@ public class BlackIpHttpRequesFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
-      String realIp = servletRequest.getHeader("X-Real-IP");
-      if (realIp != null) {
-        List<Pattern> patterns = super.getCommonRule(this);
-        for (Pattern pattern : patterns) {
-          Matcher matcher = pattern.matcher(realIp.toLowerCase());
-          if (matcher.find()) {
-            super.writeFilterLog(realIp, BlackIpHttpRequesFilter.class, pattern.pattern());
-            return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
-          }
+    final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+    String realIp = servletRequest.getHeader("X-Real-IP");
+    if (realIp != null) {
+      List<Pattern> patterns = super.getCommonRule(this);
+      for (Pattern pattern : patterns) {
+        Matcher matcher = pattern.matcher(realIp.toLowerCase());
+        if (matcher.find()) {
+          super.writeFilterLog(realIp, BlackIpHttpRequesFilter.class, pattern.pattern());
+          return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
         }
       }
     }

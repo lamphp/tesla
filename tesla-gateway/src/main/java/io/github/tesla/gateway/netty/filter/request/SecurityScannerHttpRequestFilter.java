@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -36,37 +35,35 @@ public class SecurityScannerHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      this.headers = this.getAllHeaders(servletRequest);
-      boolean acunetixAspect = this.contains("Acunetix-Aspect");
-      boolean acunetixAspectPassword = this.contains("Acunetix-Aspect-Password");
-      boolean acunetixAspectQueries = this.contains("Acunetix-Aspect-Queries");
-      boolean xScanMemo = this.contains("X-Scan-Memo");
-      boolean xRequestMemo = this.contains("X-Request-Memo");
-      boolean xRequestManagerMemo = this.contains("X-RequestManager-Memo");
-      boolean xWIPP = this.contains("X-WIPP");
-      Pattern pattern1 = Pattern.compile("AppScan_fingerprint");
-      Matcher matcher1 = pattern1.matcher(servletRequest.getRequestURI());
-      String bsKey = "--%3E%27%22%3E%3CH1%3EXSS%40HERE%3C%2FH1%3E";
-      boolean matcher2 = servletRequest.getRequestURI().contains(bsKey);
-      Pattern pattern3 = Pattern.compile("netsparker=");
-      Matcher matcher3 = pattern3.matcher(servletRequest.getRequestURI());
-      if (acunetixAspect || acunetixAspectPassword || acunetixAspectQueries) {
-        super.writeFilterLog(headers.toString(), this.getClass(), "Acunetix Web Vulnerability");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
-      } else if (xScanMemo || xRequestMemo || xRequestManagerMemo || xWIPP) {
-        super.writeFilterLog(headers.toString(), this.getClass(), "HP WebInspect");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
-      } else if (matcher1.find()) {
-        super.writeFilterLog(headers.toString(), this.getClass(), "Appscan");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
-      } else if (matcher2) {
-        super.writeFilterLog(headers.toString(), this.getClass(), "Bugscan");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
-      } else if (matcher3.find()) {
-        super.writeFilterLog(headers.toString(), this.getClass(), "Netsparker");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
-      }
+    this.headers = this.getAllHeaders(servletRequest);
+    boolean acunetixAspect = this.contains("Acunetix-Aspect");
+    boolean acunetixAspectPassword = this.contains("Acunetix-Aspect-Password");
+    boolean acunetixAspectQueries = this.contains("Acunetix-Aspect-Queries");
+    boolean xScanMemo = this.contains("X-Scan-Memo");
+    boolean xRequestMemo = this.contains("X-Request-Memo");
+    boolean xRequestManagerMemo = this.contains("X-RequestManager-Memo");
+    boolean xWIPP = this.contains("X-WIPP");
+    Pattern pattern1 = Pattern.compile("AppScan_fingerprint");
+    Matcher matcher1 = pattern1.matcher(servletRequest.getRequestURI());
+    String bsKey = "--%3E%27%22%3E%3CH1%3EXSS%40HERE%3C%2FH1%3E";
+    boolean matcher2 = servletRequest.getRequestURI().contains(bsKey);
+    Pattern pattern3 = Pattern.compile("netsparker=");
+    Matcher matcher3 = pattern3.matcher(servletRequest.getRequestURI());
+    if (acunetixAspect || acunetixAspectPassword || acunetixAspectQueries) {
+      super.writeFilterLog(headers.toString(), this.getClass(), "Acunetix Web Vulnerability");
+      return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
+    } else if (xScanMemo || xRequestMemo || xRequestManagerMemo || xWIPP) {
+      super.writeFilterLog(headers.toString(), this.getClass(), "HP WebInspect");
+      return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
+    } else if (matcher1.find()) {
+      super.writeFilterLog(headers.toString(), this.getClass(), "Appscan");
+      return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
+    } else if (matcher2) {
+      super.writeFilterLog(headers.toString(), this.getClass(), "Bugscan");
+      return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
+    } else if (matcher3.find()) {
+      super.writeFilterLog(headers.toString(), this.getClass(), "Netsparker");
+      return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
     }
     return null;
   }

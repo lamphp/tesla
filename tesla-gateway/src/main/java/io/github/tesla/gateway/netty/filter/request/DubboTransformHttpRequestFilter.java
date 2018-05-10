@@ -21,7 +21,6 @@ import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.dubbo.DynamicDubboClient;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -41,23 +40,20 @@ public class DubboTransformHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest && dubboClient != null) {
-      String uri = servletRequest.getRequestURI();
-      int index = uri.indexOf("?");
-      if (index > -1) {
-        uri = uri.substring(0, index);
-      }
-      ApiRpcDO rpc = routeRuleCache.getRpcRoute(uri);
-      if (rpc != null && rpc.getDubboParamTemplate() != null) {
-        String jsonOutput = dubboClient.doRpcRemoteCall(rpc, servletRequest);
-        return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-            Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
-      } else {
-        // 如果从缓存没有查到dubbo的映射信息，说明不是泛化调用，返回空，继续走下一个filter或者去走rest服务发现等
-        return null;
-      }
+    String uri = servletRequest.getRequestURI();
+    int index = uri.indexOf("?");
+    if (index > -1) {
+      uri = uri.substring(0, index);
     }
-    return null;
+    ApiRpcDO rpc = routeRuleCache.getRpcRoute(uri);
+    if (rpc != null && rpc.getDubboParamTemplate() != null) {
+      String jsonOutput = dubboClient.doRpcRemoteCall(rpc, servletRequest);
+      return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+          Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
+    } else {
+      // 如果从缓存没有查到dubbo的映射信息，说明不是泛化调用，返回空，继续走下一个filter或者去走rest服务发现等
+      return null;
+    }
   }
 
   @Override

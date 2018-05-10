@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
@@ -34,18 +33,16 @@ public class BlackUaHttpRequestFilter extends HttpRequestFilter {
 
   @Override
   public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject) {
-    if (httpObject instanceof FullHttpRequest) {
-      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
-      Enumeration<String> userAgents = servletRequest.getHeaders("User-Agent");
-      List<Pattern> patterns = super.getCommonRule(this);
-      while (userAgents.hasMoreElements()) {
-        String userAgent = userAgents.nextElement();
-        for (Pattern pattern : patterns) {
-          Matcher matcher = pattern.matcher(userAgent);
-          if (matcher.find()) {
-            super.writeFilterLog(userAgent, BlackIpHttpRequesFilter.class, pattern.pattern());
-            return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
-          }
+    final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+    Enumeration<String> userAgents = servletRequest.getHeaders("User-Agent");
+    List<Pattern> patterns = super.getCommonRule(this);
+    while (userAgents.hasMoreElements()) {
+      String userAgent = userAgents.nextElement();
+      for (Pattern pattern : patterns) {
+        Matcher matcher = pattern.matcher(userAgent);
+        if (matcher.find()) {
+          super.writeFilterLog(userAgent, BlackIpHttpRequesFilter.class, pattern.pattern());
+          return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
         }
       }
     }
