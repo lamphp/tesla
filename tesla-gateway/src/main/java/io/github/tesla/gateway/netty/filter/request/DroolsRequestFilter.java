@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.filter.help.BodyMapping;
-import io.github.tesla.gateway.netty.filter.help.DroolsContent;
+import io.github.tesla.gateway.netty.filter.help.DroolsContext;
 import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
 import io.github.tesla.gateway.utils.ProxyUtils;
-import io.netty.buffer.CompositeByteBuf;
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -68,7 +68,11 @@ public class DroolsRequestFilter extends HttpRequestFilter {
       if (index > -1) {
         url = url.substring(0, index);
       }
-      CompositeByteBuf contentBuf = (CompositeByteBuf) fullHttpRequest.content();
+      ByteBuf contentBuf = fullHttpRequest.content();
+      int len = contentBuf.readableBytes();
+      if (len == 0) {
+        return null;
+      }
       StatefulKnowledgeSession kSession = null;
       Map<String, Set<String>> rules = super.getUrlRule(DroolsRequestFilter.this);
       Set<String> urlRules = rules.get(url);
@@ -88,7 +92,7 @@ public class DroolsRequestFilter extends HttpRequestFilter {
           KnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
           kBase.addKnowledgePackages(kb.getKnowledgePackages());
           kSession = kBase.newStatefulKnowledgeSession();
-          DroolsContent content = new DroolsContent();
+          DroolsContext content = new DroolsContext();
           kSession.insert(new HeaderMapping(fullHttpRequest));
           kSession.insert(new BodyMapping(contentBuf));
           kSession.insert(content);

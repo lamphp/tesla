@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import com.google.common.collect.Lists;
@@ -22,6 +26,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 public class HttpRequestFilterChain {
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpRequestFilterChain.class);
   public static final Map<String, HttpRequestFilter> filters = Maps.newTreeMap();
   private static final HttpRequestFilterChain filterChain = new HttpRequestFilterChain();
   private static final String REQUEST_FILTER_PACKAGENAME =
@@ -30,7 +35,7 @@ public class HttpRequestFilterChain {
   static {
     Set<Class<?>> requestFilterClazzs = ClassUtil.getClassSet(REQUEST_FILTER_PACKAGENAME);
     for (Class<?> clazz : requestFilterClazzs) {
-      if (clazz.isAssignableFrom(HttpRequestFilter.class)
+      if (HttpRequestFilter.class.isAssignableFrom(clazz)
           && !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
         try {
           HttpRequestFilter filter = (HttpRequestFilter) clazz.newInstance();
@@ -79,6 +84,8 @@ public class HttpRequestFilterChain {
       HttpResponse response = filter.doFilter(originalRequest, httpObject, channelHandlerContext);
       // 如果一个filter有返回值，将会中断下一个filter，这里需要注意filter的顺序，默认grpc->dubbo
       if (response != null) {
+        System.out.println(filter);
+        LOGGER.debug("hit " + filter);
         return response;
       }
     }

@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.gateway.netty.servlet;
+package io.github.tesla.gateway.netty.servlet.help;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;

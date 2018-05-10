@@ -59,7 +59,7 @@ import io.netty.util.concurrent.Future;
 
 
 public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
-  private static Logger traceLogger = LoggerFactory.getLogger("gatewaytrace");
+  private static final Logger traceLogger = LoggerFactory.getLogger("gatewaytrace");
   private static final HttpResponseStatus CONNECTION_ESTABLISHED =
       new HttpResponseStatus(200, "Connection established");
   private static final String LOWERCASE_TRANSFER_ENCODING_HEADER =
@@ -124,6 +124,7 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
   private ConnectionState doReadHTTPInitial(HttpRequest httpRequest) {
     String serverHostAndPort = null;
     try {
+      // Make a copy of the original request
       this.currentRequest = copy(httpRequest);
       currentFilters = proxyServer.getFiltersSource().filterRequest(currentRequest, ctx);
       HttpResponse clientToProxyFilterResponse = currentFilters.clientToProxyRequest(httpRequest);

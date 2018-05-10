@@ -1,10 +1,10 @@
-package io.github.tesla.gateway.netty.filter.drools;
+package io.github.tesla.gateway.netty.filter.drools
 
-import io.github.tesla.gateway.mapping.HeaderMapping;
-import io.github.tesla.gateway.mapping.BodyMapping;
-import io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter.ForWardAction;
+import io.github.tesla.gateway.netty.filter.help.BodyMapping
+import io.github.tesla.gateway.netty.filter.help.HeaderMapping
+import io.github.tesla.gateway.netty.filter.help.DroolsContext
 
-global io.github.tesla.gateway.netty.filter.request.DroolsRequestFilter requestFilter
+global com.alibaba.fastjson.JSON JSON
 
 declare User
     name : String
@@ -16,19 +16,22 @@ no-loop true
 when
     $body:BodyMapping()
     $header:HeaderMapping()
+    $context:DroolsContext()
 then
     User user = new User();
     user.setName($body.json("$.photos[0].owner"));
     user.setPhone($body.json("$.photos[0].id"));
-    Object userInfo = requestFilter.callRemoteService("customer-service","/default/user",user, "POST", User.class);
-    insert(userInfo);
+    String userInfo = JSON.toJSONString(user);
+    userInfo = $context.callService("customer-service","/default/user",userInfo, "POST");
+    user = JSON.parseObject(userInfo,User.class);
+    insert(user);
 end
 
 rule "condition: judge to jingdong or internal service"
 no-loop true
 when
-     $user:User(name=="test",phone=="18616705342");
-     $forwardAction:ForWardAction();
+     $user:User(name=="test",phone=="18616705342")
+     $context:DroolsContext()
 then
-     $forwardAction.setTargetUrl("www.baidu.com");
+     $context.setResponse("www.baidu.com");
 end

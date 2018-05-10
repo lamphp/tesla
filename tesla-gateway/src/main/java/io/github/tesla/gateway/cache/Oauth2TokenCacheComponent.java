@@ -21,7 +21,7 @@ public class Oauth2TokenCacheComponent {
 
 
   public Boolean checkAccessToken(String accessToken) {
-    return false;
+    return true;
 
   }
 }

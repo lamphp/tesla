@@ -20,7 +20,7 @@ import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
  * @author liushiming
  * @version RuleContent.java, v 0.0.1 2018年5月9日 下午8:45:37 liushiming
  */
-public class DroolsContent {
+public class DroolsContext {
 
   private String targetUrl;
 
@@ -42,7 +42,7 @@ public class DroolsContent {
     this.response = response;
   }
 
-  public String callRemoteService(String serviceId, String path, String submitJSON,
+  public String callService(String serviceId, String path, String submitJSON,
       String httpMethod) {
     DynamicSpringCloudClient springCloudClient =
         SpringContextHolder.getBean(DynamicSpringCloudClient.class);
