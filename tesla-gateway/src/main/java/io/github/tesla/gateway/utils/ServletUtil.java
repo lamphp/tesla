@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.tesla.gateway.netty.servlet.help;
+package io.github.tesla.gateway.utils;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -33,11 +33,12 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.cookie.Cookie;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
+/**
+ * @author liushiming
+ * @version GetRequestJsonUtils.java, v 0.0.1 2018年5月10日 上午11:25:22 liushiming
+ */
+public class ServletUtil {
 
-public final class Utils {
-  private Utils() {
-    // Utils class
-  }
 
   public static <T> Enumeration<T> emptyEnumeration() {
     return Collections.enumeration(Collections.<T>emptySet());

@@ -7,11 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,6 +18,7 @@ import com.google.common.collect.Maps;
 import io.github.tesla.gateway.cache.GroovyFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.filter.request.HttpRequestFilter;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.ClassUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
@@ -79,9 +79,11 @@ public class HttpRequestFilterChain {
       }
 
     });
+
+    final NettyHttpServletRequest servletRequest = new NettyHttpServletRequest(originalRequest);
     for (Iterator<Map.Entry<String, HttpRequestFilter>> it = list.iterator(); it.hasNext();) {
       HttpRequestFilter filter = it.next().getValue();
-      HttpResponse response = filter.doFilter(originalRequest, httpObject, channelHandlerContext);
+      HttpResponse response = filter.doFilter(servletRequest, httpObject, channelHandlerContext);
       // 如果一个filter有返回值，将会中断下一个filter，这里需要注意filter的顺序，默认grpc->dubbo
       if (response != null) {
         System.out.println(filter);

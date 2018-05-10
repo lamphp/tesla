@@ -24,16 +24,16 @@ import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.Message;
 import com.googlecode.protobuf.format.JsonFormat;
+
 import io.github.saluki.grpc.exception.RpcFrameworkException;
 import io.github.saluki.grpc.exception.RpcServiceException;
 import io.github.saluki.grpc.service.GenericService;
-
 import io.github.tesla.common.domain.ApiRpcDO;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
 import io.grpc.MethodDescriptor;
 import io.grpc.MethodDescriptor.Marshaller;
 import io.grpc.MethodDescriptor.MethodType;
-import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.util.CharsetUtil;
 
 /**
@@ -57,10 +57,12 @@ public class DynamicGrpcClient extends MicroserviceDynamicClient {
   }
 
   @Override
-  public String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
+  public String doRpcRemoteCall(final ApiRpcDO rpcDo,
+      final NettyHttpServletRequest servletRequest) {
     String outPutJson = null;
     try {
-      outPutJson = httpRequest.content().toString(CharsetUtil.UTF_8);
+      final byte[] bodyContent = servletRequest.getRequestBody();
+      outPutJson = new String(bodyContent, CharsetUtil.UTF_8);;
       final String serviceName = rpcDo.getServiceName();
       final String methodName = rpcDo.getMethodName();
       final String group = rpcDo.getServiceGroup();

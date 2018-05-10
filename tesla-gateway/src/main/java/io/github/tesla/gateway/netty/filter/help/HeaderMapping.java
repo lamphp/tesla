@@ -13,7 +13,12 @@
  */
 package io.github.tesla.gateway.netty.filter.help;
 
-import io.netty.handler.codec.http.HttpRequest;
+import java.util.Enumeration;
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 
 /**
  * @author liushiming
@@ -21,16 +26,23 @@ import io.netty.handler.codec.http.HttpRequest;
  */
 public class HeaderMapping {
 
-  private final io.netty.handler.codec.http.HttpHeaders headers;
+  private final Map<String, String> headers = Maps.newHashMap();
 
   private String method;
 
   private String uri;
 
-  public HeaderMapping(HttpRequest request) {
-    this.headers = request.headers();
-    this.method = request.method().name();
-    this.uri = request.uri();
+  public HeaderMapping(NettyHttpServletRequest request) {
+    Enumeration<String> e = request.getHeaderNames();
+    while (e.hasMoreElements()) {
+      String headerName = e.nextElement();
+      Enumeration<String> headerValues = request.getHeaders(headerName);
+      while (headerValues.hasMoreElements()) {
+        headers.put(headerName, headerValues.nextElement());
+      }
+    }
+    this.method = request.getMethod();
+    this.uri = request.getRequestURI();
   }
 
   public String header(String headerKey) {

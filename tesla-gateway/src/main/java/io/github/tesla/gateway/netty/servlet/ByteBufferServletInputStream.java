@@ -9,11 +9,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
 
-public class ChannelBufferServletInputStream extends ServletInputStream {
+public class ByteBufferServletInputStream extends ServletInputStream {
 
   private final ByteBuf byteBuf;
 
-  public ChannelBufferServletInputStream(ByteBuf byteBuf) {
+  public ByteBufferServletInputStream(ByteBuf byteBuf) {
     this.byteBuf = byteBuf;
   }
 

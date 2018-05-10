@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -31,21 +32,21 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class BlackURLHttpRequestFilter extends HttpRequestFilter {
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      String url = httpRequest.uri();
-      int index = url.indexOf("?");
+      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        url = url.substring(0, index);
+        uri = uri.substring(0, index);
       }
       List<Pattern> patterns = super.getCommonRule(this);
       for (Pattern pattern : patterns) {
-        Matcher matcher = pattern.matcher(url);
+        Matcher matcher = pattern.matcher(uri);
         if (matcher.find()) {
-          super.writeFilterLog(url, BlackIpHttpRequesFilter.class, pattern.pattern());
-          return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+          super.writeFilterLog(uri, BlackIpHttpRequesFilter.class, pattern.pattern());
+          return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
         }
       }
     }

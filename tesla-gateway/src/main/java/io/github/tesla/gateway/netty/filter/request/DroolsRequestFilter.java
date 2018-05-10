@@ -33,8 +33,8 @@ import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.netty.filter.help.BodyMapping;
 import io.github.tesla.gateway.netty.filter.help.DroolsContext;
 import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.ProxyUtils;
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -59,23 +59,18 @@ public class DroolsRequestFilter extends HttpRequestFilter {
 
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest fullHttpRequest = (FullHttpRequest) httpObject;
-      String url = originalRequest.uri();
-      int index = url.indexOf("?");
+      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        url = url.substring(0, index);
-      }
-      ByteBuf contentBuf = fullHttpRequest.content();
-      int len = contentBuf.readableBytes();
-      if (len == 0) {
-        return null;
+        uri = uri.substring(0, index);
       }
       StatefulKnowledgeSession kSession = null;
       Map<String, Set<String>> rules = super.getUrlRule(DroolsRequestFilter.this);
-      Set<String> urlRules = rules.get(url);
+      Set<String> urlRules = rules.get(uri);
       if (urlRules != null && urlRules.size() == 1) {
         String droolsDrlRule = urlRules.iterator().next();
         try {
@@ -93,18 +88,20 @@ public class DroolsRequestFilter extends HttpRequestFilter {
           kBase.addKnowledgePackages(kb.getKnowledgePackages());
           kSession = kBase.newStatefulKnowledgeSession();
           DroolsContext content = new DroolsContext();
-          kSession.insert(new HeaderMapping(fullHttpRequest));
-          kSession.insert(new BodyMapping(contentBuf));
+          kSession.insert(new HeaderMapping(servletRequest));
+          kSession.insert(new BodyMapping(servletRequest));
           kSession.insert(content);
           kSession.fireAllRules();
           String targetUrl = content.getTargetUrl();
           String response = content.getResponse();
+          // reset url
+          final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
           if (targetUrl != null) {
             String requestUrl = ProxyUtils.parseUrl(targetUrl);
-            fullHttpRequest.setUri(requestUrl);
+            realRequest.setUri(requestUrl);
             String hostAndPort = ProxyUtils.parseHostAndPort(targetUrl);
             if (!StringUtils.isBlank(hostAndPort)) {
-              fullHttpRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
+              realRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
             }
           } else if (response != null) {
             return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
@@ -113,7 +110,7 @@ public class DroolsRequestFilter extends HttpRequestFilter {
         } catch (Throwable e) {
           LOG.error(e.getMessage(), e);
           super.writeFilterLog(droolsDrlRule, this.getClass(), "droolsDrlRule");
-          return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, originalRequest,
+          return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, nettyRequst,
               "Drools Rule Error");
         } finally {
           if (kSession != null)

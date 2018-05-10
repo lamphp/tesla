@@ -13,12 +13,13 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
-import io.github.tesla.gateway.utils.FilterUtil;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -33,19 +34,19 @@ public class BlackUaHttpRequestFilter extends HttpRequestFilter {
 
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      List<String> headerValues = FilterUtil.getHeaderValues(httpRequest, "User-Agent");
+      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+      Enumeration<String> userAgents = servletRequest.getHeaders("User-Agent");
       List<Pattern> patterns = super.getCommonRule(this);
-      if (headerValues.size() > 0 && headerValues.get(0) != null) {
+      while (userAgents.hasMoreElements()) {
         for (Pattern pattern : patterns) {
-          Matcher matcher = pattern.matcher(headerValues.get(0));
+          String userAgent = userAgents.nextElement();
+          Matcher matcher = pattern.matcher(userAgent);
           if (matcher.find()) {
-            super.writeFilterLog(headerValues.toString(), BlackIpHttpRequesFilter.class,
-                pattern.pattern());
-            return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+            super.writeFilterLog(userAgent, BlackIpHttpRequesFilter.class, pattern.pattern());
+            return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
           }
         }
       }

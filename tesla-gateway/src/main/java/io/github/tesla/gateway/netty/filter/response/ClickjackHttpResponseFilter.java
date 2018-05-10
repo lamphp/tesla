@@ -1,7 +1,7 @@
 package io.github.tesla.gateway.netty.filter.response;
 
 import io.github.tesla.common.ResponseFilterTypeEnum;
-import io.netty.handler.codec.http.HttpRequest;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 
@@ -13,7 +13,7 @@ public class ClickjackHttpResponseFilter extends HttpResponseFilter {
   }
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpResponse httpResponse) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpResponse httpResponse) {
     httpResponse.headers().add("X-FRAME-OPTIONS", X_Frame_Option);
     return httpResponse;
   }

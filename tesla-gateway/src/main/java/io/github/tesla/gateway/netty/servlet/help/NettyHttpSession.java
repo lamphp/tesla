@@ -24,6 +24,8 @@ import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import javax.servlet.http.HttpSessionContext;
 
+import io.github.tesla.gateway.utils.ServletUtil;
+
 /**
  * @author xiaoyu
  */
@@ -56,7 +58,7 @@ public class NettyHttpSession implements HttpSession {
   @SuppressWarnings({"rawtypes", "unchecked"})
   @Override
   public Enumeration getAttributeNames() {
-    return Utils.enumerationFromKeys(attributes);
+    return ServletUtil.enumerationFromKeys(attributes);
   }
 
   @Override

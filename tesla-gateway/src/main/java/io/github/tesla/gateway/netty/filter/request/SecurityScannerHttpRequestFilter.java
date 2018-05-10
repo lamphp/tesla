@@ -13,14 +13,18 @@
  */
 package io.github.tesla.gateway.netty.filter.request;
 
+import java.util.Enumeration;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Maps;
+
 import io.github.tesla.common.RequestFilterTypeEnum;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -29,43 +33,61 @@ import io.netty.handler.codec.http.HttpResponseStatus;
  */
 public class SecurityScannerHttpRequestFilter extends HttpRequestFilter {
 
+  private Map<String, String> headers;
+
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      boolean acunetixAspect = httpRequest.headers().contains("Acunetix-Aspect");
-      boolean acunetixAspectPassword = httpRequest.headers().contains("Acunetix-Aspect-Password");
-      boolean acunetixAspectQueries = httpRequest.headers().contains("Acunetix-Aspect-Queries");
-      boolean xScanMemo = httpRequest.headers().contains("X-Scan-Memo");
-      boolean xRequestMemo = httpRequest.headers().contains("X-Request-Memo");
-      boolean xRequestManagerMemo = httpRequest.headers().contains("X-RequestManager-Memo");
-      boolean xWIPP = httpRequest.headers().contains("X-WIPP");
+      this.headers = this.getAllHeaders(servletRequest);
+      boolean acunetixAspect = this.contains("Acunetix-Aspect");
+      boolean acunetixAspectPassword = this.contains("Acunetix-Aspect-Password");
+      boolean acunetixAspectQueries = this.contains("Acunetix-Aspect-Queries");
+      boolean xScanMemo = this.contains("X-Scan-Memo");
+      boolean xRequestMemo = this.contains("X-Request-Memo");
+      boolean xRequestManagerMemo = this.contains("X-RequestManager-Memo");
+      boolean xWIPP = this.contains("X-WIPP");
       Pattern pattern1 = Pattern.compile("AppScan_fingerprint");
-      Matcher matcher1 = pattern1.matcher(httpRequest.uri());
+      Matcher matcher1 = pattern1.matcher(servletRequest.getRequestURI());
       String bsKey = "--%3E%27%22%3E%3CH1%3EXSS%40HERE%3C%2FH1%3E";
-      boolean matcher2 = httpRequest.uri().contains(bsKey);
+      boolean matcher2 = servletRequest.getRequestURI().contains(bsKey);
       Pattern pattern3 = Pattern.compile("netsparker=");
-      Matcher matcher3 = pattern3.matcher(httpRequest.uri());
+      Matcher matcher3 = pattern3.matcher(servletRequest.getRequestURI());
       if (acunetixAspect || acunetixAspectPassword || acunetixAspectQueries) {
-        super.writeFilterLog(httpRequest.headers().toString(), this.getClass(),
-            "Acunetix Web Vulnerability");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+        super.writeFilterLog(headers.toString(), this.getClass(), "Acunetix Web Vulnerability");
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       } else if (xScanMemo || xRequestMemo || xRequestManagerMemo || xWIPP) {
-        super.writeFilterLog(httpRequest.headers().toString(), this.getClass(), "HP WebInspect");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+        super.writeFilterLog(headers.toString(), this.getClass(), "HP WebInspect");
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       } else if (matcher1.find()) {
-        super.writeFilterLog(httpRequest.headers().toString(), this.getClass(), "Appscan");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+        super.writeFilterLog(headers.toString(), this.getClass(), "Appscan");
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       } else if (matcher2) {
-        super.writeFilterLog(httpRequest.headers().toString(), this.getClass(), "Bugscan");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+        super.writeFilterLog(headers.toString(), this.getClass(), "Bugscan");
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       } else if (matcher3.find()) {
-        super.writeFilterLog(httpRequest.headers().toString(), this.getClass(), "Netsparker");
-        return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+        super.writeFilterLog(headers.toString(), this.getClass(), "Netsparker");
+        return super.createResponse(HttpResponseStatus.FORBIDDEN, servletRequest.getNettyRequest());
       }
     }
     return null;
+  }
+
+  private Boolean contains(String name) {
+    return this.headers.containsKey(name) || this.headers.containsValue(name);
+  }
+
+  private Map<String, String> getAllHeaders(NettyHttpServletRequest request) {
+    final Map<String, String> headers = Maps.newHashMap();
+    Enumeration<String> e = request.getHeaderNames();
+    while (e.hasMoreElements()) {
+      String headerName = e.nextElement();
+      Enumeration<String> headerValues = request.getHeaders(headerName);
+      while (headerValues.hasMoreElements()) {
+        headers.put(headerName, headerValues.nextElement());
+      }
+    }
+    return headers;
   }
 
   @Override

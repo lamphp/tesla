@@ -27,6 +27,7 @@ import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.RateLimiter;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -67,25 +68,25 @@ public class RateLimitHttpRequestFilter extends HttpRequestFilter {
           });
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      String url = httpRequest.uri();
-      int index = url.indexOf("?");
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        url = url.substring(0, index);
+        uri = uri.substring(0, index);
       }
       RateLimiter rateLimiter = null;
       try {
-        rateLimiter = loadingCache.get(url);
+        rateLimiter = loadingCache.get(uri);
       } catch (Throwable e) {
       }
       // 如果1秒钟没有获取令牌，说明被限制了
       if (rateLimiter != null && !rateLimiter.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
         super.writeFilterLog(Double.toString(rateLimiter.getRate()), this.getClass(),
             "RateLimiter");
-        return super.createResponse(HttpResponseStatus.TOO_MANY_REQUESTS, originalRequest);
+        final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+        return super.createResponse(HttpResponseStatus.TOO_MANY_REQUESTS, nettyRequst);
       }
     }
     return null;

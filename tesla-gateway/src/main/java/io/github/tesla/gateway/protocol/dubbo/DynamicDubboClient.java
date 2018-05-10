@@ -45,8 +45,8 @@ import freemarker.template.TemplateNotFoundException;
 import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.netty.filter.help.BodyMapping;
 import io.github.tesla.gateway.netty.filter.help.HeaderMapping;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
-import io.netty.handler.codec.http.FullHttpRequest;
 
 /**
  * @author liushiming
@@ -106,12 +106,12 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
     return sb.toString();
   }
 
-  private String doDataMapping(final String templateKey, final FullHttpRequest httpRequest)
-      throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, IOException,
-      TemplateException {
+  private String doDataMapping(final String templateKey,
+      final NettyHttpServletRequest servletRequest) throws TemplateNotFoundException,
+      MalformedTemplateNameException, ParseException, IOException, TemplateException {
     Map<String, Object> templateContext = new HashMap<String, Object>();
-    templateContext.put("header", new HeaderMapping(httpRequest));
-    templateContext.put("input", new BodyMapping(httpRequest.content()));
+    templateContext.put("header", new HeaderMapping(servletRequest));
+    templateContext.put("input", new BodyMapping(servletRequest));
     Template template = configuration.getTemplate(templateKey);
     StringWriter outPutWrite = new StringWriter();
     template.process(templateContext, outPutWrite);
@@ -119,8 +119,24 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
     return outPutJson;
   }
 
+  private Pair<String[], Object[]> transformerData(String templateKey,
+      final NettyHttpServletRequest servletRequest) throws TemplateNotFoundException,
+      MalformedTemplateNameException, ParseException, IOException, TemplateException {
+    String outPutJson = this.doDataMapping(templateKey, servletRequest);
+    Map<String, Object> dubboParamters = JSON.parseObject(outPutJson);
+    List<String> type = Lists.newArrayList();
+    List<Object> value = Lists.newArrayList();
+    type.addAll(dubboParamters.keySet());
+    value.addAll(dubboParamters.values());
+    String[] typeArray = new String[type.size()];
+    type.toArray(typeArray);
+    return new ImmutablePair<String[], Object[]>(typeArray, value.toArray());
+  }
+
+
   @Override
-  public String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest httpRequest) {
+  public String doRpcRemoteCall(final ApiRpcDO rpcDo,
+      final NettyHttpServletRequest servletRequest) {
     try {
       final String serviceName = rpcDo.getServiceName();
       final String methodName = rpcDo.getMethodName();
@@ -137,7 +153,7 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
       ReferenceConfigCache cache = ReferenceConfigCache.getCache();
       GenericService genericService = cache.get(reference);
       String templateKey = this.cacheTemplate(rpcDo);
-      Pair<String[], Object[]> typeAndValue = this.transformerData(templateKey, httpRequest);
+      Pair<String[], Object[]> typeAndValue = this.transformerData(templateKey, servletRequest);
       Object response =
           genericService.$invoke(methodName, typeAndValue.getLeft(), typeAndValue.getRight());
       return JSON.toJSONString(response);
@@ -150,19 +166,6 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
   }
 
 
-  private Pair<String[], Object[]> transformerData(String templateKey,
-      final FullHttpRequest httpRequest) throws TemplateNotFoundException,
-      MalformedTemplateNameException, ParseException, IOException, TemplateException {
-    String outPutJson = this.doDataMapping(templateKey, httpRequest);
-    Map<String, Object> dubboParamters = JSON.parseObject(outPutJson);
-    List<String> type = Lists.newArrayList();
-    List<Object> value = Lists.newArrayList();
-    type.addAll(dubboParamters.keySet());
-    value.addAll(dubboParamters.values());
-    String[] typeArray = new String[type.size()];
-    type.toArray(typeArray);
-    return new ImmutablePair<String[], Object[]>(typeArray, value.toArray());
-  }
 
   //
   // /**

@@ -26,11 +26,11 @@ import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.Template;
 import io.github.tesla.common.ResponseFilterTypeEnum;
 import io.github.tesla.gateway.netty.filter.help.BodyMapping;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.util.CharsetUtil;
@@ -55,34 +55,34 @@ public class DataMappingHttpResponseFilter extends HttpResponseFilter {
   }
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpResponse httpResponse) {
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpResponse httpResponse) {
     if (httpResponse instanceof FullHttpResponse) {
       FullHttpResponse fullHttpResonse = (FullHttpResponse) httpResponse;
-      String url = originalRequest.uri();
-      int index = url.indexOf("?");
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        url = url.substring(0, index);
+        uri = uri.substring(0, index);
       }
-      ByteBuf contentBuf = fullHttpResonse.content();
-      Boolean canDataMapping = isCanDataMapping(contentBuf);
+      ByteBuf responseBuffer = fullHttpResonse.content();
+      Boolean canDataMapping = isCanDataMapping(responseBuffer);
       if (canDataMapping) {
         Map<String, Set<String>> rules = super.getUrlRule(DataMappingHttpResponseFilter.this);
-        Set<String> urlRules = rules.get(url);
+        Set<String> urlRules = rules.get(uri);
         if (urlRules != null && urlRules.size() == 1) {
           String tempalteContent = urlRules.iterator().next();
           try {
-            templateHolder.putTemplate("template" + url, tempalteContent);
+            templateHolder.putTemplate("template" + uri, tempalteContent);
             Map<String, Object> templateContext = new HashMap<String, Object>();
-            templateContext.put("input", new BodyMapping(contentBuf));
-            Template template = configuration.getTemplate("template" + url);
+            templateContext.put("input", new BodyMapping(responseBuffer));
+            Template template = configuration.getTemplate("template" + uri);
             StringWriter transformedWriter = new StringWriter();
             template.process(templateContext, transformedWriter);
             String transformedJson = transformedWriter.toString();
             ByteBuf bodyContent = Unpooled.copiedBuffer(transformedJson, CharsetUtil.UTF_8);
-            contentBuf.clear().writeBytes(bodyContent);
+            responseBuffer.clear().writeBytes(bodyContent);
           } catch (Throwable e) {
-            return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR, originalRequest,
-                "DataMapping Error");
+            return super.createResponse(HttpResponseStatus.INTERNAL_SERVER_ERROR,
+                servletRequest.getNettyRequest(), "DataMapping Error");
           }
         }
       }

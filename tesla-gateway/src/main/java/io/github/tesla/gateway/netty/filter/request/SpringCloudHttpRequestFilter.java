@@ -19,12 +19,12 @@ import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.common.domain.ApiSpringCloudDO;
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 /**
@@ -39,22 +39,22 @@ public class SpringCloudHttpRequestFilter extends HttpRequestFilter {
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest && springCloudClient != null) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      String actorPath = httpRequest.uri();
-      int index = actorPath.indexOf("?");
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        actorPath = actorPath.substring(0, index);
+        uri = uri.substring(0, index);
       }
-      Pair<String, ApiSpringCloudDO> springCloudPair = apiCache.getSpringCloudRoute(actorPath);
+      Pair<String, ApiSpringCloudDO> springCloudPair = apiCache.getSpringCloudRoute(uri);
       if (springCloudPair != null) {
         String changedPath = springCloudPair.getLeft();
         ApiSpringCloudDO springCloudDo = springCloudPair.getRight();
         String loadbalanceHostAndPort = springCloudClient.loadBalanceCall(springCloudDo);
-        httpRequest.setUri(changedPath);
-        httpRequest.headers().set(HttpHeaderNames.HOST, loadbalanceHostAndPort);
+        final FullHttpRequest realRequest = (FullHttpRequest) httpObject;
+        realRequest.setUri(changedPath);
+        realRequest.headers().set(HttpHeaderNames.HOST, loadbalanceHostAndPort);
       } else {
         return null;
       }

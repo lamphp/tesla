@@ -17,13 +17,13 @@ import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.grpc.DynamicGrpcClient;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
@@ -39,21 +39,20 @@ public class GrpcTransformHttpRequestFilter extends HttpRequestFilter {
   private final ApiAndFilterCacheComponent routeRuleCache =
       SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
 
- 
+
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest && grpcClient != null) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      String actorPath = httpRequest.uri();
-      int index = actorPath.indexOf("?");
+      String uri = servletRequest.getRequestURI();
+      int index = uri.indexOf("?");
       if (index > -1) {
-        actorPath = actorPath.substring(0, index);
+        uri = uri.substring(0, index);
       }
-      ApiRpcDO rpc = routeRuleCache.getRpcRoute(actorPath);
+      ApiRpcDO rpc = routeRuleCache.getRpcRoute(uri);
       if (rpc != null && rpc.getProtoContext() != null) {
-        String jsonOutput = grpcClient.doRpcRemoteCall(rpc, httpRequest);
+        String jsonOutput = grpcClient.doRpcRemoteCall(rpc, servletRequest);
         return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
             Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
       } else {

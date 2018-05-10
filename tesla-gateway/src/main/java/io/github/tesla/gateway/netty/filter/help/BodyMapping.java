@@ -13,10 +13,13 @@
  */
 package io.github.tesla.gateway.netty.filter.help;
 
+import java.io.IOException;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
@@ -30,13 +33,24 @@ public class BodyMapping {
 
   private final Object document;
 
-  public BodyMapping(ByteBuf content) {
-    this.body = content.toString(CharsetUtil.UTF_8);;
+  public BodyMapping(NettyHttpServletRequest request) throws IOException {
+    final byte[] bodyContent = request.getRequestBody();
+    this.body = new String(bodyContent, CharsetUtil.UTF_8);;
     this.document = Configuration.builder()//
         .options(Option.DEFAULT_PATH_LEAF_TO_NULL)//
         .build()//
         .jsonProvider().parse(body);
   }
+
+  public BodyMapping(ByteBuf byteBuf) throws IOException {
+    this.body = byteBuf.toString(CharsetUtil.UTF_8);
+    this.document = Configuration.builder()//
+        .options(Option.DEFAULT_PATH_LEAF_TO_NULL)//
+        .build()//
+        .jsonProvider().parse(body);
+  }
+
+
 
   /**
    * <pre>

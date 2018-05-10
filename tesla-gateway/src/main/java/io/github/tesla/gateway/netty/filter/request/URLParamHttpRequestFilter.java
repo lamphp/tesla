@@ -19,10 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
 
@@ -32,38 +32,26 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class URLParamHttpRequestFilter extends HttpRequestFilter {
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
       String url = null;
       try {
-        String uri = httpRequest.uri().replaceAll("%", "%25");
+        String uri = servletRequest.getRequestURL().toString();
         url = URLDecoder.decode(uri, "UTF-8");
       } catch (Exception e) {
         e.printStackTrace();
       }
-      if (url != null) {
-        int index = url.indexOf("?");
-        if (index > -1) {
-          String argsStr = url.substring(index + 1);
-          String[] args = argsStr.split("&");
-          for (String arg : args) {
-            String[] kv = arg.split("=");
-            if (kv.length == 2) {
-              List<Pattern> patterns = super.getCommonRule(this);
-              for (Pattern pattern : patterns) {
-                String param = kv[1].toLowerCase();
-                Matcher matcher = pattern.matcher(param);
-                if (matcher.find()) {
-                  super.writeFilterLog(param, this.getClass(), pattern.pattern());
-                  return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
-                }
-              }
-            }
-          }
+      List<Pattern> patterns = super.getCommonRule(this);
+      for (Pattern pattern : patterns) {
+        Matcher matcher = pattern.matcher(url);
+        if (matcher.find()) {
+          super.writeFilterLog(url, this.getClass(), pattern.pattern());
+          return super.createResponse(HttpResponseStatus.FORBIDDEN,
+              servletRequest.getNettyRequest());
         }
       }
+
     }
     return null;
   }

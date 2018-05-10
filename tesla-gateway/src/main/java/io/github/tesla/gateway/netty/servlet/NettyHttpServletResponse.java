@@ -11,15 +11,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpResponse;
 
- 
-public class NettyHttpServletResponseAdaptor implements HttpServletResponse {
+
+public class NettyHttpServletResponse implements HttpServletResponse {
 
   private FullHttpResponse httpResponse;
 
 
-  public NettyHttpServletResponseAdaptor(FullHttpResponse httpResponse) {
-    this.httpResponse = httpResponse;
+  public NettyHttpServletResponse(HttpResponse httpResponse) {
+    this.httpResponse = (FullHttpResponse) httpResponse;
   }
 
   @Override
@@ -137,7 +138,7 @@ public class NettyHttpServletResponseAdaptor implements HttpServletResponse {
 
   @Override
   public ServletOutputStream getOutputStream() throws IOException {
-    return new ChannelBufferServletOutputStream(httpResponse.content());
+    return new ByteBufferServletOutputStream(httpResponse.content());
   }
 
   @Override

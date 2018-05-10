@@ -19,7 +19,7 @@ import org.apache.oltu.oauth2.rs.request.OAuthAccessResourceRequest;
 import io.github.tesla.common.RequestFilterTypeEnum;
 import io.github.tesla.gateway.cache.Oauth2TokenCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
-import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequestAdaptor;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -36,21 +36,16 @@ public class Oauth2HttpRequestFilter extends HttpRequestFilter {
       SpringContextHolder.getBean(Oauth2TokenCacheComponent.class);
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
       try {
-        FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-        NettyHttpServletRequestAdaptor servletRequest =
-            new NettyHttpServletRequestAdaptor(httpRequest);
-        System.out.println(servletRequest.getParameter("test"));
-        // NettyHttpServletRequest servletRequest =
-        // new NettyHttpServletRequest(httpRequest, "/", channelHandlerContext);
         OAuthAccessResourceRequest oauthRequest =
             new OAuthAccessResourceRequest(servletRequest, ParameterStyle.QUERY);
         String accessToken = oauthRequest.getAccessToken();
         if (!oauth2TokenCache.checkAccessToken(accessToken)) {
-          return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+          final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+          return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
         }
       } catch (Throwable e) {
         return null;

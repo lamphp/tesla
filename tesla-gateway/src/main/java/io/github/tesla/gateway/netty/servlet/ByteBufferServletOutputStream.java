@@ -7,11 +7,11 @@ import javax.servlet.ServletOutputStream;
 import io.netty.buffer.ByteBuf;
 
 
-public class ChannelBufferServletOutputStream extends ServletOutputStream {
+public class ByteBufferServletOutputStream extends ServletOutputStream {
 
   private final ByteBuf byteBuf;
 
-  public ChannelBufferServletOutputStream(ByteBuf byteBuf) {
+  public ByteBufferServletOutputStream(ByteBuf byteBuf) {
     if (byteBuf == null) {
       throw new NullPointerException("buffer");
     }

@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.http.Cookie;
+
 import io.github.tesla.common.RequestFilterTypeEnum;
-import io.github.tesla.gateway.utils.FilterUtil;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpObject;
@@ -32,20 +34,20 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 public class BlackCookieHttpRequestFilter extends HttpRequestFilter {
 
   @Override
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     if (httpObject instanceof FullHttpRequest) {
-      FullHttpRequest httpRequest = (FullHttpRequest) httpObject;
-      List<String> headerValues = FilterUtil.getHeaderValues(httpRequest, "Cookie");
+      final HttpRequest nettyRequst = servletRequest.getNettyRequest();
+      Cookie[] cookies = servletRequest.getCookies();
       List<Pattern> patterns = super.getCommonRule(this);
-      if (headerValues.size() > 0 && headerValues.get(0) != null) {
-        String[] cookies = headerValues.get(0).split(";");
-        for (String cookie : cookies) {
+      if (cookies.length > 0) {
+        for (Cookie cookie : cookies) {
+          String cookieValue = cookie.getValue();
           for (Pattern pattern : patterns) {
-            Matcher matcher = pattern.matcher(cookie.toLowerCase());
+            Matcher matcher = pattern.matcher(cookieValue);
             if (matcher.find()) {
-              super.writeFilterLog(cookie, BlackIpHttpRequesFilter.class, pattern.pattern());
-              return super.createResponse(HttpResponseStatus.FORBIDDEN, originalRequest);
+              super.writeFilterLog(cookieValue, BlackIpHttpRequesFilter.class, pattern.pattern());
+              return super.createResponse(HttpResponseStatus.FORBIDDEN, nettyRequst);
             }
           }
         }

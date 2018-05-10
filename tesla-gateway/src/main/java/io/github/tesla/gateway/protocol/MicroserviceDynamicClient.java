@@ -14,7 +14,7 @@
 package io.github.tesla.gateway.protocol;
 
 import io.github.tesla.common.domain.ApiRpcDO;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 
 /**
  * @author liushiming
@@ -22,6 +22,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
  */
 public abstract class MicroserviceDynamicClient {
 
-  public abstract String doRpcRemoteCall(final ApiRpcDO rpcDo, final FullHttpRequest jsonInput);
+  public abstract String doRpcRemoteCall(final ApiRpcDO rpcDo,
+      final NettyHttpServletRequest servletRequest);
 
 }

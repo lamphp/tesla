@@ -40,50 +40,84 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import io.github.tesla.gateway.netty.ChannelThreadLocal;
-import io.github.tesla.gateway.netty.filter.help.URIParser;
 import io.github.tesla.gateway.netty.servlet.help.HttpSessionThreadLocal;
 import io.github.tesla.gateway.netty.servlet.help.NettyHttpSession;
-import io.github.tesla.gateway.netty.servlet.help.Utils;
+import io.github.tesla.gateway.utils.ServletUtil;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders.Names;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.ssl.SslHandler;
 
 @SuppressWarnings("deprecation")
-public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
+public class NettyHttpServletRequest implements HttpServletRequest {
 
   private static final Locale DEFAULT_LOCALE = Locale.getDefault();
+  private final HttpRequest request;
+  private final Map<String, Object> attributes = new HashMap<String, Object>();
+  private final QueryStringDecoder queryStringDecoder;
+  private final Map<String, String[]> parameterMap;
+  private String servletPath = "/";
+  private String requestUri;
+  private String pathInfo;
+  private String queryString;
+  private byte[] requestBody;
 
-  private FullHttpRequest request;
-
-  private QueryStringDecoder queryStringDecoder;
-
-  private Map<String, String[]> parameterMap;
-
-  private String characterEncoding;
-
-  private Map<String, Object> attributes;
-
-  private URIParser uriParser;
-
-  public NettyHttpServletRequestAdaptor(FullHttpRequest httpRequest) {
+  public NettyHttpServletRequest(HttpRequest httpRequest) {
     this.request = httpRequest;
-    this.attributes = new HashMap<String, Object>();
-    this.uriParser = new URIParser("/");
-    uriParser.parse(httpRequest.uri());
-  }
-
-  public QueryStringDecoder getQueryStringDecoder() {
-    if (queryStringDecoder == null) {
-      queryStringDecoder = new QueryStringDecoder(this.request.uri());
+    this.queryStringDecoder = new QueryStringDecoder(this.request.uri());
+    Map<String, List<String>> parameters = this.queryStringDecoder.parameters();
+    parameterMap = new HashMap<String, String[]>(parameters.size());
+    for (Map.Entry<String, List<String>> stringListEntry : parameters.entrySet()) {
+      String[] strings = new String[stringListEntry.getValue().size()];
+      parameterMap.put(stringListEntry.getKey(), stringListEntry.getValue().toArray(strings));
     }
-    return queryStringDecoder;
+    this.checkAndParsePaths(this.request.uri());
   }
 
+  private void checkAndParsePaths(String uri) {
+    int indx = uri.indexOf('?');
+    if (indx != -1) {
+      this.pathInfo = uri.substring(servletPath.length(), indx);
+      this.queryString = uri.substring(indx + 1);
+      this.requestUri = uri.substring(0, indx);
+    } else {
+      this.pathInfo = uri.substring(servletPath.length());
+      this.requestUri = uri;
+    }
+    if (this.pathInfo.equals("")) {
+      this.pathInfo = null;
+    } else if (!this.pathInfo.startsWith("/")) {
+      this.pathInfo = "/" + this.pathInfo;
+    }
+  }
 
+  public byte[] getRequestBody() throws IOException {
+    if (this.requestBody != null) {
+      return this.requestBody;
+    }
+    int contentLength = getContentLength();
+    if (contentLength < 0) {
+      return null;
+    }
+    byte buffer[] = new byte[contentLength];
+    for (int i = 0; i < contentLength;) {
+      int readlen = getInputStream().read(buffer, i, contentLength - i);
+      if (readlen == -1) {
+        break;
+      }
+      i += readlen;
+    }
+    this.requestBody = buffer;
+    return buffer;
+  }
+
+  public HttpRequest getNettyRequest() {
+    return this.request;
+  }
 
   @Override
   public String getAuthType() {
@@ -131,12 +165,12 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public Enumeration<String> getHeaders(String name) {
-    return Utils.enumeration(this.request.headers().getAll(name));
+    return ServletUtil.enumeration(this.request.headers().getAll(name));
   }
 
   @Override
   public Enumeration<String> getHeaderNames() {
-    return Utils.enumeration(this.request.headers().names());
+    return ServletUtil.enumeration(this.request.headers().names());
   }
 
   @Override
@@ -146,15 +180,13 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public String getMethod() {
-    return request.method().name();
+    return this.request.method().name();
   }
 
   @Override
   public String getPathInfo() {
-    return this.uriParser.getPathInfo();
+    return this.pathInfo;
   }
-
-
 
   @Override
   public String getContextPath() {
@@ -164,7 +196,7 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public String getQueryString() {
-    return this.uriParser.getQueryString();
+    return this.queryString;
   }
 
   @Override
@@ -195,7 +227,7 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public String getRequestURI() {
-    return this.uriParser.getRequestUri();
+    return this.requestUri;
   }
 
   @Override
@@ -217,10 +249,7 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public String getServletPath() {
-    String servletPath = this.uriParser.getServletPath();
-    if (servletPath.equals("/"))
-      return "";
-    return servletPath;
+    return this.servletPath;
   }
 
   @Override
@@ -301,12 +330,12 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public String getCharacterEncoding() {
-    return this.characterEncoding;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void setCharacterEncoding(String env) throws UnsupportedEncodingException {
-    this.characterEncoding = env;
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -322,8 +351,14 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public ServletInputStream getInputStream() throws IOException {
-    return new ChannelBufferServletInputStream(this.request.content());
+    if (this.request instanceof FullHttpRequest) {
+      FullHttpRequest httprequest = (FullHttpRequest) this.request;
+      return new ByteBufferServletInputStream(httprequest.content());
+    } else {
+      throw new UnsupportedOperationException();
+    }
   }
+
 
   @Override
   public String getParameter(String name) {
@@ -333,7 +368,7 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public Enumeration<String> getParameterNames() {
-    return Utils.enumeration(getParameterMap().keySet());
+    return ServletUtil.enumeration(getParameterMap().keySet());
   }
 
   @Override
@@ -343,14 +378,6 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public Map<String, String[]> getParameterMap() {
-    if (parameterMap == null) {
-      Map<String, List<String>> parameters = getQueryStringDecoder().parameters();
-      parameterMap = new HashMap<String, String[]>(parameters.size());
-      for (Map.Entry<String, List<String>> stringListEntry : parameters.entrySet()) {
-        String[] strings = new String[stringListEntry.getValue().size()];
-        parameterMap.put(stringListEntry.getKey(), stringListEntry.getValue().toArray(strings));
-      }
-    }
     return parameterMap;
   }
 
@@ -426,14 +453,14 @@ public class NettyHttpServletRequestAdaptor implements HttpServletRequest {
 
   @Override
   public Enumeration<Locale> getLocales() {
-    Collection<Locale> locales =
-        Utils.parseAcceptLanguageHeader(HttpHeaders.getHeader(this.request, Names.ACCEPT_LANGUAGE));
+    Collection<Locale> locales = ServletUtil
+        .parseAcceptLanguageHeader(HttpHeaders.getHeader(this.request, Names.ACCEPT_LANGUAGE));
 
     if (locales == null || locales.isEmpty()) {
       locales = new ArrayList<Locale>();
       locales.add(Locale.getDefault());
     }
-    return Utils.enumeration(locales);
+    return ServletUtil.enumeration(locales);
   }
 
   @Override
