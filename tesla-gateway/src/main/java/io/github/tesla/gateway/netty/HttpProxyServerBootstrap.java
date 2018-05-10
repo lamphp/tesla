@@ -35,7 +35,7 @@ public class HttpProxyServerBootstrap {
   private static final int MAX_HEADER_SIZE_DEFAULT = 8192 * 2;
   private static final int MAX_CHUNK_SIZE_DEFAULT = 8192 * 2;
 
-  private String name = "LittleProxy";
+  private String name = "Tesla";
   private ServerGroup serverGroup = null;
   private InetSocketAddress requestedAddress;
   private int port = 8080;

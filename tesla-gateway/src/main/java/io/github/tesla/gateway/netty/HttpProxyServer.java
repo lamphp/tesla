@@ -38,7 +38,7 @@ public class HttpProxyServer {
   private static final Logger LOG = LoggerFactory.getLogger(HttpProxyServer.class);
 
   private static final long TRAFFIC_SHAPING_CHECK_INTERVAL_MS = 250L;
-  private static final String FALLBACK_PROXY_ALIAS = "littleproxy";
+  private static final String FALLBACK_PROXY_ALIAS = "tesla";
 
   private final ServerGroup serverGroup;
   private final HttpFiltersSourceAdapter filtersSource;
@@ -60,7 +60,7 @@ public class HttpProxyServer {
     public void run() {
       abort();
     }
-  }, "LittleProxy-JVM-shutdown-hook");
+  }, "Tesla-JVM-shutdown-hook");
 
   private volatile InetSocketAddress localAddress;
   private volatile InetSocketAddress boundAddress;
