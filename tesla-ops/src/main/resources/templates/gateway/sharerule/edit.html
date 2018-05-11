@@ -1,3 +1,8 @@
+<style>
+.disabledTab {
+	pointer-events: none;
+}
+</style>
 <section id="widget-grid" class="">
 	<div class="row">
 		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -11,44 +16,44 @@
 						<div class="row">
 							<div class="jarviswidget" data-widget-editbutton="true" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false" role="widget">
 								<header role="heading">
-									<ul class="nav nav-tabs pull-left in">
-										<li class="active">
+									<ul class="nav nav-tabs pull-left in" role="tablist">
+										<li class="active" th:class="${rule.filterType.name()=='URLParamHttpRequestFilter'} ?'active':'disabledTab'">
 											<a data-toggle="tab" href="#URLParamHttpRequestFilter" aria-expanded="true">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">URL参数黑名单</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='BlackCookieHttpRequestFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#BlackCookieHttpRequestFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">Cookie黑名单</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='BlackUaHttpRequestFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#BlackUaHttpRequestFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">User-Agent黑名单</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='BlackURLHttpRequestFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#BlackURLHttpRequestFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">URL黑名单</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='BlackIpHttpRequesFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#BlackIpHttpRequesFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">IP黑名单</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='SecurityScannerHttpRequestFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#SecurityScannerHttpRequestFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">防爬</span>
 											</a>
 										</li>
-										<li class="">
+										<li th:class="${rule.filterType.name()=='RateLimitHttpRequestFilter'}?'active':'disabledTab'">
 											<a data-toggle="tab" href="#RateLimitHttpRequestFilter" aria-expanded="false">
 												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
 												<span class="hidden-mobile hidden-tablet">限流</span>
@@ -63,6 +68,7 @@
 											<div class="tab-pane active" id="URLParamHttpRequestFilter">
 												<div class="tabbable tabs-below">
 													<form method="post" id="ruleForm_urlparam" class="smart-form">
+														<input name="id" type="hidden" th:value="${rule.id}" />
 														<fieldset>
 															<div class="row">
 																<section class="col col-10">
@@ -76,7 +82,8 @@
 																<section class="col col-10">
 																	<label class="label">内容：</label>
 																	<label class="textarea textarea-resizable">
-																		<textarea name="rule" rows="5" class="custom-scroll" placeholder="URL参数黑名单正则表达式"></textarea>
+																		<textarea name="rule" rows="20" class="custom-scroll" placeholder="URL参数黑名单正则表达式" th:field="${rule.rule}">
+																		</textarea>
 																	</label>
 																</section>
 															</div>
@@ -90,6 +97,7 @@
 											</div>
 											<div class="tab-pane" id="BlackCookieHttpRequestFilter">
 												<form method="post" id="ruleForm_blackcookie" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -103,7 +111,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="Cookie黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="20" class="custom-scroll" placeholder="Cookie黑名单正则表达式" th:field="${rule.rule}"></textarea>
 																</label>
 															</section>
 														</div>
@@ -116,6 +124,7 @@
 											</div>
 											<div class="tab-pane" id="BlackUaHttpRequestFilter">
 												<form method="post" id="ruleForm_blackua" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -129,7 +138,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="UA黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="20" class="custom-scroll" placeholder="UA黑名单正则表达式" th:field="${rule.rule}"></textarea>
 																</label>
 															</section>
 														</div>
@@ -142,6 +151,7 @@
 											</div>
 											<div class="tab-pane" id="BlackURLHttpRequestFilter">
 												<form method="post" id="ruleForm_blackurl" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -155,7 +165,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="URL黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="20" class="custom-scroll" placeholder="URL黑名单正则表达式" th:field="${rule.rule}"></textarea>
 																</label>
 															</section>
 														</div>
@@ -168,6 +178,7 @@
 											</div>
 											<div class="tab-pane" id="BlackIpHttpRequesFilter">
 												<form method="post" id="ruleForm_blackip" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -181,7 +192,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="IP黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="20" class="custom-scroll" placeholder="IP黑名单正则表达式" th:field="${rule.rule}"></textarea>
 																</label>
 															</section>
 														</div>
@@ -194,6 +205,7 @@
 											</div>
 											<div class="tab-pane" id="SecurityScannerHttpRequestFilter">
 												<form method="post" id="ruleForm_scanner" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -207,7 +219,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="扫描黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="20" class="custom-scroll" placeholder="扫描黑名单正则表达式" th:field="${rule.rule}"></textarea>
 																</label>
 															</section>
 														</div>
@@ -220,6 +232,7 @@
 											</div>
 											<div class="tab-pane" id="RateLimitHttpRequestFilter">
 												<form method="post" id="ruleForm_ratelimit" class="smart-form">
+													<input name="id" type="hidden" th:value="${rule.id}" />
 													<fieldset>
 														<div class="row">
 															<section class="col col-10">
@@ -233,7 +246,7 @@
 															<section class="col col-10">
 																<label class="label">URL：</label>
 																<label class="input">
-																	<input name="url" class="form-control" type="text" placeholder="限流URL">
+																	<input name="url" class="form-control" type="text" placeholder="限流URL" th:value="${rule.url}">
 																</label>
 															</section>
 														</div>
@@ -241,7 +254,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="input">
-																	<input name="rule" class="form-control" type="number" placeholder="流量大小">
+																	<input name="rule" class="form-control" type="number" placeholder="流量大小" th:value="${rule.rule}">
 																</label>
 															</section>
 														</div>
@@ -263,7 +276,7 @@
 		</article>
 	</div>
 </section>
-<script type="text/javascript" src="/js/appjs/gateway/filter/add.js"></script>
+<script type="text/javascript" src="/js/appjs/gateway/sharerule/edit.js"></script>
 <script type="text/javascript">
   function goback() {
     loadURL("filter/rule", $('#content'));

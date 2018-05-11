@@ -1,4 +1,4 @@
-var prefix = "/filter/rule";
+var prefix = "/filter/sharerule";
 $(function() {
   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
     _title: function(title) {

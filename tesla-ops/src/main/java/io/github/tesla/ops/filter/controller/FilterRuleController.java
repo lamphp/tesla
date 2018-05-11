@@ -39,9 +39,9 @@ import io.github.tesla.ops.utils.Query;
  * @version FilterRuleController.java, v 0.0.1 2018年3月20日 下午1:47:26 liushiming
  */
 @Controller
-@RequestMapping("/filter/rule")
+@RequestMapping("/filter/sharerule")
 public class FilterRuleController extends BaseController {
-  private final String prefix = "gateway/filter";
+  private final String prefix = "gateway/sharerule";
 
   @Autowired
   private FilterRuleService ruleService;
@@ -65,6 +65,7 @@ public class FilterRuleController extends BaseController {
   @ResponseBody
   public PageDO<FilterDO> list(@RequestParam Map<String, Object> params) {
     Query query = new Query(params);
+    query.put("sharerule", true);
     return ruleService.queryList(query);
   }
 

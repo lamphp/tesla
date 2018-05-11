@@ -1,5 +1,5 @@
+var prefix = "/filter/sharerule";
 $(document).ready(function() {
-  var prefix = "/filter/rule"
   pageSetUp();
   var pagefunction = function() {
     $("button[id^='submit']").each(function(index, element) {
@@ -27,7 +27,7 @@ $(document).ready(function() {
             $(form).ajaxSubmit({
               cache: true,
               type: "post",
-              url: prefix + "/update",
+              url: prefix + "/save",
               data: $("#" + formId).serialize(),
               async: false,
               success: function() {
