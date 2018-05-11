@@ -1,28 +1,28 @@
 var prefix = "/filter/rule";
 $(function() {
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+      if (!this.options.title) {
+        title.html("&#160;");
+      } else {
+        title.html(this.options.title);
+      }
+    }
+  }));
   load();
 });
-
 function load() {
   $('#ruleTable').bootstrapTable({
     method: 'get',
     url: prefix + "/list",
-    iconSize: 'outline',
     striped: true,
     dataType: "json",
     pagination: true,
     singleSelect: false,
     pageSize: 5,
-    pageList: [5],
     pageNumber: 1,
-    showColumns: false,
     sidePagination: "server",
-    queryParams: function(params) {
-      return {
-        limit: params.limit,
-        offset: params.offset
-      };
-    },
+    uniqueId: 'id',
     columns: [{
       checkbox: true
     }, {
@@ -37,23 +37,8 @@ function load() {
     }, {
       field: 'rule',
       title: '规则',
-      cellStyle: function(value, row, index) {
-        return {
-          css: {
-            "overflow": "hidden",
-            "white-space": "nowrap",
-            "text-overflow": "ellipsis"
-          }
-        }
-      },
       formatter: function(value, row, index) {
-        if (value.indexOf('/\r\n') > 0 || value.indexOf('/\n') > 0 || value.indexOf('\n') > 0 || value.indexOf('\r\n') > 0) {
-          value = value.replace(/\r\n/g, "<br>")
-          value = value.replace(/\n/g, "<br>");
-          return `<a href="javascript:void(0);" onclick="ruleDetail('${value}')"><strong>详情</strong></a>`;
-        } else {
-          return `<a href="javascript:void(0);" rel="popover" data-placement="top" data-original-title="详情" data-content="${value}"><strong>${value}</strong></a>`;
-        }
+        return `<a href="javascript:void(0);" onclick="view('${row.id}')"><strong>详情</strong></a>`;
       }
     }, {
       title: '操作',
@@ -70,15 +55,24 @@ function load() {
     pageSetUp();
   });
 }
-
-function ruleDetail(rule) {
-  layer.open({
-    type: 1,
-    maxmin: true,
-    title: '规则详情',
-    area: ['850px', '500px'],
-    content: '<html>' + rule + '</html>'
-  });
+function view(id) {
+  var rowData = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
+  $('#dialog_simple').html("<p>" + rowData.rule + "</p>");
+  $('#dialog_simple').dialog({
+    autoOpen: false,
+    width: 800,
+    height: 350,
+    resizable: false,
+    modal: true,
+    title: "<div class='widget-header'><h4>组件规则详细信息</h4></div>",
+    buttons: [{
+      html: "<i class='fa fa-times'></i>&nbsp; Close",
+      "class": "btn btn-default",
+      click: function() {
+        $(this).dialog("close");
+      }
+    }]
+  }).dialog('open');
 }
 function reLoad() {
   $('#ruleTable').bootstrapTable('refresh');

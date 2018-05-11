@@ -39,19 +39,19 @@
 					</div>
 					<div>
 						<script type="text/javascript">
-              var s_edit_h = 'hidden';
-              var s_remove_h = 'hidden';
-            </script>
+			              var s_edit_h = 'hidden';
+			              var s_remove_h = 'hidden';
+			            </script>
 					</div>
 					<div shiro:hasPermission="filter:route:edit">
 						<script type="text/javascript">
-              s_edit_h = '';
-            </script>
+			              s_edit_h = '';
+			            </script>
 					</div>
 					<div shiro:hasPermission="filter:route:remove">
 						<script type="text/javascript">
-              var s_remove_h = '';
-            </script>
+			              var s_remove_h = '';
+			            </script>
 					</div>
 
 				</div>
@@ -59,4 +59,6 @@
 		</article>
 	</div>
 </section>
-<script type="text/javascript" src="/js/appjs/gateway/filter/rule.js"></script>
+<div id="dialog_simple">
+</div>
+<script type="text/javascript" src="/js/appjs/gateway/filter/filter.js"></script>
