@@ -29,7 +29,7 @@ function load() {
       field: 'id',
       title: '序号'
     }, {
-      field: 'filterType',
+      field: 'filterName',
       title: '类型'
     }, {
       field: 'url',
@@ -56,33 +56,27 @@ function load() {
   });
 }
 function view(id) {
+  var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
   $('#dialog').dialog({
     autoOpen: false,
     width: 900,
     height: 600,
-    resizable: false,
     modal: true,
     title: "<div class='widget-header'><h4>组件规则详细信息</h4></div>",
     buttons: [{
-      html: "<i class='fa fa-times'></i>&nbsp; Close",
-      "class": "btn btn-default",
-      click: function() {
-        $(this).dialog("close");
+      html: "<i class='fa fa-times'></i>&nbsp; Close","class": "btn btn-default",click: function() {$(this).dialog("close");}
+    }],
+    open: function(event, ui) {
+      $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">'+row.rule+"</textarea>")
+      if (row.filterType == 'DataMappingRequestFilter') {
+        $('.rule').ace({theme: 'idle_fingers',lang: 'freemarker'})
+      } else if (row.filterType == 'DroolsRequestFilter') {
+        $('.rule').ace({theme: 'idle_fingers',lang: 'drools'})
+      } else {
+        $('.rule').ace({theme: 'idle_fingers',lang: 'text'})
       }
-    }]
+    }
   }).dialog('open');
-  fill(id);
-}
-function fill(id) {
-  var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
-  $('#dialog_rule').html(row.rule);
-  if (row.filterType == 'DataMappingRequestFilter') {
-    $('#dialog_rule').ace({theme: 'twilight',lang: 'freemarker'})
-  } else if (row.filterType == 'DroolsRequestFilter') {
-    $('#dialog_rule').ace({theme: 'twilight',lang: 'drools'})
-  } else {
-    $('#dialog_rule').ace({theme: 'twilight',lang: 'text'})
-  }
 }
 function add() {
   var url = prefix + '/add';

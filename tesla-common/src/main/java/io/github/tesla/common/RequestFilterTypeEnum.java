@@ -23,34 +23,41 @@ public enum RequestFilterTypeEnum {
   /**
    * 各种限制
    */
-  Oauth2HttpRequestFilter(0), // oauth2
-  URLParamHttpRequestFilter(1), // URL参数黑名单参数拦截
-  BlackCookieHttpRequestFilter(2), // Cookie黑名单拦截
-  BlackUaHttpRequestFilter(3), // User-Agent黑名单拦截
-  BlackURLHttpRequestFilter(4), // URL路径黑名单拦截
-  BlackIpHttpRequesFilter(5), // IP黑名单
-  SecurityScannerHttpRequestFilter(6), // 扫描
-  RateLimitHttpRequestFilter(7), // 限流
-  DroolsRequestFilter(8), // 规则转换
-  DataMappingRequestFilter(9), // 数据格式转化Mapping
+  Oauth2HttpRequestFilter(0, "Oauth校验组件"), // oauth2
+  URLParamHttpRequestFilter(1, "URL参数黑名单组件"), // URL参数黑名单参数拦截
+  BlackCookieHttpRequestFilter(2, "Cookie黑名单组件"), // Cookie黑名单拦截
+  BlackUaHttpRequestFilter(3, "UA黑名单组件"), // User-Agent黑名单拦截
+  BlackURLHttpRequestFilter(4, "URL黑名单组件"), // URL路径黑名单拦截
+  BlackIpHttpRequesFilter(5, "IP黑名单组件"), // IP黑名单
+  SecurityScannerHttpRequestFilter(6, "防扫描组件"), // 扫描
+  RateLimitHttpRequestFilter(7, "限流组件"), // 限流
+  DroolsRequestFilter(8, "规则引擎组件"), // 规则转换
+  DataMappingRequestFilter(9, "参数映射组件"), // 数据格式转化Mapping
 
 
 
   /**
    * 协议适配
    */
-  GRPC(100), //
-  SPRINGCLOUD(101), //
-  DUBBO(102);
+  GRPC(100, "gRPC"), //
+  SPRINGCLOUD(101, "SpringCloud"), //
+  DUBBO(102, "Dubbo");
 
   private int filterOrder;
 
-  RequestFilterTypeEnum(int filteOrder) {
+  private String filterViewName;
+
+  RequestFilterTypeEnum(int filteOrder, String filterViewName) {
     this.filterOrder = filteOrder;
+    this.filterViewName = filterViewName;
   }
 
   public int order() {
     return filterOrder;
+  }
+
+  public String filterViewName() {
+    return filterViewName;
   }
 
   public static RequestFilterTypeEnum fromTypeName(String typeName) {

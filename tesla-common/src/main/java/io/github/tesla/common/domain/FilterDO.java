@@ -39,6 +39,10 @@ public class FilterDO implements Serializable {
     return filterType;
   }
 
+  public String getFilterName(){
+    return filterType.filterViewName();
+  }
+
   public void setFilterType(RequestFilterTypeEnum filterType) {
     this.filterType = filterType;
   }
