@@ -56,12 +56,10 @@ function load() {
   });
 }
 function view(id) {
-  var rowData = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
-  $('#dialog_simple').html("<p>" + rowData.rule + "</p>");
-  $('#dialog_simple').dialog({
+  $('#dialog').dialog({
     autoOpen: false,
-    width: 800,
-    height: 350,
+    width: 900,
+    height: 600,
     resizable: false,
     modal: true,
     title: "<div class='widget-header'><h4>组件规则详细信息</h4></div>",
@@ -73,9 +71,18 @@ function view(id) {
       }
     }]
   }).dialog('open');
+  fill(id);
 }
-function reLoad() {
-  $('#ruleTable').bootstrapTable('refresh');
+function fill(id) {
+  var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
+  $('#dialog_rule').html(row.rule);
+  if (row.filterType == 'DataMappingRequestFilter') {
+    $('#dialog_rule').ace({theme: 'twilight',lang: 'freemarker'})
+  } else if (row.filterType == 'DroolsRequestFilter') {
+    $('#dialog_rule').ace({theme: 'twilight',lang: 'drools'})
+  } else {
+    $('#dialog_rule').ace({theme: 'twilight',lang: 'text'})
+  }
 }
 function add() {
   var url = prefix + '/add';
