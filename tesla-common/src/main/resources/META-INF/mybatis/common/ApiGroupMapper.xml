@@ -79,11 +79,11 @@
 	<update id="update" parameterType="io.github.tesla.common.domain.ApiGroupDO">
 		update gateway_api_group
 		<set>
-			<if test="name != null and name != ''"> name = #{name} ,</if>
-			<if test="describe != null and describe != ''"> describe = #{describe} ,</if>
-			<if test="backendHost != null and backendHost != ''"> backend_host = #{backendHost}, </if>
-			<if test="backendPort != null and backendPort != ''"> backend_port = #{backendPort}, </if>
-			<if test="backendPath != null and backendPath != ''"> and backend_path = #{backendPath}, </if>
+			<if test="name != null and name != ''"> `name` = #{name} ,</if>
+			<if test="describe != null and describe != ''"> `describe` = #{describe} ,</if>
+			<if test="backendHost != null and backendHost != ''"> `backend_host` = #{backendHost}, </if>
+			<if test="backendPort != null and backendPort != ''"> `backend_port` = #{backendPort}, </if>
+			<if test="backendPath != null and backendPath != ''"> `backend_path` = #{backendPath}, </if>
 			`gmt_modified`=sysdate()
 		</set>
 		where id = #{id}
