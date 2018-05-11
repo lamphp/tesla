@@ -32,14 +32,17 @@ function load() {
       field: 'filterName',
       title: '类型'
     }, {
-      field: 'url',
-      title: 'url'
-    }, {
       field: 'rule',
       title: '规则',
       formatter: function(value, row, index) {
         return `<a href="javascript:void(0);" onclick="view('${row.id}')"><strong>详情</strong></a>`;
       }
+    }, {
+      field: 'gmtCreate',
+      title: '创建时间'
+    }, {
+      field: 'gmtModified',
+      title: '更新时间'
     }, {
       title: '操作',
       field: 'id',
