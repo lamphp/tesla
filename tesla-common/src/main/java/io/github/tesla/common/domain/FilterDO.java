@@ -14,6 +14,7 @@
 package io.github.tesla.common.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import io.github.tesla.common.RequestFilterTypeEnum;
 
@@ -35,11 +36,16 @@ public class FilterDO implements Serializable {
 
   private Long groupId;
 
+  private Timestamp gmtCreate;
+
+  private Timestamp gmtModified;
+
+
   public RequestFilterTypeEnum getFilterType() {
     return filterType;
   }
 
-  public String getFilterName(){
+  public String getFilterName() {
     return filterType.filterViewName();
   }
 
@@ -87,6 +93,22 @@ public class FilterDO implements Serializable {
 
   public void setGroupId(Long groupId) {
     this.groupId = groupId;
+  }
+
+  public Timestamp getGmtCreate() {
+    return gmtCreate;
+  }
+
+  public void setGmtCreate(Timestamp gmtCreate) {
+    this.gmtCreate = gmtCreate;
+  }
+
+  public Timestamp getGmtModified() {
+    return gmtModified;
+  }
+
+  public void setGmtModified(Timestamp gmtModified) {
+    this.gmtModified = gmtModified;
   }
 
   @Override

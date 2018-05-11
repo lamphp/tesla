@@ -14,6 +14,7 @@
 package io.github.tesla.common.domain;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import org.springframework.beans.BeanUtils;
 
@@ -29,6 +30,11 @@ public class ApiSpringCloudDO implements Serializable {
   private String instanceId;
 
   private ApiDO api;
+
+  private Timestamp gmtCreate;
+
+  private Timestamp gmtModified;
+
 
   public Long getId() {
     return id;
@@ -54,6 +60,21 @@ public class ApiSpringCloudDO implements Serializable {
     this.api = api;
   }
 
+  public Timestamp getGmtCreate() {
+    return gmtCreate;
+  }
+
+  public void setGmtCreate(Timestamp gmtCreate) {
+    this.gmtCreate = gmtCreate;
+  }
+
+  public Timestamp getGmtModified() {
+    return gmtModified;
+  }
+
+  public void setGmtModified(Timestamp gmtModified) {
+    this.gmtModified = gmtModified;
+  }
 
   public ApiSpringCloudDO copy(ApiSpringCloudDO source) {
     ApiSpringCloudDO target = new ApiSpringCloudDO();

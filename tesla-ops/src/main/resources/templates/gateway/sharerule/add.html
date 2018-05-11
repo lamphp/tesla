@@ -48,12 +48,6 @@
 												<span class="hidden-mobile hidden-tablet">防爬</span>
 											</a>
 										</li>
-										<li class="">
-											<a data-toggle="tab" href="#RateLimitHttpRequestFilter" aria-expanded="false">
-												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
-												<span class="hidden-mobile hidden-tablet">限流</span>
-											</a>
-										</li>
 									</ul>
 								</header>
 								<div role="content">
@@ -76,7 +70,7 @@
 																<section class="col col-10">
 																	<label class="label">内容：</label>
 																	<label class="textarea textarea-resizable">
-																		<textarea name="rule" rows="5" class="custom-scroll" placeholder="URL参数黑名单正则表达式"></textarea>
+																		<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="URL参数黑名单正则表达式"></textarea>
 																	</label>
 																</section>
 															</div>
@@ -103,7 +97,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="Cookie黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="Cookie黑名单正则表达式"></textarea>
 																</label>
 															</section>
 														</div>
@@ -129,7 +123,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="UA黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="UA黑名单正则表达式"></textarea>
 																</label>
 															</section>
 														</div>
@@ -155,7 +149,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="URL黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="URL黑名单正则表达式"></textarea>
 																</label>
 															</section>
 														</div>
@@ -181,7 +175,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="IP黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="IP黑名单正则表达式"></textarea>
 																</label>
 															</section>
 														</div>
@@ -207,7 +201,7 @@
 															<section class="col col-10">
 																<label class="label">内容：</label>
 																<label class="textarea textarea-resizable">
-																	<textarea name="rule" rows="5" class="custom-scroll" placeholder="扫描黑名单正则表达式"></textarea>
+																	<textarea name="rule" rows="15" class="custom-scroll rule" placeholder="扫描黑名单正则表达式"></textarea>
 																</label>
 															</section>
 														</div>
@@ -215,40 +209,6 @@
 													<footer>
 														<button type="button" onclick="goback()" class="btn btn-primary">返回</button>
 														<button type="button" id="submit_scanner" class="btn btn-primary">提交</button>
-													</footer>
-												</form>
-											</div>
-											<div class="tab-pane" id="RateLimitHttpRequestFilter">
-												<form method="post" id="ruleForm_ratelimit" class="smart-form">
-													<fieldset>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">策略类型：</label>
-																<label class="input">
-																	<input name="filterType" class="form-control" type="text" value="RateLimitHttpRequestFilter" readonly>
-																</label>
-															</section>
-														</div>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">URL：</label>
-																<label class="input">
-																	<input name="url" class="form-control" type="text" placeholder="限流URL">
-																</label>
-															</section>
-														</div>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">内容：</label>
-																<label class="input">
-																	<input name="rule" class="form-control" type="number" placeholder="流量大小">
-																</label>
-															</section>
-														</div>
-													</fieldset>
-													<footer>
-														<button type="button" onclick="goback()" class="btn btn-primary">返回</button>
-														<button type="button" id="submit_ratelimit" class="btn btn-primary">提交</button>
 													</footer>
 												</form>
 											</div>
@@ -266,7 +226,7 @@
 <script type="text/javascript" src="/js/appjs/gateway/sharerule/add.js"></script>
 <script type="text/javascript">
   function goback() {
-    loadURL("filter/rule", $('#content'));
+    loadURL("filter/sharerule", $('#content'));
   }
 </script>
 

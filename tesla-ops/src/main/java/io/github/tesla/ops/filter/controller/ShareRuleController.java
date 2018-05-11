@@ -40,7 +40,7 @@ import io.github.tesla.ops.utils.Query;
  */
 @Controller
 @RequestMapping("/filter/sharerule")
-public class FilterRuleController extends BaseController {
+public class ShareRuleController extends BaseController {
   private final String prefix = "gateway/sharerule";
 
   @Autowired
@@ -49,7 +49,7 @@ public class FilterRuleController extends BaseController {
   @RequiresPermissions("filter:rule:rule")
   @GetMapping()
   public String rule() {
-    return prefix + "/filter";
+    return prefix + "/rule";
   }
 
   @RequiresPermissions("filter:rule:add")

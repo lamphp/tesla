@@ -44,5 +44,31 @@ $(document).ready(function() {
       })
     });
   }
+  var acefunction = function() {
+    var tabsData = [{
+      "id": "URLParamHttpRequestFilter",
+    }, {
+      "id": "BlackCookieHttpRequestFilter",
+    }, {
+      "id": "BlackUaHttpRequestFilter",
+    }, {
+      "id": "BlackURLHttpRequestFilter",
+    }, {
+      "id": "BlackIpHttpRequesFilter",
+    }, {
+      "id": "SecurityScannerHttpRequestFilter",
+    }];
+    $(tabsData).each(function() {
+      $("a[href='#" + this.id + "']").bind('click', function() {
+        $(".rule").each(function() {
+          $(this).ace({
+            theme: 'idle_fingers',
+            lang: 'text'
+          })
+        })
+      });
+    });
+  }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+  acefunction();
 });

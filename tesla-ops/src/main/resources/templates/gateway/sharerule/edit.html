@@ -53,12 +53,6 @@
 												<span class="hidden-mobile hidden-tablet">防爬</span>
 											</a>
 										</li>
-										<li th:class="${rule.filterType.name()=='RateLimitHttpRequestFilter'}?'active':'disabledTab'">
-											<a data-toggle="tab" href="#RateLimitHttpRequestFilter" aria-expanded="false">
-												<i class="fa fa-lg fa-arrow-circle-o-down"></i>
-												<span class="hidden-mobile hidden-tablet">限流</span>
-											</a>
-										</li>
 									</ul>
 								</header>
 								<div role="content">
@@ -230,41 +224,6 @@
 													</footer>
 												</form>
 											</div>
-											<div class="tab-pane" id="RateLimitHttpRequestFilter">
-												<form method="post" id="ruleForm_ratelimit" class="smart-form">
-													<input name="id" type="hidden" th:value="${rule.id}" />
-													<fieldset>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">策略类型：</label>
-																<label class="input">
-																	<input name="filterType" class="form-control" type="text" value="RateLimitHttpRequestFilter" readonly>
-																</label>
-															</section>
-														</div>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">URL：</label>
-																<label class="input">
-																	<input name="url" class="form-control" type="text" placeholder="限流URL" th:value="${rule.url}">
-																</label>
-															</section>
-														</div>
-														<div class="row">
-															<section class="col col-10">
-																<label class="label">内容：</label>
-																<label class="input">
-																	<input name="rule" class="form-control" type="number" placeholder="流量大小" th:value="${rule.rule}">
-																</label>
-															</section>
-														</div>
-													</fieldset>
-													<footer>
-														<button type="button" onclick="goback()" class="btn btn-primary">返回</button>
-														<button type="button" id="submit_ratelimit" class="btn btn-primary">提交</button>
-													</footer>
-												</form>
-											</div>
 										</div>
 									</div>
 								</div>
@@ -279,7 +238,7 @@
 <script type="text/javascript" src="/js/appjs/gateway/sharerule/edit.js"></script>
 <script type="text/javascript">
   function goback() {
-    loadURL("filter/rule", $('#content'));
+    loadURL("filter/sharerule", $('#content'));
   }
 </script>
 

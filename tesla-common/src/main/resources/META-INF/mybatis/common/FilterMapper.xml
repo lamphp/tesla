@@ -41,8 +41,8 @@
 			<if test="filterType != null"> and `filter_type` = #{filterType} </if>
 			<if test="apiId != null and apiId != ''"> and `api_id` = #{apiId} </if>
 			<if test="groupId != null and groupId != ''"> and `group_id` = #{groupId} </if>
-			<if test="sharerule != null"> and `api_id` == null</if>
-			<if test="bizrule != null"> and `api_id` != null</if>
+			<if test="sharerule != null"> and `api_id` is null and `group_id` is null </if>
+			<if test="bizrule != null"> and (`api_id` is not null or `group_id` is not null) </if>
 		</where>
 		<choose>
 			<when test="sort != null and sort.trim() != ''">
@@ -60,8 +60,12 @@
 	<select id="count" resultType="int">
 		select count(*) from gateway_filter
 		<where>
-			<if test="id != null and id != ''"> and id = #{id} </if>
-			<if test="filterType != null"> and filter_type = #{filterType} </if>
+			<if test="id != null and id != ''"> and `id` = #{id} </if>
+			<if test="filterType != null"> and `filter_type` = #{filterType} </if>
+			<if test="apiId != null and apiId != ''"> and `api_id` = #{apiId} </if>
+			<if test="groupId != null and groupId != ''"> and `group_id` = #{groupId} </if>
+			<if test="sharerule != null"> and `api_id` is null and `group_id` is null </if>
+			<if test="bizrule != null"> and (`api_id` is not null or `group_id` is not null) </if>
 		</where>
 	</select>
 
