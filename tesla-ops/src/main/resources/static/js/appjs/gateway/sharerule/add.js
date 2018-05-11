@@ -45,28 +45,16 @@ $(document).ready(function() {
     });
   }
   var acefunction = function() {
-    var tabsData = [{
-      "id": "URLParamHttpRequestFilter",
-    }, {
-      "id": "BlackCookieHttpRequestFilter",
-    }, {
-      "id": "BlackUaHttpRequestFilter",
-    }, {
-      "id": "BlackURLHttpRequestFilter",
-    }, {
-      "id": "BlackIpHttpRequesFilter",
-    }, {
-      "id": "SecurityScannerHttpRequestFilter",
-    }];
-    $(tabsData).each(function() {
-      $("a[href='#" + this.id + "']").bind('click', function() {
-        $(".rule").each(function() {
-          $(this).ace({
-            theme: 'idle_fingers',
-            lang: 'text'
-          })
-        })
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+      var activetab = $(e.target).attr("aria-controls")
+      $("#" + activetab).find("textarea").ace({
+        theme: 'idle_fingers',
+        lang: 'text'
       });
+    })
+    $("#URLParamHttpRequestFilter").find("textarea").ace({
+      theme: 'idle_fingers',
+      lang: 'text'
     });
   }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
