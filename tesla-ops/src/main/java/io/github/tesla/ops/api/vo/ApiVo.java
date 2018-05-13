@@ -124,6 +124,10 @@ public class ApiVo implements Serializable {
     return RouteType.fromType(Integer.valueOf(routeType));
   }
 
+  public String getRouteTypeName() {
+    return this.getRouteType().typeName();
+  }
+
   public void setRouteType(Integer routeType) {
     this.routeType = routeType;
   }

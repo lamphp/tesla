@@ -39,7 +39,7 @@ function load() {
       field: 'path',
       title: '目标路径'
     }, {
-      field: 'routeType',
+      field: 'routeTypeName',
       title: '路由模式'
     }, {
       field: 'gmtCreate',
