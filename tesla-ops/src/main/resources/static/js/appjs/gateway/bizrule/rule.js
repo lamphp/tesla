@@ -26,14 +26,11 @@ function load() {
     columns: [{
       checkbox: true
     }, {
-      field: 'id',
-      title: '序号'
-    }, {
       field: 'filterName',
       title: '类型'
     }, {
       field: 'api',
-      title: '所属API',
+      title: '影响API',
       formatter: function(value, row, index) {
         if (value != null) {
           return value.url;
@@ -43,7 +40,7 @@ function load() {
       }
     }, {
       field: 'group',
-      title: '所属API分组',
+      title: '影响API分组',
       formatter: function(value, row, index) {
         if (value != null) {
           return value.name;
@@ -80,8 +77,8 @@ function load() {
 }
 function view(id) {
   var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
+  $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">' + row.rule + "</textarea>")
   $('#dialog').dialog({
-    autoOpen: false,
     width: 900,
     height: 600,
     modal: true,
@@ -94,7 +91,6 @@ function view(id) {
       }
     }],
     open: function(event, ui) {
-      $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">' + row.rule + "</textarea>")
       if (row.filterType == 'DataMappingRequestFilter') {
         $('.rule').ace({
           theme: 'idle_fingers',

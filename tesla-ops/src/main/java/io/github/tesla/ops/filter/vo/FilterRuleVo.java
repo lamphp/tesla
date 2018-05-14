@@ -32,6 +32,10 @@ public class FilterRuleVo implements Serializable {
 
   private Long id;
 
+  private String name;
+
+  private String describe;
+
   private RequestFilterTypeEnum filterType;
 
   private String rule;
@@ -43,6 +47,22 @@ public class FilterRuleVo implements Serializable {
   private Timestamp gmtCreate;
 
   private Timestamp gmtModified;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getDescribe() {
+    return describe;
+  }
+
+  public void setDescribe(String describe) {
+    this.describe = describe;
+  }
 
   public String getFilterName() {
     return filterType.filterViewName();

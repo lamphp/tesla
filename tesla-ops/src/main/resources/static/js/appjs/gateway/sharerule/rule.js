@@ -26,9 +26,6 @@ function load() {
     columns: [{
       checkbox: true
     }, {
-      field: 'id',
-      title: '序号'
-    }, {
       field: 'filterName',
       title: '类型'
     }, {
@@ -60,24 +57,26 @@ function load() {
 }
 function view(id) {
   var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
+  $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">' + row.rule + "</textarea>")
   $('#dialog').dialog({
-    autoOpen: false,
     width: 900,
     height: 600,
     modal: true,
     title: "<div class='widget-header'><h4>组件规则详细信息</h4></div>",
     buttons: [{
-      html: "<i class='fa fa-times'></i>&nbsp; Close","class": "btn btn-default",click: function() {$(this).dialog("close");}
+      html: "<i class='fa fa-times'></i>&nbsp; Close",
+      "class": "btn btn-default",
+      click: function() {
+        $(this).dialog("close");
+      }
     }],
     open: function(event, ui) {
-      $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">'+row.rule+"</textarea>")
-      if (row.filterType == 'DataMappingRequestFilter') {
-        $('.rule').ace({theme: 'idle_fingers',lang: 'freemarker'})
-      } else if (row.filterType == 'DroolsRequestFilter') {
-        $('.rule').ace({theme: 'idle_fingers',lang: 'drools'})
-      } else {
-        $('.rule').ace({theme: 'idle_fingers',lang: 'text'})
-      }
+      var row = $('#ruleTable').bootstrapTable('getRowByUniqueId', id);
+      $('#dialog').html('<textarea class="rule" rows="100" style="width: 100%">' + row.rule + "</textarea>")
+      $('.rule').ace({
+        theme: 'idle_fingers',
+        lang: 'text'
+      })
     }
   }).dialog('open');
 }
