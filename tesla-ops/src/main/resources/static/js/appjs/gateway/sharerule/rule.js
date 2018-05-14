@@ -26,14 +26,20 @@ function load() {
     columns: [{
       checkbox: true
     }, {
-      field: 'filterName',
-      title: '类型'
+      field: 'name',
+      title: '名称'
     }, {
       field: 'rule',
       title: '规则',
       formatter: function(value, row, index) {
         return `<a href="javascript:void(0);" onclick="view('${row.id}')"><strong>详情</strong></a>`;
       }
+    }, {
+      field: 'describe',
+      title: '描述'
+    }, {
+      field: 'filterName',
+      title: '类型'
     }, {
       field: 'gmtCreate',
       title: '创建时间'

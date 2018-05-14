@@ -26,11 +26,11 @@ function load() {
     columns: [{
       checkbox: true
     }, {
-      field: 'filterName',
-      title: '类型'
+      field: 'name',
+      title: '名称'
     }, {
       field: 'api',
-      title: '影响API',
+      title: '所属API',
       formatter: function(value, row, index) {
         if (value != null) {
           return value.url;
@@ -40,7 +40,7 @@ function load() {
       }
     }, {
       field: 'group',
-      title: '影响API分组',
+      title: '所属API分组',
       formatter: function(value, row, index) {
         if (value != null) {
           return value.name;
@@ -54,6 +54,12 @@ function load() {
       formatter: function(value, row, index) {
         return `<a href="javascript:void(0);" onclick="view('${row.id}')"><strong>详情</strong></a>`;
       }
+    }, {
+      field: 'describe',
+      title: '描述'
+    }, {
+      field: 'filterName',
+      title: '类型'
     }, {
       field: 'gmtCreate',
       title: '创建时间'
