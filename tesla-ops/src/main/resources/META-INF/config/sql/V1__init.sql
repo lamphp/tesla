@@ -144,8 +144,8 @@ INSERT INTO `sys_menu` VALUES ('59', '51', '删除', '', 'gateway:apigroup:remov
 -- ----------------------------
 -- Filter管理开始
 -- ----------------------------
-INSERT INTO `sys_menu` VALUES ('60', '5', '公共组件列表', 'filter/sharerule', 'filter:rule:rule', '1', 'fa fa-warning', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
-INSERT INTO `sys_menu` VALUES ('61', '5', '业务组件列表', 'filter/bizrule', 'filter:rule:rule', '1', 'fa fa-warning', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('60', '5', '通用组件列表', 'filter/sharerule', 'filter:rule:rule', '1', 'fa fa-warning', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
+INSERT INTO `sys_menu` VALUES ('61', '5', 'API组件列表', 'filter/bizrule', 'filter:rule:rule', '1', 'fa fa-warning', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 INSERT INTO `sys_menu` VALUES ('62', '60', '新增', '', 'filter:rule:add', '2', '', '0', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 INSERT INTO `sys_menu` VALUES ('63', '60', '批量删除', '', 'filter:rule:batchRemove', '2','', '1', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
 INSERT INTO `sys_menu` VALUES ('64', '60', '编辑', '', 'filter:rule:edit', '2', '', '2', '2017-08-09 23:06:55', '2017-08-14 14:13:43');
