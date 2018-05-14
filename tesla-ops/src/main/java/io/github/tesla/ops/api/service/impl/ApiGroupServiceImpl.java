@@ -19,9 +19,12 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 import io.github.tesla.common.dao.ApiGroupDao;
 import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.api.service.ApiGroupService;
+import io.github.tesla.ops.api.vo.ApiGroupVo;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 
@@ -36,23 +39,35 @@ public class ApiGroupServiceImpl implements ApiGroupService {
   private ApiGroupDao apiGroupDao;
 
   @Override
-  public PageDO<ApiGroupDO> queryList(Query query) {
+  public PageDO<ApiGroupVo> queryList(Query query) {
     int total = apiGroupDao.count(query);
     List<ApiGroupDO> groupDOs = apiGroupDao.list(query);
-    PageDO<ApiGroupDO> page = new PageDO<>();
+    List<ApiGroupVo> groupVOs = Lists.newArrayListWithCapacity(groupDOs.size());
+    for (ApiGroupDO groupDo : groupDOs) {
+      ApiGroupVo groupVO = ApiGroupVo.buildGroupVo(groupDo);
+      groupVOs.add(groupVO);
+    }
+    PageDO<ApiGroupVo> page = new PageDO<>();
     page.setTotal(total);
-    page.setRows(groupDOs);
+    page.setRows(groupVOs);
     return page;
   }
 
   @Override
-  public ApiGroupDO get(Long id) {
-    return apiGroupDao.get(id);
+  public ApiGroupVo get(Long id) {
+    ApiGroupDO groupDO = apiGroupDao.get(id);
+    return ApiGroupVo.buildGroupVo(groupDO);
   }
 
   @Override
-  public List<ApiGroupDO> list(Map<String, Object> map) {
-    return apiGroupDao.list(map);
+  public List<ApiGroupVo> list(Map<String, Object> map) {
+    List<ApiGroupDO> groupDOs = apiGroupDao.list(map);
+    List<ApiGroupVo> groupVOs = Lists.newArrayListWithCapacity(groupDOs.size());
+    for (ApiGroupDO groupDo : groupDOs) {
+      ApiGroupVo groupVO = ApiGroupVo.buildGroupVo(groupDo);
+      groupVOs.add(groupVO);
+    }
+    return groupVOs;
   }
 
   @Override
@@ -61,13 +76,15 @@ public class ApiGroupServiceImpl implements ApiGroupService {
   }
 
   @Override
-  public int save(ApiGroupDO apiGroupDO) {
-    return apiGroupDao.save(apiGroupDO);
+  public int save(ApiGroupVo groupVo) {
+    ApiGroupDO groupDO = ApiGroupVo.buildGroupDo(groupVo);
+    return apiGroupDao.save(groupDO);
   }
 
   @Override
-  public int update(ApiGroupDO apiGroupDO) {
-    return apiGroupDao.update(apiGroupDO);
+  public int update(ApiGroupVo groupVo) {
+    ApiGroupDO groupDO = ApiGroupVo.buildGroupDo(groupVo);
+    return apiGroupDao.update(groupDO);
   }
 
   @Override

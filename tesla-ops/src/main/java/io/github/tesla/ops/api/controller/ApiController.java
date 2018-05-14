@@ -33,10 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.common.collect.Maps;
 
 import io.github.tesla.common.RouteType;
-import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.api.service.ApiGroupService;
 import io.github.tesla.ops.api.service.ApiService;
 import io.github.tesla.ops.api.service.ProtobufService;
+import io.github.tesla.ops.api.vo.ApiGroupVo;
 import io.github.tesla.ops.api.vo.ApiVo;
 import io.github.tesla.ops.common.BaseController;
 import io.github.tesla.ops.common.CommonResponse;
@@ -74,7 +74,7 @@ public class ApiController extends BaseController {
   @RequiresPermissions("gateway:api:add")
   @GetMapping("/add")
   public String add(Model model) {
-    List<ApiGroupDO> apiGroups = groupService.list(Maps.newHashMap());
+    List<ApiGroupVo> apiGroups = groupService.list(Maps.newHashMap());
     model.addAttribute("apiGroups", apiGroups);
     model.addAttribute("apiRoutes", RouteType.values());
     return prefix + "/add";
@@ -84,7 +84,7 @@ public class ApiController extends BaseController {
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable("id") Long id, Model model) {
     ApiVo apiVO = apiService.get(id);
-    List<ApiGroupDO> apiGroups = groupService.list(Maps.newHashMap());
+    List<ApiGroupVo> apiGroups = groupService.list(Maps.newHashMap());
     model.addAttribute("apiGroups", apiGroups);
     model.addAttribute("api", apiVO);
     model.addAttribute("apiRoutes", RouteType.values());

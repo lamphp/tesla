@@ -16,7 +16,7 @@ package io.github.tesla.ops.api.service;
 import java.util.List;
 import java.util.Map;
 
-import io.github.tesla.common.domain.ApiGroupDO;
+import io.github.tesla.ops.api.vo.ApiGroupVo;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 
@@ -26,17 +26,17 @@ import io.github.tesla.ops.utils.Query;
  */
 public interface ApiGroupService {
 
-  PageDO<ApiGroupDO> queryList(Query query);
+  PageDO<ApiGroupVo> queryList(Query query);
 
-  ApiGroupDO get(Long id);
+  ApiGroupVo get(Long id);
 
-  List<ApiGroupDO> list(Map<String, Object> map);
+  List<ApiGroupVo> list(Map<String, Object> map);
 
   int count(Map<String, Object> map);
 
-  int save(ApiGroupDO apiGroupDO);
+  int save(ApiGroupVo apiGroupDO);
 
-  int update(ApiGroupDO apiGroupDO);
+  int update(ApiGroupVo apiGroupDO);
 
   int remove(Long id);
 

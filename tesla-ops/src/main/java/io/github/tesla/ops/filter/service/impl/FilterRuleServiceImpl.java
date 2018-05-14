@@ -19,9 +19,16 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.google.common.collect.Lists;
+
 import io.github.tesla.common.dao.FilterDao;
 import io.github.tesla.common.domain.FilterDO;
+import io.github.tesla.ops.api.service.ApiGroupService;
+import io.github.tesla.ops.api.service.ApiService;
+import io.github.tesla.ops.api.vo.ApiGroupVo;
+import io.github.tesla.ops.api.vo.ApiVo;
 import io.github.tesla.ops.filter.service.FilterRuleService;
+import io.github.tesla.ops.filter.vo.FilterRuleVo;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 
@@ -35,26 +42,73 @@ public class FilterRuleServiceImpl implements FilterRuleService {
   @Autowired
   private FilterDao ruleDao;
 
+  @Autowired
+  private ApiGroupService groupService;
+
+  @Autowired
+  private ApiService apiService;
+
   @Override
-  public PageDO<FilterDO> queryList(Query query) {
+  public PageDO<FilterRuleVo> queryList(Query query) {
     int total = ruleDao.count(query);
-    List<FilterDO> rules = ruleDao.list(query);
-    PageDO<FilterDO> page = new PageDO<>();
+    List<FilterDO> ruleDos = ruleDao.list(query);
+    List<FilterRuleVo> ruleVos = Lists.newArrayListWithCapacity(ruleDos.size());
+    for (FilterDO ruleDo : ruleDos) {
+      Long apiId = ruleDo.getApiId();
+      Long groupId = ruleDo.getGroupId();
+      ApiVo apiVo = null;
+      ApiGroupVo groupVo = null;
+      if (apiId != null) {
+        apiVo = apiService.get(apiId);
+      }
+      if (groupId != null) {
+        groupVo = groupService.get(groupId);
+      }
+      FilterRuleVo ruleVo = FilterRuleVo.buildFilterRuleVo(ruleDo, apiVo, groupVo);
+      ruleVos.add(ruleVo);
+    }
+    PageDO<FilterRuleVo> page = new PageDO<>();
     page.setTotal(total);
-    page.setRows(rules);
+    page.setRows(ruleVos);
     return page;
   }
 
   @Override
-  public FilterDO get(Long ruleId) {
-    FilterDO rule = ruleDao.get(ruleId);
-    return rule;
+  public FilterRuleVo get(Long ruleId) {
+    FilterDO ruleDo = ruleDao.get(ruleId);
+    Long apiId = ruleDo.getApiId();
+    Long groupId = ruleDo.getGroupId();
+    ApiVo apiVo = null;
+    ApiGroupVo groupVo = null;
+    if (apiId != null) {
+      apiVo = apiService.get(apiId);
+    }
+    if (groupId != null) {
+      groupVo = groupService.get(groupId);
+    }
+    FilterRuleVo ruleVo = FilterRuleVo.buildFilterRuleVo(ruleDo, apiVo, groupVo);
+    return ruleVo;
   }
 
   @Override
-  public List<FilterDO> list(Map<String, Object> map) {
-    List<FilterDO> routes = ruleDao.list(map);
-    return routes;
+  public List<FilterRuleVo> list(Map<String, Object> map) {
+    List<FilterDO> ruleDos = ruleDao.list(map);
+    List<FilterRuleVo> ruleVos = Lists.newArrayListWithCapacity(ruleDos.size());
+    for (FilterDO ruleDo : ruleDos) {
+      Long apiId = ruleDo.getApiId();
+      Long groupId = ruleDo.getGroupId();
+      ApiVo apiVo = null;
+      ApiGroupVo groupVo = null;
+      if (apiId != null) {
+        apiVo = apiService.get(apiId);
+      }
+      if (groupId != null) {
+        groupVo = groupService.get(groupId);
+      }
+      FilterRuleVo ruleVo = FilterRuleVo.buildFilterRuleVo(ruleDo, apiVo, groupVo);
+      ruleVos.add(ruleVo);
+    }
+    return ruleVos;
   }
 
   @Override
@@ -63,12 +117,14 @@ public class FilterRuleServiceImpl implements FilterRuleService {
   }
 
   @Override
-  public int save(FilterDO ruleDo) {
+  public int save(FilterRuleVo ruleVo) {
+    FilterDO ruleDo = FilterRuleVo.buildFilterRuleDo(ruleVo);
     return ruleDao.save(ruleDo);
   }
 
   @Override
-  public int update(FilterDO ruleDo) {
+  public int update(FilterRuleVo ruleVo) {
+    FilterDO ruleDo = FilterRuleVo.buildFilterRuleDo(ruleVo);
     return ruleDao.update(ruleDo);
   }
 

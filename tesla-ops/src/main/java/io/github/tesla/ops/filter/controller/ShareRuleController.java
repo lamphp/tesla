@@ -26,11 +26,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.tesla.common.domain.FilterDO;
+import io.github.tesla.ops.api.service.ApiGroupService;
+import io.github.tesla.ops.api.service.ApiService;
 import io.github.tesla.ops.common.BaseController;
 import io.github.tesla.ops.common.CommonResponse;
 import io.github.tesla.ops.common.Log;
 import io.github.tesla.ops.filter.service.FilterRuleService;
+import io.github.tesla.ops.filter.vo.FilterRuleVo;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 
@@ -45,6 +47,12 @@ public class ShareRuleController extends BaseController {
 
   @Autowired
   protected FilterRuleService ruleService;
+
+  @Autowired
+  protected ApiService apiService;
+
+  @Autowired
+  protected ApiGroupService apiGroupService;
 
   @RequiresPermissions("filter:rule:rule")
   @GetMapping()
@@ -61,8 +69,8 @@ public class ShareRuleController extends BaseController {
   @RequiresPermissions("filter:rule:edit")
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable("id") Long id, Model model) {
-    FilterDO ruleDo = ruleService.get(id);
-    model.addAttribute("rule", ruleDo);
+    FilterRuleVo ruleVo = ruleService.get(id);
+    model.addAttribute("rule", ruleVo);
     return prefix + "/edit";
   }
 
@@ -70,7 +78,7 @@ public class ShareRuleController extends BaseController {
   @RequiresPermissions("filter:rule:rule")
   @GetMapping("/list")
   @ResponseBody
-  public PageDO<FilterDO> list(@RequestParam Map<String, Object> params) {
+  public PageDO<FilterRuleVo> list(@RequestParam Map<String, Object> params) {
     Query query = new Query(params);
     query.put("sharerule", true);
     return ruleService.queryList(query);
@@ -81,7 +89,7 @@ public class ShareRuleController extends BaseController {
   @ResponseBody
   @PostMapping("/save")
   @RequiresPermissions("filter:rule:add")
-  public CommonResponse save(FilterDO rule) {
+  public CommonResponse save(FilterRuleVo rule) {
     if (ruleService.save(rule) > 0) {
       return CommonResponse.ok();
     }
@@ -92,7 +100,7 @@ public class ShareRuleController extends BaseController {
   @ResponseBody
   @RequestMapping("/update")
   @RequiresPermissions("filter:rule:edit")
-  public CommonResponse update(FilterDO rule) {
+  public CommonResponse update(FilterRuleVo rule) {
     if (ruleService.update(rule) > 0) {
       return CommonResponse.ok();
     }

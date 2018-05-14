@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.tesla.common.domain.FilterDO;
 import io.github.tesla.ops.common.Log;
+import io.github.tesla.ops.filter.vo.FilterRuleVo;
 import io.github.tesla.ops.system.domain.PageDO;
 import io.github.tesla.ops.utils.Query;
 
@@ -54,8 +54,8 @@ public class BizRuleController extends ShareRuleController {
   @RequiresPermissions("filter:rule:edit")
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable("id") Long id, Model model) {
-    FilterDO ruleDo = ruleService.get(id);
-    model.addAttribute("rule", ruleDo);
+    FilterRuleVo ruleVo = ruleService.get(id);
+    model.addAttribute("rule", ruleVo);
     return prefix + "/edit";
   }
 
@@ -63,7 +63,7 @@ public class BizRuleController extends ShareRuleController {
   @RequiresPermissions("filter:rule:rule")
   @GetMapping("/list")
   @ResponseBody
-  public PageDO<FilterDO> list(@RequestParam Map<String, Object> params) {
+  public PageDO<FilterRuleVo> list(@RequestParam Map<String, Object> params) {
     Query query = new Query(params);
     query.put("bizrule", true);
     return ruleService.queryList(query);

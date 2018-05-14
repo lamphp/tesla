@@ -26,8 +26,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import io.github.tesla.common.domain.ApiGroupDO;
 import io.github.tesla.ops.api.service.ApiGroupService;
+import io.github.tesla.ops.api.vo.ApiGroupVo;
 import io.github.tesla.ops.common.BaseController;
 import io.github.tesla.ops.common.CommonResponse;
 import io.github.tesla.ops.common.Log;
@@ -64,7 +64,7 @@ public class ApiGroupController extends BaseController {
   @RequiresPermissions("gateway:apigroup:apigroup")
   @GetMapping("/list")
   @ResponseBody
-  public PageDO<ApiGroupDO> list(@RequestParam Map<String, Object> params) {
+  public PageDO<ApiGroupVo> list(@RequestParam Map<String, Object> params) {
     Query query = new Query(params);
     return groupService.queryList(query);
   }
@@ -73,8 +73,8 @@ public class ApiGroupController extends BaseController {
   @RequiresPermissions("gateway:apigroup:edit")
   @GetMapping("/edit/{id}")
   public String edit(@PathVariable("id") Long id, Model model) {
-    ApiGroupDO groupDO = groupService.get(id);
-    model.addAttribute("group", groupDO);
+    ApiGroupVo groupVo = groupService.get(id);
+    model.addAttribute("group", groupVo);
     return prefix + "/edit";
   }
 
@@ -82,8 +82,8 @@ public class ApiGroupController extends BaseController {
   @ResponseBody
   @PostMapping("/save")
   @RequiresPermissions("gateway:apigroup:add")
-  public CommonResponse save(ApiGroupDO groupDO) {
-    if (groupService.save(groupDO) > 0) {
+  public CommonResponse save(ApiGroupVo groupVo) {
+    if (groupService.save(groupVo) > 0) {
       return CommonResponse.ok();
     }
     return CommonResponse.error();
@@ -93,8 +93,8 @@ public class ApiGroupController extends BaseController {
   @ResponseBody
   @RequestMapping("/update")
   @RequiresPermissions("gateway:apigroup:edit")
-  public CommonResponse update(ApiGroupDO groupDO) {
-    if (groupService.update(groupDO) > 0) {
+  public CommonResponse update(ApiGroupVo groupVo) {
+    if (groupService.update(groupVo) > 0) {
       return CommonResponse.ok();
     }
     return CommonResponse.error();
