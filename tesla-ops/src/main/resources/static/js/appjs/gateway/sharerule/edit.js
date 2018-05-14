@@ -44,5 +44,12 @@ $(document).ready(function() {
       })
     });
   }
+  var acefunction = function() {
+    $(".rule").ace({
+      theme: 'idle_fingers',
+      lang: 'text'
+    });
+  }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+  acefunction();
 });

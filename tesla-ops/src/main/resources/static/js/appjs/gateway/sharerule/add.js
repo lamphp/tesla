@@ -46,7 +46,7 @@ $(document).ready(function() {
   }
   var acefunction = function() {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
-      var activetab = $(e.target).attr("aria-controls")
+      var activetab = $(e.target).attr("aria-controls");
       $("#" + activetab).find("textarea").ace({
         theme: 'idle_fingers',
         lang: 'text'
