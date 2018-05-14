@@ -44,6 +44,9 @@ public class FilterRuleVo implements Serializable {
 
   private Timestamp gmtModified;
 
+  public String getFilterName() {
+    return filterType.filterViewName();
+  }
 
   public RequestFilterTypeEnum getFilterType() {
     return filterType;

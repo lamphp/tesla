@@ -32,11 +32,25 @@ function load() {
       field: 'filterName',
       title: '类型'
     }, {
-      field: 'apiId',
-      title: '所属API'
+      field: 'api',
+      title: '所属API',
+      formatter: function(value, row, index) {
+        if (value != null) {
+          return value.url;
+        } else {
+          return value;
+        }
+      }
     }, {
-      field: 'groupId',
-      title: '所属API分组'
+      field: 'group',
+      title: '所属API分组',
+      formatter: function(value, row, index) {
+        if (value != null) {
+          return value.name;
+        } else {
+          return value;
+        }
+      }
     }, {
       field: 'rule',
       title: '规则',

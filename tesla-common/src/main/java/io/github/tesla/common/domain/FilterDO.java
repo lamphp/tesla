@@ -40,13 +40,8 @@ public class FilterDO implements Serializable {
 
   private Timestamp gmtModified;
 
-
   public RequestFilterTypeEnum getFilterType() {
     return filterType;
-  }
-
-  public String getFilterName() {
-    return filterType.filterViewName();
   }
 
   public void setFilterType(RequestFilterTypeEnum filterType) {
