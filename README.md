@@ -16,3 +16,14 @@
 
 # 详细说明
  
+ tesla-gateway: 反向代理并执行路由规则
+ 
+ tesla-ops: API维护、规则维护
+ 
+# 使用说明
+ * 打包
+ 
+ ```
+   mvn install -Dmaven.test.skip=true
+ ```
+ * 启动gateway及ops工程
