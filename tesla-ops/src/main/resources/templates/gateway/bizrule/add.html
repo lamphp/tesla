@@ -1,6 +1,67 @@
 <style>
-.swiper-container {
-	height: 300px;
+@charset "utf-8";
+
+#certify {
+	position: relative;
+	width: 100%;
+	margin: 0 auto
+}
+
+#certify .swiper-container {
+	padding-top: 10px;
+	padding-bottom: 60px;
+}
+
+#certify  .swiper-slide {
+	width: 300px;
+	height: 200px;
+	background: #fff;
+	box-shadow: 0 8px 30px #ddd;
+}
+
+#certify .swiper-pagination {
+	width: 100%;
+	bottom: 20px;
+}
+
+#certify .swiper-pagination-bullets .swiper-pagination-bullet {
+	margin: 0 5px;
+	border: 3px solid #fff;
+	background-color: #d5d5d5;
+	width: 10px;
+	height: 10px;
+	opacity: 1;
+}
+
+#certify .swiper-pagination-bullets .swiper-pagination-bullet-active {
+	border: 3px solid #00aadc;
+	background-color: #fff;
+}
+
+#certify .swiper-button-prev {
+	width: 45px;
+	height: 45px;
+	background: url(/img/wm_button_icon.png) no-repeat;
+	background-position: 0 0;
+	background-size: 100%;
+}
+
+#certify .swiper-button-prev:hover {
+	background-position: 0 -46px;
+	background-size: 100%
+}
+
+#certify .swiper-button-next {
+	width: 45px;
+	height: 45px;
+	background: url(/img/wm_button_icon.png) no-repeat;
+	background-position: 0 -93px;
+	background-size: 100%;
+}
+
+#certify .swiper-button-next:hover {
+	background-position: 0 -139px;
+	background-size: 100%
 }
 </style>
 <section id="widget-grid" class="">
@@ -16,48 +77,180 @@
 				<div>
 					<div class="widget-body no-padding">
 						<div class="row">
-							<div class="col-sm-12">
-								<div class="row">
-									<div class="col-sm-12 col-md-12 col-lg-12">
-										<div class="well">
-											<div class="swiper-container">
-												<div class="swiper-wrapper">
-													<div class="swiper-slide">
-														<div class="card" style="width: 18rem;">
-															<div class="card-body">
-																<h5 class="card-title">Card title</h5>
-																<p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-																<a href="#" class="btn btn-primary">Go somewhere</a>
-															</div>
+							<div class="col-sm-12 col-md-12 col-lg-12">
+								<div id="certify">
+									<div class="swiper-container">
+										<div class="swiper-wrapper">
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">基础流量控制组件</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于限制API单位时间的访问量，避免因为访问量过大导致上游服务响应缓慢甚至停止服务
+																</li>
+															</ul>
 														</div>
 													</div>
-													<div class="swiper-slide">
-														<div class="panel panel-default">
-															<div class="panel-heading">
-																<b>微信Token认证组件</b>
-															</div>
-															<div class="panel-body">
-																<p class="m-t">该组件用于微信Token认证，认证通过后会将APP ID、openID加入请求头，后端服务可以从头里直接获取openID进行相关操作。1、具体Key的名称1）api_gateway_weixin_openid，登录用户的微信OpenID ；2）api_gateway_weixin_session_key，微信登录用户的session key，保留备用； 3）api_gateway_auth_app_id，应用在网关中的ID；2、Token认证失败的返回结果1）Token超期{ errCode: 'AUTH_TOKEN_EXPIRED', errMsg: 'token过期,请重新获取Token！'}2）Token无效{errCode: 'AUTH_INVALID_TOKEN',errMsg: 'Token无效！'}</p>
-															</div>
-														</div>
-													</div>
-													<div class="swiper-slide">
-														<div class="panel panel-default">
-															<div class="panel-heading">
-																<b>微信Token认证组件</b>
-															</div>
-															<div class="panel-body">
-																<p class="m-t">该组件用于微信Token认证，认证通过后会将APP ID、openID加入请求头，后端服务可以从头里直接获取openID进行相关操作。1、具体Key的名称1）api_gateway_weixin_openid，登录用户的微信OpenID ；2）api_gateway_weixin_session_key，微信登录用户的session key，保留备用； 3）api_gateway_auth_app_id，应用在网关中的ID；2、Token认证失败的返回结果1）Token超期{ errCode: 'AUTH_TOKEN_EXPIRED', errMsg: 'token过期,请重新获取Token！'}2）Token无效{errCode: 'AUTH_INVALID_TOKEN',errMsg: 'Token无效！'}</p>
-															</div>
-														</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="rateLimit" role="button"> 选择 </a>
 													</div>
 												</div>
-												<div class="swiper-button-next"></div>
-												<div class="swiper-button-prev"></div>
+											</div>
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">参数映射控制组件</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于将外部API的请求参数映射为内部API所需的请求参数，实现参数裁剪或者API标准化操作
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="datamapping" role="button"> 选择 </a>
+													</div>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">规则引擎组件</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于根据API所传参数来动态的实现API路由的功能，实现API的编排组合功能
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="drools" role="button"> 选择 </a>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
+									<div class="swiper-pagination"></div>
+									<div class="swiper-button-prev"></div>
+									<div class="swiper-button-next"></div>
 								</div>
+							</div>
+						</div>
+						<div class="row" id="rateLimit">
+							<div class="col-sm-12 col-md-12 col-lg-12">
+								<form class="smart-form">
+									<header> 基础流量控制组件 </header>
+									<fieldset>
+										<section>
+											<label class="label">请求URL</label>
+											<label class="select">
+												<select class="input-sm">
+													<option value="0">Choose name</option>
+													<option value="1">Alexandra</option>
+													<option value="2">Alice</option>
+													<option value="3">Anastasia</option>
+													<option value="4">Avelina</option>
+												</select>
+												<i></i>
+											</label>
+										</section>
+										<section>
+											<label class="label">1000MS中限制调用次数</label>
+											<label class="input">
+												<input type="text" class="input-xs">
+											</label>
+										</section>
+									</fieldset>
+									<footer>
+										<button type="submit" class="btn btn-primary">Submit</button>
+										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+									</footer>
+								</form>
+							</div>
+						</div>
+						<div class="row" id="datamapping">
+							<div class="col-sm-12 col-md-12 col-lg-12">
+								<form class="smart-form">
+									<header> 参数映射组件 </header>
+									<fieldset>
+										<section>
+											<label class="label">请求URL</label>
+											<label class="select">
+												<select class="input-sm">
+													<option value="0">Choose name</option>
+													<option value="1">Alexandra</option>
+													<option value="2">Alice</option>
+													<option value="3">Anastasia</option>
+													<option value="4">Avelina</option>
+												</select>
+												<i></i>
+											</label>
+										</section>
+										<section>
+											<label class="label">Freemarker参数映射模板</label>
+											<label class="textarea textarea-resizable">
+												<textarea rows="50" class="custom-scroll"></textarea>
+											</label>
+											<div class="note">
+												<strong>Note:</strong>
+												height of the textarea depends on the rows attribute.
+											</div>
+										</section>
+									</fieldset>
+									<footer>
+										<button type="submit" class="btn btn-primary">Submit</button>
+										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+									</footer>
+								</form>
+							</div>
+						</div>
+						<div class="row" id="drools">
+							<div class="col-sm-12 col-md-12 col-lg-12">
+								<form class="smart-form">
+									<header> 规则引擎组件 </header>
+									<fieldset>
+										<section>
+											<label class="label">请求URL</label>
+											<label class="select">
+												<select class="input-sm">
+													<option value="0">Choose name</option>
+													<option value="1">Alexandra</option>
+													<option value="2">Alice</option>
+													<option value="3">Anastasia</option>
+													<option value="4">Avelina</option>
+												</select>
+												<i></i>
+											</label>
+										</section>
+										<section>
+											<label class="label">Drools规则引擎脚本</label>
+											<label class="textarea textarea-resizable">
+												<textarea rows="50" class="custom-scroll"></textarea>
+											</label>
+											<div class="note">
+												<strong>Note:</strong>
+												height of the textarea depends on the rows attribute.
+											</div>
+										</section>
+									</fieldset>
+									<footer>
+										<button type="submit" class="btn btn-primary">Submit</button>
+										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+									</footer>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -66,16 +259,8 @@
 		</article>
 	</div>
 </section>
+<script type="text/javascript" src="/js/appjs/gateway/bizrule/add.js"></script>
 <script type="text/javascript">
-  var mySwiper = new Swiper('.swiper-container', {
-    slidesPerView: 3,
-    spaceBetween: 30,
-    loop: true,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    }
-  });
   function goback() {
     loadURL("filter/bizrule", $('#content'));
   }
