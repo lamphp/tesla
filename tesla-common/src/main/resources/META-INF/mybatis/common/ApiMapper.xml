@@ -44,6 +44,7 @@
 			<if test="url != null and url != ''"> and url = #{url} </if>
 			<if test="path != null and path != ''"> and path = #{path} </if>
 			<if test="routes != null and routes != ''"> and routes = #{routes} </if>
+			<if test="groupId != null and groupId != ''"> and group_id = #{groupId} </if>
 		</where>
 		<choose>
 			<when test="sort != null and sort.trim() != ''">

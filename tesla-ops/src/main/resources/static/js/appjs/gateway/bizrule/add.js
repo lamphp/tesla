@@ -3,6 +3,51 @@ var filters = ['rateLimit', 'datamapping', 'drools'];
 $(document).ready(function() {
   pageSetUp();
   var pagefunction = function() {
+    $("button[type='submit']").each(function() {
+      $(this).click(function() {
+        var $form = $(this).parents("form");
+        var $textarea = $form.find("textarea");
+        if ($textarea.length) {
+          var editor = $textarea.data('ace').editor.ace;
+          var value = editor.getValue();
+          $form.find("[name='rule']").val(value);
+        }
+        $form.validate({
+          rules: {
+            rule: {
+              required: true
+            },
+            url: {
+              required: true
+            }
+          },
+          messages: {
+            rule: {
+              required: "请输入规则"
+            },
+            url: {
+              required: "请输入匹配URL"
+            }
+          },
+          submitHandler: function(form) {
+            $(form).ajaxSubmit({
+              cache: true,
+              type: "post",
+              url: prefix + "/save",
+              data: $(form).serialize(),
+              async: false,
+              success: function() {
+                $(form).addClass('submited');
+                loadURL(prefix, $('#content'));
+              }
+            });
+          },
+          errorPlacement: function(error, element) {
+            error.insertAfter(element.parent());
+          }
+        });
+      });
+    });
   };
   var swiperfunction = function() {
     new Swiper('#certify .swiper-container', {
@@ -86,7 +131,48 @@ $(document).ready(function() {
       }
     }
   }
+  var cascadingdropdown = function() {
+    $('#apiGroupAndApi').cascadingDropdown({
+      selectBoxes: [{
+        selector: '.apiGroup',
+        source: function(request, response) {
+          $.getJSON('gateway/apigroup/list', {
+            "limit": 100,
+            "offset": 0
+          }, function(data) {
+            response($.map(data.rows, function(item, index) {
+              return {
+                label: item.name,
+                value: item.id,
+                selected: true
+              };
+            }));
+          });
+        }
+      }, {
+        selector: '.api',
+        requires: ['.apiGroup'],
+        source: function(request, response) {
+          var param = {
+            "limit": 100,
+            "offset": 0,
+            "groupId": $(".apiGroup").val()
+          };
+          $.getJSON('gateway/api/list', param, function(data) {
+            response($.map(data.rows, function(item, index) {
+              return {
+                label: item.url,
+                value: item.id,
+                selected: true
+              };
+            }));
+          });
+        }
+      }]
+    });
+  }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
+  loadScript("js/plugin/cascadingdropdown/jquery.cascadingdropdown.min.js", cascadingdropdown);
   swiperfunction();
   choosefunction();
 });

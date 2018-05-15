@@ -151,57 +151,80 @@
 						</div>
 						<div class="row" id="rateLimit">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form">
+								<form class="smart-form" id="rateLimitForm">
 									<header> 基础流量控制组件 </header>
 									<fieldset>
 										<section>
-											<label class="label">请求URL</label>
-											<label class="select">
-												<select class="input-sm">
-													<option value="0">Choose name</option>
-													<option value="1">Alexandra</option>
-													<option value="2">Alice</option>
-													<option value="3">Anastasia</option>
-													<option value="4">Avelina</option>
-												</select>
-												<i></i>
+											<label class="label">名称</label>
+											<label class="input">
+												<input type="text" name="name" class="input-xs">
 											</label>
+										</section>
+										<section>
+											<label class="label">描述</label>
+											<label class="input">
+												<input type="text" name="describe" class="input-xs">
+											</label>
+										</section>
+										<section>
+											<label class="label">URL</label>
+											<div id="apiGroupAndApi" class="select" style="display: flex;">
+												<select class="apiGroup">
+												</select>
+												&nbsp;&nbsp;
+												<select class="api" name="api.url">
+												</select>
+											</div>
 										</section>
 										<section>
 											<label class="label">1000MS中限制调用次数</label>
 											<label class="input">
-												<input type="text" class="input-xs">
+												<input name="filterType" class="form-control" type="hidden" value="RateLimitHttpRequestFilter">
+												<input type="text" name="rule" class="input-xs">
 											</label>
 										</section>
 									</fieldset>
 									<footer>
 										<button type="submit" class="btn btn-primary">Submit</button>
-										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+										<button type="button" class="btn btn-default" onclick="goback();">Back</button>
 									</footer>
 								</form>
 							</div>
 						</div>
 						<div class="row" id="datamapping">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form">
+								<form class="smart-form" id="datamappingForm">
 									<header> 参数映射组件 </header>
 									<fieldset>
 										<section>
+											<label class="label">名称</label>
+											<label class="input">
+												<input type="text" name="name" class="input-xs">
+											</label>
+										</section>
+										<section>
+											<label class="label">描述</label>
+											<label class="input">
+												<input type="text" name="describe" class="input-xs">
+											</label>
+										</section>
+										<section>
 											<label class="label">请求URL</label>
 											<label class="select">
-												<select class="input-sm">
+												<select class="input-sm" name="api.id">
 													<option value="0">Choose name</option>
 													<option value="1">Alexandra</option>
 													<option value="2">Alice</option>
 													<option value="3">Anastasia</option>
 													<option value="4">Avelina</option>
 												</select>
-												<i></i>
 											</label>
 										</section>
 										<section>
 											<label class="label">Freemarker参数映射模板</label>
 											<label class="textarea textarea-resizable">
+												<input name="filterType" class="form-control" type="hidden" value="DataMappingRequestFilter">
+												<input name="rule" class="form-control" type="hidden">
 												<textarea rows="50" class="custom-scroll"></textarea>
 											</label>
 											<div class="note">
@@ -212,32 +235,45 @@
 									</fieldset>
 									<footer>
 										<button type="submit" class="btn btn-primary">Submit</button>
-										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+										<button type="button" class="btn btn-default" onclick="goback;">Back</button>
 									</footer>
 								</form>
 							</div>
 						</div>
 						<div class="row" id="drools">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form">
+								<form class="smart-form" id="droolsForm">
 									<header> 规则引擎组件 </header>
 									<fieldset>
 										<section>
+											<label class="label">名称</label>
+											<label class="input">
+												<input type="text" name="name" class="input-xs">
+											</label>
+										</section>
+										<section>
+											<label class="label">描述</label>
+											<label class="input">
+												<input type="text" name="describe" class="input-xs">
+											</label>
+										</section>
+										<section>
 											<label class="label">请求URL</label>
 											<label class="select">
-												<select class="input-sm">
+												<select class="input-sm" name="api.id">
 													<option value="0">Choose name</option>
 													<option value="1">Alexandra</option>
 													<option value="2">Alice</option>
 													<option value="3">Anastasia</option>
 													<option value="4">Avelina</option>
 												</select>
-												<i></i>
 											</label>
 										</section>
 										<section>
 											<label class="label">Drools规则引擎脚本</label>
 											<label class="textarea textarea-resizable">
+												<input name="filterType" class="form-control" type="hidden" value="DroolsRequestFilter">
+												<input name="rule" class="form-control" type="hidden">
 												<textarea rows="50" class="custom-scroll"></textarea>
 											</label>
 											<div class="note">
@@ -248,7 +284,7 @@
 									</fieldset>
 									<footer>
 										<button type="submit" class="btn btn-primary">Submit</button>
-										<button type="button" class="btn btn-default" onclick="window.history.back();">Back</button>
+										<button type="button" class="btn btn-default" onclick="goback();">Back</button>
 									</footer>
 								</form>
 							</div>
