@@ -172,7 +172,7 @@ $(document).ready(function() {
     });
   }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
-  loadScript("js/plugin/cascadingdropdown/jquery.cascadingdropdown.min.js", cascadingdropdown);
   swiperfunction();
   choosefunction();
+  loadScript("js/plugin/cascadingdropdown/jquery.cascadingdropdown.min.js", cascadingdropdown);
 });
