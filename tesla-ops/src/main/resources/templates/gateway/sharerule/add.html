@@ -84,60 +84,120 @@
 											<div class="swiper-slide">
 												<div class="panel panel-darken pricing">
 													<div class="panel-heading">
-														<h3 class="panel-title">基础流量控制组件</h3>
+														<h3 class="panel-title">URL参数黑名单</h3>
 													</div>
 													<div class="panel-body no-padding text-align-center">
 														<div class="price-features">
 															<ul class="list-unstyled text-left">
 																<li>
 																	<i class="fa fa-check text-success"></i>
-																	用于限制API单位时间的访问量，避免因为访问量过大导致上游服务响应缓慢甚至停止服务
+																	用于对URL某一些参数进行限制，如果带有这些参数将限制使用，一般用于拖库等场景
 																</li>
 															</ul>
 														</div>
 													</div>
 													<div class="panel-footer text-align-center">
-														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="rateLimit" role="button"> 选择 </a>
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="URLParamHttpRequestFilter" role="button"> 选择 </a>
 													</div>
 												</div>
 											</div>
 											<div class="swiper-slide">
 												<div class="panel panel-darken pricing">
 													<div class="panel-heading">
-														<h3 class="panel-title">参数映射控制组件</h3>
+														<h3 class="panel-title">Cookie黑名单</h3>
 													</div>
 													<div class="panel-body no-padding text-align-center">
 														<div class="price-features">
 															<ul class="list-unstyled text-left">
 																<li>
 																	<i class="fa fa-check text-success"></i>
-																	用于将外部API的请求参数映射为内部API所需的请求参数，实现参数裁剪或者API标准化操作
+																	用于对一些包含一些特殊的Cookie进行限制，如果带有这些Cookie将限制使用
 																</li>
 															</ul>
 														</div>
 													</div>
 													<div class="panel-footer text-align-center">
-														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="datamapping" role="button"> 选择 </a>
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="BlackCookieHttpRequestFilter" role="button"> 选择 </a>
 													</div>
 												</div>
 											</div>
 											<div class="swiper-slide">
 												<div class="panel panel-darken pricing">
 													<div class="panel-heading">
-														<h3 class="panel-title">规则引擎组件</h3>
+														<h3 class="panel-title">UA黑名单</h3>
 													</div>
 													<div class="panel-body no-padding text-align-center">
 														<div class="price-features">
 															<ul class="list-unstyled text-left">
 																<li>
 																	<i class="fa fa-check text-success"></i>
-																	用于根据API所传参数来动态的实现API路由的功能，实现API的编排组合功能
+																	用于对一些特殊用户进行限制，包含改UA信息进行限制
 																</li>
 															</ul>
 														</div>
 													</div>
 													<div class="panel-footer text-align-center">
-														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="drools" role="button"> 选择 </a>
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="BlackUaHttpRequestFilter" role="button"> 选择 </a>
+													</div>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">URL黑名单</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于对一些特殊的URL进行限制
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="BlackURLHttpRequestFilter" role="button"> 选择 </a>
+													</div>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">IP黑名单</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于对一些特殊IP进行限制，用于防止机器人爬虫爬数据的场景比较多
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="BlackIpHttpRequesFilter" role="button"> 选择 </a>
+													</div>
+												</div>
+											</div>
+											<div class="swiper-slide">
+												<div class="panel panel-darken pricing">
+													<div class="panel-heading">
+														<h3 class="panel-title">工具软件防爬</h3>
+													</div>
+													<div class="panel-body no-padding text-align-center">
+														<div class="price-features">
+															<ul class="list-unstyled text-left">
+																<li>
+																	<i class="fa fa-check text-success"></i>
+																	用于对第三方安全工具来调用网站，该种网站严格进行控制
+																</li>
+															</ul>
+														</div>
+													</div>
+													<div class="panel-footer text-align-center">
+														<a href="javascript:void(0);" class="btn btn-primary btn-block choose" data-compnent="SecurityScannerHttpRequestFilter" role="button"> 选择 </a>
 													</div>
 												</div>
 											</div>
@@ -149,10 +209,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="row" id="rateLimit">
+						<div class="row">
 							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form" id="rateLimitForm">
-									<header> 基础流量控制组件 </header>
+								<form class="smart-form" id="ruleForm">
+									<header> 通用组件规则设置 </header>
 									<fieldset>
 										<section>
 											<label class="label">名称</label>
@@ -167,114 +227,20 @@
 											</label>
 										</section>
 										<section>
-											<label class="label">URL</label>
-											<div class="select" style="display: flex;">
-												<select class="apiGroup">
-												</select>
-												&nbsp;&nbsp;
-												<select class="api" name="api.id">
-												</select>
-											</div>
-										</section>
-										<section>
-											<label class="label">1S调用次数不超过</label>
+											<label class="label">组件类型</label>
 											<label class="input">
-												<input name="filterType" class="form-control" type="hidden" value="RateLimitHttpRequestFilter">
-												<input type="text" name="rule" class="input-xs">
-											</label>
-										</section>
-									</fieldset>
-									<footer>
-										<button type="submit" class="btn btn-primary">Submit</button>
-										<button type="button" class="btn btn-default" onclick="goback();">Back</button>
-									</footer>
-								</form>
-							</div>
-						</div>
-						<div class="row" id="datamapping">
-							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form" id="datamappingForm">
-									<header> 参数映射组件 </header>
-									<fieldset>
-										<section>
-											<label class="label">名称</label>
-											<label class="input">
-												<input type="text" name="name" class="input-xs">
+												<input type="text" id="filterType" name="filterType" class="input-xs" readonly>
 											</label>
 										</section>
 										<section>
-											<label class="label">描述</label>
-											<label class="input">
-												<input type="text" name="describe" class="input-xs">
-											</label>
-										</section>
-										<section>
-											<label class="label">请求URL</label>
-											<div class="select" style="display: flex;">
-												<select class="apiGroup">
-												</select>
-												&nbsp;&nbsp;
-												<select class="api" name="api.id">
-												</select>
-											</div>
-										</section>
-										<section>
-											<label class="label">Freemarker参数映射模板</label>
+											<label class="label">详细正则表达式</label>
 											<label class="textarea textarea-resizable">
-												<input name="filterType" class="form-control" type="hidden" value="DataMappingRequestFilter">
-												<input name="rule" class="form-control" type="hidden">
-												<textarea rows="50" class="custom-scroll"></textarea>
+												<input id="rule" name="rule" class="form-control" type="hidden">
+												<textarea rows="20" class="custom-scroll"></textarea>
 											</label>
 											<div class="note">
 												<strong>Note:</strong>
-												height of the textarea depends on the rows attribute.
-											</div>
-										</section>
-									</fieldset>
-									<footer>
-										<button type="submit" class="btn btn-primary">Submit</button>
-										<button type="button" class="btn btn-default" onclick="goback;">Back</button>
-									</footer>
-								</form>
-							</div>
-						</div>
-						<div class="row" id="drools">
-							<div class="col-sm-12 col-md-12 col-lg-12">
-								<form class="smart-form" id="droolsForm">
-									<header> 规则引擎组件 </header>
-									<fieldset>
-										<section>
-											<label class="label">名称</label>
-											<label class="input">
-												<input type="text" name="name" class="input-xs">
-											</label>
-										</section>
-										<section>
-											<label class="label">描述</label>
-											<label class="input">
-												<input type="text" name="describe" class="input-xs">
-											</label>
-										</section>
-										<section>
-											<label class="label">请求URL</label>
-											<div class="select" style="display: flex;">
-												<select class="apiGroup">
-												</select>
-												&nbsp;&nbsp;
-												<select class="api" name="api.id">
-												</select>
-											</div>
-										</section>
-										<section>
-											<label class="label">Drools规则引擎脚本</label>
-											<label class="textarea textarea-resizable">
-												<input name="filterType" class="form-control" type="hidden" value="DroolsRequestFilter">
-												<input name="rule" class="form-control" type="hidden">
-												<textarea rows="50" class="custom-scroll"></textarea>
-											</label>
-											<div class="note">
-												<strong>Note:</strong>
-												height of the textarea depends on the rows attribute.
+												用正则表达式来限制，换行符来分割
 											</div>
 										</section>
 									</fieldset>
@@ -291,9 +257,9 @@
 		</article>
 	</div>
 </section>
-<script type="text/javascript" src="/js/appjs/gateway/bizrule/add.js"></script>
+<script type="text/javascript" src="/js/appjs/gateway/sharerule/add.js"></script>
 <script type="text/javascript">
   function goback() {
-    loadURL("filter/bizrule", $('#content'));
+    loadURL("filter/sharerule", $('#content'));
   }
 </script>
