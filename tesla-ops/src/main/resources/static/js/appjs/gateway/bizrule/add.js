@@ -103,6 +103,7 @@ $(document).ready(function() {
             var filter = filters[index];
             if (filter == compnent) {
               $("#" + filter).show();
+              cascadingdropdown(filter)
               if (filter == 'datamapping') {
                 $("#" + filter).find("textarea").ace({
                   theme: 'idle_fingers',
@@ -131,8 +132,9 @@ $(document).ready(function() {
       }
     }
   }
-  var cascadingdropdown = function() {
-    $('#apiGroupAndApi').cascadingDropdown({
+  var cascadingdropdown = function(filter) {
+    var select = $("#" + filter).find("div.select")[0];
+    $(select).cascadingDropdown({
       selectBoxes: [{
         selector: '.apiGroup',
         source: function(request, response) {
@@ -174,5 +176,4 @@ $(document).ready(function() {
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
   swiperfunction();
   choosefunction();
-  loadScript("js/plugin/cascadingdropdown/jquery.cascadingdropdown.min.js", cascadingdropdown);
 });

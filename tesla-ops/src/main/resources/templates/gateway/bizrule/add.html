@@ -168,16 +168,16 @@
 										</section>
 										<section>
 											<label class="label">URL</label>
-											<div id="apiGroupAndApi" class="select" style="display: flex;">
+											<div class="select" style="display: flex;">
 												<select class="apiGroup">
 												</select>
 												&nbsp;&nbsp;
-												<select class="api" name="api.url">
+												<select class="api" name="api.id">
 												</select>
 											</div>
 										</section>
 										<section>
-											<label class="label">1000MS中限制调用次数</label>
+											<label class="label">1S调用次数不超过</label>
 											<label class="input">
 												<input name="filterType" class="form-control" type="hidden" value="RateLimitHttpRequestFilter">
 												<input type="text" name="rule" class="input-xs">
@@ -210,15 +210,13 @@
 										</section>
 										<section>
 											<label class="label">请求URL</label>
-											<label class="select">
-												<select class="input-sm" name="api.id">
-													<option value="0">Choose name</option>
-													<option value="1">Alexandra</option>
-													<option value="2">Alice</option>
-													<option value="3">Anastasia</option>
-													<option value="4">Avelina</option>
+											<div class="select" style="display: flex;">
+												<select class="apiGroup">
 												</select>
-											</label>
+												&nbsp;&nbsp;
+												<select class="api" name="api.id">
+												</select>
+											</div>
 										</section>
 										<section>
 											<label class="label">Freemarker参数映射模板</label>
@@ -259,15 +257,13 @@
 										</section>
 										<section>
 											<label class="label">请求URL</label>
-											<label class="select">
-												<select class="input-sm" name="api.id">
-													<option value="0">Choose name</option>
-													<option value="1">Alexandra</option>
-													<option value="2">Alice</option>
-													<option value="3">Anastasia</option>
-													<option value="4">Avelina</option>
+											<div class="select" style="display: flex;">
+												<select class="apiGroup">
 												</select>
-											</label>
+												&nbsp;&nbsp;
+												<select class="api" name="api.id">
+												</select>
+											</div>
 										</section>
 										<section>
 											<label class="label">Drools规则引擎脚本</label>
