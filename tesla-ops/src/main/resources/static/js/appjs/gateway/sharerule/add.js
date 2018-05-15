@@ -11,16 +11,28 @@ $(document).ready(function() {
         rule: {
           required: true
         },
-        url: {
+        name: {
+          required: true
+        },
+        describe: {
+          required: true
+        },
+        filterType: {
           required: true
         }
       },
       messages: {
         rule: {
-          required: "请输入规则"
+          required: "请输入详细规则内容"
         },
-        url: {
-          required: "请输入匹配URL"
+        name: {
+          required: "请输入规则名称"
+        },
+        describe: {
+          required: "请输入规则描述"
+        },
+        filterType: {
+          required: "请选择规则类型"
         }
       },
       submitHandler: function(form) {
