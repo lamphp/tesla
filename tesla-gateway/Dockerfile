@@ -24,11 +24,12 @@ RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 
 	update-alternatives --set java "${JRE_HOME}/bin/java" && \
 	update-alternatives --set javac "${JAVA_HOME}/bin/javac"
 	
-	
-ADD target/tesla-gateway-1.0.0.jar.jar /root/app.jar
+ARG JAR_FILE
+ADD ${JAR_FILE} /root/app.jar
 ADD bin/ /root/
 RUN chmod +x /root/*.sh;mkdir /root/logs
 ENV APP_NAME tesla-gateway
 ENV JAVA_OPTS ""
 WORKDIR /root
+EXPOSE 9000
 CMD ["./start.sh"]
