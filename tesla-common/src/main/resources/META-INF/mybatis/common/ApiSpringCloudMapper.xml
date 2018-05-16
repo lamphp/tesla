@@ -59,15 +59,16 @@
 	<update id="update" parameterType="io.github.tesla.common.domain.ApiSpringCloudDO">
 		update gateway_api_springcloud
 		<set>
-			<if test="instanceId != null and instanceId != ''"> instance_id = #{instanceId} </if>
-			<if test="api_id != null and api_id != ''"> api_id = #{api.id} </if>
+			<if test="instanceId != null"> `instance_id` = #{instanceId},</if>
+			<if test="api_id != null"> `api_id` = #{api.id},</if>
 			`gmt_modified`=sysdate()
 		</set>
 		where api_id = #{api.id}
 	</update>
 
 	<delete id="remove">
-		delete from gateway_api_springcloud where api_id = #{apiId}
+		delete from gateway_api_springcloud where api_id =
+		#{apiId}
 	</delete>
 
 	<delete id="batchRemove">
