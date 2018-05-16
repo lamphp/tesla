@@ -26,8 +26,19 @@ $(document).ready(function() {
             filterType: {
               required: true
             },
-            url: {
-              required: true
+            "api.id": {
+              required: {
+                depends: function(value, element) {
+                  return $("#groupId").val() == null
+                }
+              }
+            },
+            "group.id": {
+              required: {
+                depends: function(value, element) {
+                  return $("#apiId").val() == null
+                }
+              }
             }
           },
           messages: {
@@ -43,8 +54,11 @@ $(document).ready(function() {
             filterType: {
               required: "请选择规则类型"
             },
-            url: {
-              required: "请选择url"
+            "api.id": {
+              required: "请选择挂载API"
+            },
+            "group.id": {
+              required: "请选择挂载APIGroup"
             }
           },
           submitHandler: function(form) {
@@ -151,10 +165,31 @@ $(document).ready(function() {
     }
   }
   var cascadingdropdown = function(filter) {
-    var select = $("#" + filter).find("div.select")[0];
-    $(select).cascadingDropdown({
+    var group = $("#" + filter).find("div.group")[0];
+    var single = $("#" + filter).find("div.single")[0];
+    $(single).cascadingDropdown({
       selectBoxes: [{
-        selector: '.cascadingApiGroup',
+        selector: '.apigroup',
+        source: function(request, response) {
+          $.getJSON('gateway/apigroup/list', {
+            "limit": 100,
+            "offset": 0
+          }, function(data) {
+            var selectOnlyOption = data.rows.length <= 1;
+            response($.map(data.rows, function(item, index) {
+              return {
+                label: item.name,
+                value: item.id,
+                selected: selectOnlyOption
+              };
+            }));
+          });
+        }
+      }]
+    });
+    $(group).cascadingDropdown({
+      selectBoxes: [{
+        selector: '.apigroup',
         source: function(request, response) {
           $.getJSON('gateway/apigroup/list', {
             "limit": 100,
@@ -172,12 +207,12 @@ $(document).ready(function() {
         }
       }, {
         selector: '.api',
-        requires: ['.cascadingApiGroup'],
+        requires: ['.apigroup'],
         source: function(request, response) {
           var param = {
             "limit": 100,
             "offset": 0,
-            "groupId": $(".cascadingApiGroup").val()
+            "groupId": $(group).find("select.apigroup").val()
           };
           $.getJSON('gateway/api/list', param, function(data) {
             response($.map(data.rows, function(item, index) {
