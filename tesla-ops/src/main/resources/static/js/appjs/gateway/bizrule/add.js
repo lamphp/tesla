@@ -22,23 +22,6 @@ $(document).ready(function() {
             },
             describe: {
               required: true
-            },
-            filterType: {
-              required: true
-            },
-            "api.id": {
-              required: {
-                depends: function(element) {
-                  return $('#groupId').val() == '';
-                }
-              }
-            },
-            "group.id": {
-              required: {
-                depends: function(element) {
-                  return $('#apiId').val() == '';
-                }
-              }
             }
           },
           messages: {
@@ -50,15 +33,6 @@ $(document).ready(function() {
             },
             describe: {
               required: "请输入规则描述"
-            },
-            filterType: {
-              required: "请选择规则类型"
-            },
-            "api.id": {
-              required: "请选择挂载API"
-            },
-            "group.id": {
-              required: "请选择挂载API分组"
             }
           },
           submitHandler: function(form) {

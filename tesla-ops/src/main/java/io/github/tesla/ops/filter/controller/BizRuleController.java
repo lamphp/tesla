@@ -71,13 +71,13 @@ public class BizRuleController extends ShareRuleController {
   @GetMapping("/template/{template}")
   @ResponseBody
   public String template(@PathVariable("template") String template) {
-    String path = "io/github/tesla/ops/filter/sample/";
+    String path = "/META-INF/config/rules/";
     if ("drools".equals(template)) {
       path = path + "drools.drl";
     } else {
       path = path + "freemarker.ftl";
     }
-    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+    InputStream is = BizRuleController.class.getResourceAsStream(path);
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     StringBuilder sb = new StringBuilder();
     String line = null;
