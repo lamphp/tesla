@@ -73,7 +73,7 @@ $(document).ready(function() {
       slidesPerView: 'auto',
       centeredSlides: true,
       loop: true,
-      loopedSlides: 5,
+      loopedSlides: 3,
       autoplay: true,
       navigation: {
         nextEl: '.swiper-button-next',
