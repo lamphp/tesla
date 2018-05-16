@@ -32,6 +32,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.JSONOutputFormat;
@@ -167,46 +168,45 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
 
 
 
-  //
-  // /**
-  // * <pre>
-  // <#assign inputRoot= input.path("$")>
-  // [
-  // <#list inputRoot.photos as elem>
-  // {
-  // "id": "${elem.id}",
-  // "owner": "${elem.owner}",
-  // "title": "${elem.title}",
-  // "ispublic": ${elem.ispublic},
-  // "isfriend": ${elem.isfriend},
-  // "isfamily": ${elem.isfamily}
-  // }<#if (elem_has_next)>,</#if>
-  // </#list>
-  // ]
-  // * </pre>
-  // */
-  // public static void main(String[] args) {
-  // Map<String, String> dataMapping = Maps.newHashMap();
-  // dataMapping.put("java.lang.String", "${item.title}");
-  // dataMapping.put("java.lang.Lang", "${item.title}");
-  // dataMapping.put("com.data.pojo.bean", "${item.title}");
-  // System.out.println(JSON.toJSON(dataMapping));
-  // String json = //
-  // "[{"//
-  // + " \"type\": \"java.lang.Lang\","//
-  // + " \"expression\": \"${item.title}\""//
-  // + "},"//
-  // + "{"//
-  // + " \"type\": \"java.lang.Lang\","//
-  // + " \"expression\": \"${item.title}\""//
-  // + "}]";//
-  // String template = buildFreemarkerTemplate(json);
-  // System.out.println(template);
-  //
-  // Object t =
-  // JSON.parse("{\"java.lang.Lang\":\"${item.title}\",\"java.lang.Lang\":\"${item.title}\"}");
-  // System.out.println(t);
-  // }
+  /**
+   * <pre>
+   <#assign inputRoot= input.path("$")>
+   [
+   <#list inputRoot.photos as elem>
+   {
+   "id": "${elem.id}",
+   "owner": "${elem.owner}",
+   "title": "${elem.title}",
+   "ispublic": ${elem.ispublic},
+   "isfriend": ${elem.isfriend},
+   "isfamily": ${elem.isfamily}
+   }<#if (elem_has_next)>,</#if>
+   </#list>
+   ]
+   * </pre>
+   */
+  public static void main(String[] args) {
+    Map<String, String> dataMapping = Maps.newHashMap();
+    dataMapping.put("java.lang.String", "${item.title}");
+    dataMapping.put("java.lang.Lang", "${item.title}");
+    dataMapping.put("com.data.pojo.bean", "${item.title}");
+    System.out.println(JSON.toJSON(dataMapping));
+    String json = //
+        "[{"//
+            + " \"type\": \"java.lang.Lang\","//
+            + " \"expression\": \"${item.title}\""//
+            + "},"//
+            + "{"//
+            + " \"type\": \"java.lang.Lang\","//
+            + " \"expression\": \"${item.title}\""//
+            + "},"//
+            + "{"//
+            + " \"type\": \"com.data.pojo.bean\","//
+            + " \"expression\": \"${item.title}\""//
+            + "}]";
+    // String template = buildFreemarkerTemplate(json);
+    // System.out.println(template);
+  }
 
 
 
