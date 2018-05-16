@@ -1,10 +1,10 @@
 package io.github.tesla.ops.system.service;
 
-import io.github.tesla.ops.system.domain.DeptDO;
-import io.github.tesla.ops.system.domain.Tree;
-
 import java.util.List;
 import java.util.Map;
+
+import io.github.tesla.ops.system.domain.DeptDO;
+import io.github.tesla.ops.system.domain.Tree;
 
 /**
  * 部门管理

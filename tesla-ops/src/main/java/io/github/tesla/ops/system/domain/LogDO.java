@@ -1,8 +1,8 @@
 package io.github.tesla.ops.system.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class LogDO {
   private Long id;

@@ -13,6 +13,10 @@
  */
 package io.github.tesla.ops.filter.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -49,6 +53,34 @@ public class BizRuleController extends ShareRuleController {
   @GetMapping("/add")
   public String add() {
     return prefix + "/add";
+  }
+
+  @GetMapping("/template/{template}")
+  public String template(@PathVariable("template") String template) {
+    String path = "io/github/tesla/ops/filter/sample/";
+    if ("drools".equals(template)) {
+      path = path + "drools.drl";
+    } else {
+      path = path + "freemarker.ftl";
+    }
+    InputStream is = ShareRuleController.class.getResourceAsStream(template);
+    BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+    StringBuilder sb = new StringBuilder();
+    String line = null;
+    try {
+      while ((line = reader.readLine()) != null) {
+        sb.append(line + "/n");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        is.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return sb.toString();
   }
 
   @RequiresPermissions("filter:rule:edit")
