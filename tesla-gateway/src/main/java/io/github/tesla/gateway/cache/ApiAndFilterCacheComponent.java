@@ -84,6 +84,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   protected void doCache() {
     try {
       readWriteLock.writeLock().lock();
+      clearCache();
       List<ApiDO> apis = apiDao.list(Maps.newHashMap());
       for (ApiDO api : apis) {
         ApiDO apiClone = api.copy();
@@ -91,7 +92,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
         Long apiId = apiClone.getId();
         ApiGroupDO group = apiClone.getApiGroup();
         this.doCacheRoute(apiClone, url, apiId, group);
-        this.doCacheFilter(apiClone, url, apiId, group);
+        this.doCacheFilter(apiClone, url, apiId, group.getId());
       }
       List<FilterDO> filterDOs = filterDao.loadCommon();
       for (FilterDO filterDO : filterDOs) {
@@ -110,9 +111,17 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
     }
   }
 
-  private void doCacheFilter(ApiDO apiClone, String url, Long apiId, ApiGroupDO group) {
+  private void clearCache() {
+    REDIRECT_ROUTE.clear();
+    RPC_ROUTE.clear();
+    SPRINGCLOUD_ROUTE.clear();
+    COMMUNITY_RULE_CACHE.clear();
+    URL_RULE_CACHE.clear();
+  }
+
+  private void doCacheFilter(ApiDO apiClone, String url, Long apiId, Long groupId) {
     List<FilterDO> filterDO1 = filterDao.loadByApiId(apiId);
-    List<FilterDO> filterDO2 = filterDao.loadByGroupId(group.getId());
+    List<FilterDO> filterDO2 = filterDao.loadByGroupId(groupId);
     Set<FilterDO> filterDOs = Sets.newHashSet();
     filterDOs.addAll(filterDO1);
     filterDOs.addAll(filterDO2);
