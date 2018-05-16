@@ -240,7 +240,39 @@ $(document).ready(function() {
       }]
     });
   }
+
+  var valideDrools = function() {
+    $("#validdrools").bind("click", function() {
+      var $form = $(this).parents("form");
+      var $textarea = $form.find("textarea");
+      if ($textarea.length) {
+        var editor = $textarea.data('ace').editor.ace;
+        var value = editor.getValue();
+        $.ajax({
+          url: prefix + "/validate",
+          type: "POST",
+          data: {
+            "drools": value
+          },
+          success: function(result) {
+            if (result == 'true') {
+              layer.open({
+                title: '校验结果',
+                content: 'Drools脚本校验失败!'
+              });
+            } else {
+              layer.open({
+                title: '校验结果',
+                content: 'Drools脚本校验成功!'
+              });
+            }
+          }
+        });
+      }
+    });
+  }
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
   swiperfunction();
   choosefunction();
+  valideDrools();
 });

@@ -17,9 +17,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.drools.builder.KnowledgeBuilder;
+import org.drools.builder.KnowledgeBuilderError;
+import org.drools.builder.KnowledgeBuilderErrors;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceType;
+import org.drools.io.ResourceFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +50,9 @@ import io.github.tesla.ops.utils.Query;
 @Controller
 @RequestMapping("/filter/bizrule")
 public class BizRuleController extends ShareRuleController {
+
+  private final KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
 
   private final String prefix = "gateway/bizrule";
 
@@ -83,6 +96,24 @@ public class BizRuleController extends ShareRuleController {
     }
     return sb.toString();
   }
+
+  @RequestMapping("/validate")
+  @ResponseBody
+  public Boolean validate(HttpServletRequest request, HttpServletResponse response)
+      throws UnsupportedEncodingException {
+    String droolsDrlRule = request.getParameter("drools");
+    kb.add(ResourceFactory.newByteArrayResource(droolsDrlRule.getBytes("utf-8")), ResourceType.DRL);
+    KnowledgeBuilderErrors errors = kb.getErrors();
+    String errorstr = null;
+    for (KnowledgeBuilderError error : errors) {
+      errorstr = errorstr + error.getMessage() + "\n";
+    }
+    if (errorstr != null) {
+      throw new java.lang.IllegalArgumentException(errorstr);
+    }
+    return Boolean.TRUE;
+  }
+
 
   @RequiresPermissions("filter:rule:edit")
   @GetMapping("/edit/{id}")

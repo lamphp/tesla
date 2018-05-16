@@ -38,6 +38,11 @@
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>io.github.tesla</groupId>
+				<artifactId>tesla-gateway</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.github.frostingwolf</groupId>
 				<artifactId>spring-boot-starter-saluki</artifactId>
 				<version>${saluki.version}</version>
