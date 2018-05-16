@@ -28,15 +28,15 @@ $(document).ready(function() {
             },
             "api.id": {
               required: {
-                depends: function(value, element) {
-                  return $("#groupId").val() == null
+                depends: function(element) {
+                  return $('#groupId').val() == '';
                 }
               }
             },
             "group.id": {
               required: {
-                depends: function(value, element) {
-                  return $("#apiId").val() == null
+                depends: function(element) {
+                  return $('#apiId').val() == '';
                 }
               }
             }
@@ -58,7 +58,7 @@ $(document).ready(function() {
               required: "请选择挂载API"
             },
             "group.id": {
-              required: "请选择挂载APIGroup"
+              required: "请选择挂载API分组"
             }
           },
           submitHandler: function(form) {
