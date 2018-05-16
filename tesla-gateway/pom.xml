@@ -120,11 +120,20 @@
 					<skipDockerBuild>false</skipDockerBuild>
 					<resources>
 						<resource>
-							<directory>${project.build.directory}</directory>
+							<directory>${project.basedir}/bin</directory>
 							<include>${project.build.finalName}.jar</include>
 						</resource>
 					</resources>
 				</configuration>
+				<executions>
+					<execution>
+						<id>build-image</id>
+						<phase>package</phase>
+						<goals>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
