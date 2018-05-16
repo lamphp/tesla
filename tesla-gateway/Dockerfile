@@ -8,16 +8,11 @@ RUN \
   apt-get install -y oracle-java8-installer && \
   rm -rf /var/lib/apt/lists/* && \
   rm -rf /var/cache/oracle-jdk8-installer
-ADD target/saluki-example-client-1.5.2-SNAPSHOT.jar /root/app.jar
+ADD target/tesla-gateway-1.0.0.jar.jar /root/app.jar
 ADD bin/ /root/
 RUN chmod +x /root/*.sh;mkdir /root/logs
 ENV JAVA_OPTS ""
-ENV APP_NAME saluki-example-consumer
+ENV APP_NAME tesla-gateway
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 WORKDIR /root
 CMD ["./start.sh"]
-
-
-
-
-
