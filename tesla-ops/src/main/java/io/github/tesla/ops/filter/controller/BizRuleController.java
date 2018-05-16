@@ -56,6 +56,7 @@ public class BizRuleController extends ShareRuleController {
   }
 
   @GetMapping("/template/{template}")
+  @ResponseBody
   public String template(@PathVariable("template") String template) {
     String path = "io/github/tesla/ops/filter/sample/";
     if ("drools".equals(template)) {
@@ -63,13 +64,13 @@ public class BizRuleController extends ShareRuleController {
     } else {
       path = path + "freemarker.ftl";
     }
-    InputStream is = ShareRuleController.class.getResourceAsStream(template);
+    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
     BufferedReader reader = new BufferedReader(new InputStreamReader(is));
     StringBuilder sb = new StringBuilder();
     String line = null;
     try {
       while ((line = reader.readLine()) != null) {
-        sb.append(line + "/n");
+        sb.append(line + "\n");
       }
     } catch (IOException e) {
       e.printStackTrace();

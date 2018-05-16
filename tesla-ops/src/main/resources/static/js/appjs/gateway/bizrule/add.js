@@ -133,27 +133,40 @@ $(document).ready(function() {
           var compnent = $(this).data("compnent");
           for ( var index in filters) {
             var filter = filters[index];
+            var $filterdiv = $("#" + filter);
             if (filter == compnent) {
-              $("#" + filter).show();
+              $filterdiv.show();
               cascadingdropdown(filter)
               if (filter == 'datamapping') {
-                $("#" + filter).find("textarea").ace({
-                  theme: 'idle_fingers',
-                  lang: 'freemarker'
-                })
+                $.ajax({
+                  url: prefix + "/template/freemarker",
+                  success: function(result) {
+                    $("#ruleFreeMakder").val(result);
+                    $("#ruleFreeMakder").ace({
+                      theme: 'idle_fingers',
+                      lang: 'freemarker'
+                    })
+                  }
+                });
               } else if (filter == 'drools') {
-                $("#" + filter).find("textarea").ace({
-                  theme: 'idle_fingers',
-                  lang: 'drools'
-                })
+                $.ajax({
+                  url: prefix + "/template/drools",
+                  success: function(result) {
+                    $("#ruleDrools").val(result);
+                    $("#ruleDrools").ace({
+                      theme: 'idle_fingers',
+                      lang: 'drools'
+                    })
+                  }
+                });
               } else {
-                $("#" + filter).find("textarea").ace({
+                $filterdiv.find("textarea").ace({
                   theme: 'idle_fingers',
                   lang: 'text'
                 })
               }
             } else {
-              $("#" + filter).hide();
+              $filterdiv.hide();
             }
           }
         });
