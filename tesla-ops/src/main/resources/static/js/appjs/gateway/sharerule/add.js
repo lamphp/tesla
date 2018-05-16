@@ -2,11 +2,7 @@ var prefix = "/filter/sharerule";
 $(document).ready(function() {
   pageSetUp();
   var pagefunction = function() {
-    var form = $("#ruleForm");
-    var ace = form.find("textarea").data('ace').editor.ace;
-    var value = ace.getValue();
-    $("#rule").val(value);
-    form.validate({
+    $("#ruleForm").validate({
       rules: {
         rule: {
           required: true
@@ -36,6 +32,9 @@ $(document).ready(function() {
         }
       },
       submitHandler: function(form) {
+        var ace = $(form).find("textarea").data('ace').editor.ace;
+        var value = ace.getValue();
+        $("#rule").val(value);
         $(form).ajaxSubmit({
           cache: true,
           type: "post",
@@ -114,7 +113,7 @@ $(document).ready(function() {
       })
     }
   }
+  choosefunction();
   loadScript("js/plugin/jquery-form/jquery-form.min.js", pagefunction);
   swiperfunction();
-  choosefunction();
 });

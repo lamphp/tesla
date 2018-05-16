@@ -111,8 +111,8 @@ public class ShareRuleController extends BaseController {
   @PostMapping("/remove")
   @ResponseBody
   @RequiresPermissions("filter:rule:remove")
-  public CommonResponse remove(Long ruleId) {
-    if (ruleService.remove(ruleId) > 0) {
+  public CommonResponse remove(Long id) {
+    if (ruleService.remove(id) > 0) {
       return CommonResponse.ok();
     }
     return CommonResponse.error();
