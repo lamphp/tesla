@@ -33,23 +33,25 @@
 									<section class="col col-10">
 										<label class="label">规则类型：</label>
 										<label class="input">
-											<input name="filterType" th:value="${rule.filterType}" class="form-control" type="text" readonly="true" />
+											<input name="filterType" id="filterType" th:value="${rule.filterType}" class="form-control" type="text" readonly="true" />
 										</label>
 									</section>
 								</div>
-								<div class="row" >
+								<div class="row" th:if="${rule.group!=null}">
 									<section class="col col-10">
 										<label class="label">归属API分组：</label>
 										<label class="input">
-											<input th:value="${rule.group.name}" class="form-control" type="text" readonly="true" />
+											<input th:value="${rule.group.name}" class="form-control" type="text" readonly />
+											<input name="group.id" th:value="${rule.group.id}" class="form-control" type="hidden" />
 										</label>
 									</section>
 								</div>
-								<div class="row">
+								<div class="row" th:if="${rule.api!=null}">
 									<section class="col col-10">
 										<label class="label">归属API：</label>
 										<label class="input">
-											<input name="filterType" th:value="${rule.api.url}" class="form-control" type="text" readonly="true" />
+											<input th:value="${rule.api.url}" class="form-control" type="text" readonly />
+											<input name="api.id" th:value="${rule.api.id}" class="form-control" type="hidden" />
 										</label>
 									</section>
 								</div>
@@ -57,7 +59,7 @@
 									<section class="col col-10">
 										<label class="label">规则正则表达式内容：</label>
 										<label class="textarea textarea-resizable">
-											<textarea rows="15" class="custom-scroll rule" placeholder="URL参数黑名单正则表达式" th:field="${rule.rule}"></textarea>
+											<textarea rows="50" class="custom-scroll rule" placeholder="URL参数黑名单正则表达式" th:field="${rule.rule}"></textarea>
 											<input id="rule" name="rule" class="form-control" type="hidden" />
 											<span class="help-block m-b-none">
 												<i class="fa fa-info-circle"></i>
@@ -78,9 +80,9 @@
 		</article>
 	</div>
 </section>
-<script type="text/javascript" src="/js/appjs/gateway/sharerule/edit.js"></script>
+<script type="text/javascript" src="/js/appjs/gateway/bizrule/edit.js"></script>
 <script type="text/javascript">
   function goback() {
-    loadURL("filter/sharerule", $('#content'));
+    loadURL("filter/bizrule", $('#content'));
   }
 </script>
