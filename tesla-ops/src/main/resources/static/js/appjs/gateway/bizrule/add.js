@@ -17,16 +17,34 @@ $(document).ready(function() {
             rule: {
               required: true
             },
+            name: {
+              required: true
+            },
+            describe: {
+              required: true
+            },
+            filterType: {
+              required: true
+            },
             url: {
               required: true
             }
           },
           messages: {
             rule: {
-              required: "请输入规则"
+              required: "请输入详细规则内容"
+            },
+            name: {
+              required: "请输入规则名称"
+            },
+            describe: {
+              required: "请输入规则描述"
+            },
+            filterType: {
+              required: "请选择规则类型"
             },
             url: {
-              required: "请输入匹配URL"
+              required: "请选择url"
             }
           },
           submitHandler: function(form) {
@@ -136,29 +154,30 @@ $(document).ready(function() {
     var select = $("#" + filter).find("div.select")[0];
     $(select).cascadingDropdown({
       selectBoxes: [{
-        selector: '.apiGroup',
+        selector: '.cascadingApiGroup',
         source: function(request, response) {
           $.getJSON('gateway/apigroup/list', {
             "limit": 100,
             "offset": 0
           }, function(data) {
+            var selectOnlyOption = data.rows.length <= 1;
             response($.map(data.rows, function(item, index) {
               return {
                 label: item.name,
                 value: item.id,
-                selected: true
+                selected: selectOnlyOption
               };
             }));
           });
         }
       }, {
         selector: '.api',
-        requires: ['.apiGroup'],
+        requires: ['.cascadingApiGroup'],
         source: function(request, response) {
           var param = {
             "limit": 100,
             "offset": 0,
-            "groupId": $(".apiGroup").val()
+            "groupId": $(".cascadingApiGroup").val()
           };
           $.getJSON('gateway/api/list', param, function(data) {
             response($.map(data.rows, function(item, index) {
