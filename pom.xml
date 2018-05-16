@@ -19,6 +19,7 @@
 		<netty.version>4.1.16.Final</netty.version>
 		<drools.version>6.4.0.Final</drools.version>
 		<eureka.version>1.6.2</eureka.version>
+		<docker.image.prefix>tesla</docker.image.prefix>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -242,5 +243,26 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.spotify</groupId>
+					<artifactId>dockerfile-maven-plugin</artifactId>
+					<version>1.2.2</version>
+					<configuration>
+						<repository>${docker.image.prefix}/${project.artifactId}</repository>
+						<tag>latest</tag>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>package</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>

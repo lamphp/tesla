@@ -1,18 +1,34 @@
-FROM dockerfile/ubuntu
+FROM ubuntu:16.04
 ENV TZ="Asia/Shanghai"
 ENV LANG C.UTF-8
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+ENV VERSION 8
+ENV UPDATE 171
+ENV BUILD 11
+ENV SIG 512cd62ec5174c3487ac17c61aaa89e8
+
+ENV JAVA_HOME /usr/lib/jvm/java-${VERSION}-oracle
+ENV JRE_HOME ${JAVA_HOME}/jre
+
+RUN apt-get update && apt-get install ca-certificates curl \
+        -y --no-install-recommends && \
+	curl --silent --location --retry 3 --cacert /etc/ssl/certs/GeoTrust_Global_CA.pem \
+	--header "Cookie: oraclelicense=accept-securebackup-cookie;" \
+	http://download.oracle.com/otn-pub/java/jdk/"${VERSION}"u"${UPDATE}"-b"${BUILD}"/"${SIG}"/server-jre-"${VERSION}"u"${UPDATE}"-linux-x64.tar.gz \
+	| tar xz -C /tmp && \
+	mkdir -p /usr/lib/jvm && mv /tmp/jdk1.${VERSION}.0_${UPDATE} "${JAVA_HOME}" && \
+	apt-get autoclean && apt-get --purge -y autoremove && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 1 && \
+	update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1 && \
+	update-alternatives --set java "${JRE_HOME}/bin/java" && \
+	update-alternatives --set javac "${JAVA_HOME}/bin/javac"
+	
+	
 ADD target/tesla-gateway-1.0.0.jar.jar /root/app.jar
 ADD bin/ /root/
 RUN chmod +x /root/*.sh;mkdir /root/logs
-ENV JAVA_OPTS ""
 ENV APP_NAME tesla-gateway
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JAVA_OPTS ""
 WORKDIR /root
 CMD ["./start.sh"]
