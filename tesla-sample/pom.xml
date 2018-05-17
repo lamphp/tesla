@@ -13,7 +13,8 @@
 	</modules>
 	<properties>
 		<saluki.version>1.5.7.RELEASE</saluki.version>
-		<dubbo.version>2.6.0</dubbo.version>
+		<dubbo.version>0.1.0</dubbo.version>
+		<springcloud.version>Dalston.SR3</springcloud.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -37,19 +38,9 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>dubbo</artifactId>
+				<groupId>com.alibaba.boot</groupId>
+				<artifactId>dubbo-spring-boot-starter</artifactId>
 				<version>${dubbo.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>commons-logging</groupId>
-						<artifactId>commons-logging</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.springframework</groupId>
-						<artifactId>spring-web</artifactId>
-					</exclusion>
-				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.curator</groupId>
@@ -69,7 +60,7 @@
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
 				<artifactId>spring-cloud-dependencies</artifactId>
-				<version>Dalston.SR3</version>
+				<version>${springcloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
