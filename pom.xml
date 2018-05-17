@@ -19,7 +19,6 @@
 		<netty.version>4.1.16.Final</netty.version>
 		<drools.version>6.4.0.Final</drools.version>
 		<eureka.version>1.6.2</eureka.version>
-		<docker.image.prefix>tesla</docker.image.prefix>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
