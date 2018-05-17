@@ -13,18 +13,18 @@
  */
 package io.github.tesla.gateway.protocol.grpc;
 
-import java.util.List;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 import com.google.protobuf.Descriptors.Descriptor;
-import com.google.protobuf.Descriptors.FileDescriptor;
 import com.google.protobuf.Descriptors.MethodDescriptor;
+import com.google.protobuf.InvalidProtocolBufferException;
 
 import io.github.tesla.common.domain.ApiRpcDO;
+import io.github.tesla.common.proto.ServiceResolver;
 
 /**
  * @author liushiming
@@ -32,6 +32,7 @@ import io.github.tesla.common.domain.ApiRpcDO;
  */
 
 public class ProtobufUtil {
+  private static final Logger LOG = LoggerFactory.getLogger(ProtobufUtil.class);
 
 
   public static Pair<Descriptor, Descriptor> resolveServiceInputOutputType(final ApiRpcDO rpcDo) {
@@ -40,15 +41,22 @@ public class ProtobufUtil {
 
   private static Pair<Descriptor, Descriptor> findDirectyprotobuf(final ApiRpcDO rpcDo) {
     byte[] protoContent = rpcDo.getProtoContext();
+    FileDescriptorSet descriptorSet = null;
     if (protoContent != null && protoContent.length > 0) {
-      List<FileDescriptor> fileDescs =
-          JSON.parseObject(new String(protoContent), new TypeReference<List<FileDescriptor>>() {});
-      ServiceResolver serviceResolver = new ServiceResolver(fileDescs);
-      ProtoMethodName protoMethodName = ProtoMethodName
-          .parseFullGrpcMethodName(rpcDo.getServiceName() + "/" + rpcDo.getMethodName());
-      MethodDescriptor protoMethodDesc = serviceResolver.resolveServiceMethod(protoMethodName);
-      return new ImmutablePair<Descriptor, Descriptor>(protoMethodDesc.getInputType(),
-          protoMethodDesc.getOutputType());
+      try {
+        descriptorSet = FileDescriptorSet.parseFrom(protoContent);
+        ServiceResolver serviceResolver = ServiceResolver.fromFileDescriptorSet(descriptorSet);
+        ProtoMethodName protoMethodName = ProtoMethodName
+            .parseFullGrpcMethodName(rpcDo.getServiceName() + "/" + rpcDo.getMethodName());
+        MethodDescriptor protoMethodDesc =
+            serviceResolver.resolveServiceMethod(protoMethodName.getServiceName(),
+                protoMethodName.getMethodName(), protoMethodName.getPackageName());
+        return new ImmutablePair<Descriptor, Descriptor>(protoMethodDesc.getInputType(),
+            protoMethodDesc.getOutputType());
+      } catch (InvalidProtocolBufferException e) {
+        LOG.error(e.getMessage(), e);
+        throw new RuntimeException(e);
+      }
     }
     return null;
   }
