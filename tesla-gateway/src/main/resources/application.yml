@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Tesla
+    name: tesla-grpc
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
@@ -27,6 +27,9 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath*:META-INF/mybatis/**/*Mapper.xml
+saluki:
+  grpc:
+    registryAddress: localhost:8500
 dubbo:
   registryAddress: zookeeper://127.0.0.1:2181
 eureka:

@@ -27,7 +27,6 @@ import com.googlecode.protobuf.format.JsonFormat;
 
 import io.github.saluki.grpc.exception.RpcFrameworkException;
 import io.github.saluki.grpc.exception.RpcServiceException;
-import io.github.saluki.grpc.service.GenericService;
 import io.github.tesla.common.domain.ApiRpcDO;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.protocol.MicroserviceDynamicClient;
@@ -42,8 +41,7 @@ import io.netty.util.CharsetUtil;
  */
 public class DynamicGrpcClient extends MicroserviceDynamicClient {
 
-  private final GenericService genricService;
-
+  private final io.github.saluki.grpc.service.GenericService genricService;
 
   private static final JsonFormat JSON2PROTOBUF = new JsonFormat();
 
@@ -51,7 +49,7 @@ public class DynamicGrpcClient extends MicroserviceDynamicClient {
     JSON2PROTOBUF.setDefaultCharset(CharsetUtil.UTF_8);
   }
 
-  public DynamicGrpcClient(GenericService genricService) {
+  public DynamicGrpcClient(io.github.saluki.grpc.service.GenericService genricService) {
     super();
     this.genricService = genricService;
   }

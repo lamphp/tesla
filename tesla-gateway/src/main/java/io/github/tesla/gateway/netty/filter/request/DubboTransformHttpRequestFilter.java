@@ -24,6 +24,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
 
@@ -48,8 +49,10 @@ public class DubboTransformHttpRequestFilter extends HttpRequestFilter {
     ApiRpcDO rpc = routeRuleCache.getRpcRoute(uri);
     if (rpc != null && rpc.getDubboParamTemplate() != null) {
       String jsonOutput = dubboClient.doRpcRemoteCall(rpc, servletRequest);
-      return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-          Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
+      HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+          HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
+      HttpUtil.setKeepAlive(response, false);
+      return response;
     } else {
       // 如果从缓存没有查到dubbo的映射信息，说明不是泛化调用，返回空，继续走下一个filter或者去走rest服务发现等
       return null;
