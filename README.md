@@ -21,9 +21,24 @@
  tesla-ops: API维护、规则维护
  
 # 使用说明
- * 打包
+
+ * mvn打包及打镜像
  
  ```
-   mvn install -Dmaven.test.skip=true
+   mvn clean package
  ```
- * 启动gateway及ops工程
+ 
+ * 在根目录下运行,成功如下图
+ 
+ ```
+ docker-compose up -d
+ ```
+ ![avatar](docker-compose.jpg)
+ 
+ * 访问ops控制台,维护规则
+ http://localhost:8080
+ 
+ ![avatar](ops.jpg)
+ 
+ * 访问gateway真正路由转发
+  http://localhost:9000
