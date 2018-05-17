@@ -184,18 +184,6 @@ var $validator = $("#routeForm").validate({
           return isRpc == 1 || isRpc == 2;
         }
       }
-    },
-    serviceFileName: {
-      required: {
-        depends: function(value, element) {
-          var isRpc = $('#routeType').val();
-          if (isRpc == 2) {
-            return $('#zipFile').val() != null;
-          } else {
-            return false;
-          }
-        }
-      }
     }
   },
   messages: {
@@ -225,9 +213,6 @@ var $validator = $("#routeForm").validate({
     },
     serviceVersion: {
       required: "请输入版本！"
-    },
-    serviceFileName: {
-      required: "上传proto目录文件，需要指定目录中的服务定义文件名！"
     }
   },
   highlight: function(element) {
