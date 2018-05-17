@@ -105,9 +105,7 @@ public class ApiController extends BaseController {
         if (response != null) {
           return response;
         } else {
-          String protoServiceFileName = apiVO.getProtoServiceFileName();
-          byte[] protoContext =
-              protobufService.compileDirectoryProto(zipFile, protoServiceFileName);
+          byte[] protoContext = protobufService.compileDirectoryProto(zipFile);
           apiVO.setProtoContext(protoContext);
         }
       }
@@ -141,8 +139,7 @@ public class ApiController extends BaseController {
         if (response != null) {
           return response;
         } else {
-          String serviceFileName = apiVO.getProtoServiceFileName();
-          byte[] protoContext = protobufService.compileDirectoryProto(zipFile, serviceFileName);
+          byte[] protoContext = protobufService.compileDirectoryProto(zipFile);
           apiVO.setProtoContext(protoContext);
         }
       }

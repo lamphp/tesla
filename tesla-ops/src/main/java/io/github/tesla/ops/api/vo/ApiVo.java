@@ -66,8 +66,6 @@ public class ApiVo implements Serializable {
 
   private String dubboParamTemplate;
 
-  private String protoServiceFileName;
-
   // Spring Cloud
   private String instanceId;
 
@@ -214,15 +212,6 @@ public class ApiVo implements Serializable {
 
   public void setInstanceId(String instanceId) {
     this.instanceId = instanceId;
-  }
-
-
-  public String getProtoServiceFileName() {
-    return protoServiceFileName;
-  }
-
-  public void setProtoServiceFileName(String protoServiceFileName) {
-    this.protoServiceFileName = protoServiceFileName;
   }
 
   public List<RequestFilterTypeEnum> getRequestFilterType() {

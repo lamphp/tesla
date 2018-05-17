@@ -21,9 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface ProtobufService {
 
-  public byte[] compileDirectoryProto(MultipartFile directoryZipStream, String serviceFileName);
-
-  public byte[] compileFileProto(MultipartFile inputStream, String fileName);
-
+  public byte[] compileDirectoryProto(MultipartFile directoryZipStream);
 
 }

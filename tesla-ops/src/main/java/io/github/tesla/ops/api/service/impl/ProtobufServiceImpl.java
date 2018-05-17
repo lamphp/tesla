@@ -13,17 +13,15 @@
  */
 package io.github.tesla.ops.api.service.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -33,9 +31,10 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.github.os72.protocjar.Protoc;
-import com.google.common.collect.ImmutableList;
+import com.google.protobuf.DescriptorProtos.FileDescriptorSet;
 
+import io.github.tesla.common.proto.ProtocInvoker;
+import io.github.tesla.common.proto.ProtocInvoker.ProtocInvocationException;
 import io.github.tesla.ops.api.service.ProtobufService;
 import io.github.tesla.ops.common.TeslaException;
 
@@ -59,15 +58,18 @@ public class ProtobufServiceImpl implements ProtobufService {
   }
 
   @Override
-  public byte[] compileDirectoryProto(MultipartFile directoryZipStream, String serviceFileName) {
+  public byte[] compileDirectoryProto(MultipartFile directoryZipStream) {
     String fileDirectory = null;
     try {
-      fileDirectory = this.uploadZipFile(directoryZipStream, serviceFileName);
-      ProtoFileServiceFilter filter = new ProtoFileServiceFilter(serviceFileName);
-      Files.walkFileTree(Paths.get(fileDirectory), filter);
-      String protoFilePath = filter.getProtoFilePath();
-      return this.runProtoc(fileDirectory, protoFilePath);
+      fileDirectory = this.uploadZipFile(directoryZipStream);
+      ProtocInvoker protocInvoke = ProtocInvoker.forConfig(Paths.get(fileDirectory));
+      FileDescriptorSet fileDescSet = protocInvoke.invoke();
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      fileDescSet.writeTo(outputStream);
+      return outputStream.toByteArray();
     } catch (IOException e) {
+      throw new TeslaException(e.getMessage(), e);
+    } catch (ProtocInvocationException e) {
       throw new TeslaException(e.getMessage(), e);
     } finally {
       if (fileDirectory != null) {
@@ -76,55 +78,9 @@ public class ProtobufServiceImpl implements ProtobufService {
     }
   }
 
-  @Override
-  public byte[] compileFileProto(MultipartFile inputStream, String fileName) {
-    String filePath = null;
-    try {
-      filePath = this.uploadSimpleFile(inputStream, fileName);
-      return this.runProtoc(null, filePath);
-    } catch (IOException e) {
-      throw new TeslaException(e.getMessage(), e);
-    } finally {
-      if (filePath != null) {
-        FileUtils.deleteQuietly(new File(filePath));
-      }
-    }
 
-  }
-
-  private byte[] runProtoc(String includePath, String protoFilePath) {
-    try {
-      Path descriptorPath = Files.createTempFile("descriptor", ".pb.bin");
-      ImmutableList.Builder<String> builder = ImmutableList.<String>builder();
-      if (includePath != null) {
-        builder.add("-I" + includePath);
-      }
-      builder.add("--descriptor_set_out=" + descriptorPath.toAbsolutePath().toString());
-      ImmutableList<String> protocArgs = builder.add(protoFilePath).build();
-      int status = Protoc.runProtoc(protocArgs.toArray(new String[0]));
-      if (status != 0) {
-        throw new IllegalArgumentException(
-            String.format("Got exit code [%d] from protoc with args [%s]", status, protocArgs));
-      }
-      return Files.readAllBytes(descriptorPath);
-    } catch (IOException | InterruptedException e) {
-      throw new TeslaException(e.getMessage(), e);
-    }
-  }
-
-
-  private String uploadSimpleFile(MultipartFile protoFile, String fileName) throws IOException {
-    Path protoFileDistPath =
-        Paths.get(protoFileDirectory, "argProtos", protoFile.getOriginalFilename());
-    File protoFileDist = protoFileDistPath.toFile();
-    FileUtils.forceMkdirParent(protoFileDist);
-    protoFile.transferTo(protoFileDist);
-    return protoFileDist.getAbsolutePath();
-  }
-
-  private String uploadZipFile(MultipartFile zipFile, String serviceName) throws IOException {
-    Path zipFileDistPath =
-        Paths.get(protoFileDirectory, serviceName, zipFile.getOriginalFilename());
+  private String uploadZipFile(MultipartFile zipFile) throws IOException {
+    Path zipFileDistPath = Paths.get(protoFileDirectory, zipFile.getOriginalFilename());
     File zipFileDist = zipFileDistPath.toFile();
     FileUtils.forceMkdirParent(zipFileDist);
     zipFile.transferTo(zipFileDist);
@@ -165,29 +121,10 @@ public class ProtobufServiceImpl implements ProtobufService {
   }
 
 
-  private static class ProtoFileServiceFilter extends SimpleFileVisitor<Path> {
-
-    private final String protoFileName;
-
-    private String protoFilePath;
-
-    public ProtoFileServiceFilter(String protoFileName) {
-      this.protoFileName = protoFileName;
-    }
-
-    @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-      if (file.getFileName().startsWith(protoFileName)) {
-        protoFilePath = file.toFile().getAbsolutePath();
-      }
-      return FileVisitResult.CONTINUE;
-    }
-
-    public String getProtoFilePath() {
-      return protoFilePath;
-    }
-
+  public static void main(String[] args) throws ProtocInvocationException {
+    ProtocInvoker protocInvoke = ProtocInvoker.forConfig(
+        Paths.get("/var/folders/rm/b08p6hss1_1524t87fv4wp8r0000gn/T/protos7255550061228174049"));
+    FileDescriptorSet set = protocInvoke.invoke();
+    System.out.println(set);
   }
-
-
 }
