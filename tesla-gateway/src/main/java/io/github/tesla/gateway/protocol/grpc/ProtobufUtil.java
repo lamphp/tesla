@@ -37,11 +37,6 @@ public class ProtobufUtil {
 
   public static Pair<Descriptor, Descriptor> resolveServiceInputOutputType(final ApiRpcDO rpcDo) {
     return findDirectyprotobuf(rpcDo);
-    // Pair<Descriptor, Descriptor> argsDesc = findSingleProtobuf(rpcDo);
-    // if (argsDesc == null) {
-    // argsDesc = findDirectyprotobuf(rpcDo);
-    // }
-    // return argsDesc;
   }
 
 
@@ -64,28 +59,6 @@ public class ProtobufUtil {
     }
     return null;
   }
-
-  // private static Pair<Descriptor, Descriptor> findSingleProtobuf(final RpcDO rpcDo) {
-  // byte[] in = rpcDo.getProtoReq();
-  // byte[] out = rpcDo.getProtoRep();
-  // FileDescriptorSet inputDescriptorSet = null;
-  // FileDescriptorSet outputDescriptorSet = null;
-  // if (in != null && in.length > 0 && out != null && out.length > 0) {
-  // try {
-  // inputDescriptorSet = FileDescriptorSet.parseFrom(in);
-  // outputDescriptorSet = FileDescriptorSet.parseFrom(out);
-  // DescriptorProto fileInputDesc = inputDescriptorSet.getFile(0).getMessageType(0);
-  // DescriptorProto fileOutputDesc = outputDescriptorSet.getFile(0).getMessageType(0);
-  // return new ImmutablePair<Descriptor, Descriptor>(fileInputDesc.getDescriptorForType(),
-  // fileOutputDesc.getDescriptorForType());
-  // } catch (InvalidProtocolBufferException e) {
-  // LOG.error(e.getMessage(), e);
-  // throw new RpcBizException("protobuf service definition is invalid,the input type is: "
-  // + inputDescriptorSet + " the output ytpe is:" + outputDescriptorSet, e);
-  // }
-  // }
-  // return null;
-  // }
 
 
 

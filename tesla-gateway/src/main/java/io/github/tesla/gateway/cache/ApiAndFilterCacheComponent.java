@@ -143,21 +143,8 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   }
 
   private void doCacheRoute(ApiDO apiClone, String url, Long apiId, ApiGroupDO group) {
-    // 直接路由
-    String backEndHost = group.getBackendHost();
-    String backEndPort = group.getBackendPort();
-    if (backEndHost != null && backEndPort != null) {
-      final String backEndPath = group.getBackendPath();
-      final String urlPath;
-      if (backEndPath != null) {
-        urlPath = path(backEndPath) + path(apiClone.getPath());
-      } else {
-        urlPath = apiClone.getPath();
-      }
-      REDIRECT_ROUTE.put(url,
-          new MutablePair<String, String>(backEndHost + ":" + backEndPort, urlPath));
-    } // RPC路由
-    else if (apiClone.isRpc()) {
+    // RPC路由
+    if (apiClone.isRpc()) {
       ApiRpcDO rpc = rpcDao.get(apiId);
       RPC_ROUTE.put(url, rpc);
     } // SpringCloud路由
@@ -171,6 +158,19 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
       }
       ApiSpringCloudDO springCloud = springCloudDao.get(apiId);
       SPRINGCLOUD_ROUTE.put(url, new MutablePair<String, ApiSpringCloudDO>(urlPath, springCloud));
+    } // 直接路由
+    else {
+      String backEndHost = group.getBackendHost();
+      String backEndPort = group.getBackendPort();
+      final String backEndPath = group.getBackendPath();
+      final String urlPath;
+      if (backEndPath != null) {
+        urlPath = path(backEndPath) + path(apiClone.getPath());
+      } else {
+        urlPath = apiClone.getPath();
+      }
+      REDIRECT_ROUTE.put(url,
+          new MutablePair<String, String>(backEndHost + ":" + backEndPort, urlPath));
     }
   }
 

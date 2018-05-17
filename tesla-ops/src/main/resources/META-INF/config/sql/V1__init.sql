@@ -422,12 +422,6 @@ CREATE TABLE `gateway_api` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
 
  
-INSERT INTO `gateway_api` (`id`, `name`, `describe`, `url`, `path`, `routes`, `gmt_create`, `gmt_modified`, `group_id`)
-VALUES
-	(1,'测试API','测试API','/test','/test',0,'2018-04-28 02:01:29','2018-04-28 02:01:29',1),
-	(2,'测试Drools','测试API','/drools','/drools',3,'2018-04-28 02:01:29','2018-04-28 02:01:29',1),
-	(3,'测试user','测试user','/user','/user',0,'2018-04-28 02:01:29','2018-04-28 02:01:29',1);
-
 DROP TABLE IF EXISTS `gateway_api_rpc`;
 
 CREATE TABLE `gateway_api_rpc` (
@@ -483,7 +477,7 @@ INSERT INTO `gateway_filter` (`id`, `name`,`describe`,`filter_type`, `rule`, `ap
 VALUES
 	(1,'Cookie黑名单','标准的Cookie黑名单','BlackCookieHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.methodaccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n',NULL,NULL,sysdate(),sysdate()),
 	(2,'URL参数黑名单','标准的URL参数黑名单','URLParamHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.MethodAccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n\\<(iframe|script|body|img|layer|div|meta|style|base|object|input)\n(onmouseover|onerror|onload)\\=\n',NULL,NULL,sysdate(),sysdate()),
-	(3,'URL黑名单','标准的URL黑名单','BlackURLHttpRequestFilter','\\.(svn|git|htaccess|bash_history)\n\\.(bak|inc|old|mdb|sql|backup|java|class)$\n(vhost|bbs|host|wwwroot|www|site|root|hytop|flashfxp).*\\.rar\n(phpmyadmin|jmx-console|jmxinvokerservlet)\njava\\.lang\n/(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\\\\w+).(php|jsp)\n',NULL,NULL,sysdate(),sysdate()));
+	(3,'URL黑名单','标准的URL黑名单','BlackURLHttpRequestFilter','\\.(svn|git|htaccess|bash_history)\n\\.(bak|inc|old|mdb|sql|backup|java|class)$\n(vhost|bbs|host|wwwroot|www|site|root|hytop|flashfxp).*\\.rar\n(phpmyadmin|jmx-console|jmxinvokerservlet)\njava\\.lang\n/(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\\\\w+).(php|jsp)\n',NULL,NULL,sysdate(),sysdate());
 	
 	
 

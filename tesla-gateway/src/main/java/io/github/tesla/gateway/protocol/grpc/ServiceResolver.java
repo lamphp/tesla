@@ -98,7 +98,6 @@ public class ServiceResolver {
     if (descriptorCache.containsKey(descritorName)) {
       return descriptorCache.get(descritorName);
     }
-
     ImmutableList.Builder<FileDescriptor> dependencies = ImmutableList.builder();
     for (String dependencyName : descriptorProto.getDependencyList()) {
       if (!descriptorProtoIndex.containsKey(dependencyName)) {
