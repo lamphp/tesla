@@ -33,7 +33,7 @@
  ```
  docker-compose up -d
  ```
- ![avatar](docker-compose.jpg)
+ ![avatar](docker.jpg)
  
  * 访问ops控制台,维护规则
  http://localhost:8080
