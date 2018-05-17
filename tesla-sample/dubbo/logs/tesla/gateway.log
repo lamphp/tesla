@@ -1,0 +1,41 @@
+2018-05-17 14:32:20,574 [main] INFO  com.alibaba.dubbo.common.logger.LoggerFactory:59 - using logger: com.alibaba.dubbo.common.logger.log4j.Log4jLoggerAdapter
+2018-05-17 14:32:20,582 [main] INFO  c.a.b.d.c.event.WelcomeLogoApplicationListener:53 - 
+
+  ████████▄  ███    █▄  ▀█████████▄  ▀█████████▄   ▄██████▄  
+  ███   ▀███ ███    ███   ███    ███   ███    ███ ███    ███ 
+  ███    ███ ███    ███   ███    ███   ███    ███ ███    ███ 
+  ███    ███ ███    ███  ▄███▄▄▄██▀   ▄███▄▄▄██▀  ███    ███ 
+  ███    ███ ███    ███ ▀▀███▀▀▀██▄  ▀▀███▀▀▀██▄  ███    ███ 
+  ███    ███ ███    ███   ███    ██▄   ███    ██▄ ███    ███ 
+  ███   ▄███ ███    ███   ███    ███   ███    ███ ███    ███ 
+  ████████▀  ████████▀  ▄█████████▀  ▄█████████▀   ▀██████▀  
+                                                             
+
+ :: Dubbo Spring Boot (v0.1.0) : https://github.com/dubbo/dubbo-spring-boot-project
+ :: Dubbo (v2.0.1) : https://github.com/alibaba/dubbo
+ :: Google group : http://groups.google.com/group/dubbo
+
+2018-05-17 14:32:20,591 [main] INFO  c.a.b.d.c.e.OverrideDubboConfigApplicationListener:67 - Dubbo Config was overridden by externalized configuration {dubbo.application.id=tesla-dubbo, dubbo.application.name=tesla-dubbo, dubbo.protocol.id=dubbo, dubbo.protocol.name=dubbo, dubbo.protocol.port=1200, dubbo.registry.address=zookeeper://127.0.0.1:2181, dubbo.registry.id=tesla-registry, dubbo.scan.basePackages=io.github.tesla.dubbo.impl}
+2018-05-17 14:32:20,719 [main] INFO  io.github.tesla.dubbo.TeslaSampleDubbo:48 - Starting TeslaSampleDubbo on liu-shiming-MacBook-Pro.local with PID 1143 (/Users/liushiming/project/java/tesla/tesla-sample/dubbo/target/classes started by liushiming in /Users/liushiming/project/java/tesla/tesla-sample/dubbo)
+2018-05-17 14:32:20,719 [main] INFO  io.github.tesla.dubbo.TeslaSampleDubbo:593 - No active profile set, falling back to default profiles: default
+2018-05-17 14:32:20,783 [main] INFO  o.s.c.a.AnnotationConfigApplicationContext:583 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@5745ca0e: startup date [Thu May 17 14:32:20 CST 2018]; root of context hierarchy
+2018-05-17 14:32:21,175 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:122 - The dubbo config bean definition [name : tesla-dubbo, class : com.alibaba.dubbo.config.ApplicationConfig] has been registered.
+2018-05-17 14:32:21,176 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:144 - The BeanPostProcessor bean definition [com.alibaba.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : tesla-dubbo] has been registered.
+2018-05-17 14:32:21,177 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:122 - The dubbo config bean definition [name : tesla-registry, class : com.alibaba.dubbo.config.RegistryConfig] has been registered.
+2018-05-17 14:32:21,177 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:144 - The BeanPostProcessor bean definition [com.alibaba.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : tesla-registry] has been registered.
+2018-05-17 14:32:21,178 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:122 - The dubbo config bean definition [name : dubbo, class : com.alibaba.dubbo.config.ProtocolConfig] has been registered.
+2018-05-17 14:32:21,179 [main] INFO  c.a.d.c.s.c.annotation.DubboConfigBindingRegistrar:144 - The BeanPostProcessor bean definition [com.alibaba.dubbo.config.spring.beans.factory.annotation.DubboConfigBindingBeanPostProcessor] for dubbo config bean [name : dubbo] has been registered.
+2018-05-17 14:32:21,239 [main] INFO  c.a.d.c.s.b.f.a.ServiceAnnotationBeanPostProcessor:59 -  [DUBBO] BeanNameGenerator bean can't be found in BeanFactory with name [org.springframework.context.annotation.internalConfigurationBeanNameGenerator], dubbo version: 2.0.1, current host: 10.12.128.89
+2018-05-17 14:32:21,240 [main] INFO  c.a.d.c.s.b.f.a.ServiceAnnotationBeanPostProcessor:59 -  [DUBBO] BeanNameGenerator will be a instance of org.springframework.context.annotation.AnnotationBeanNameGenerator , it maybe a potential problem on bean name generation., dubbo version: 2.0.1, current host: 10.12.128.89
+2018-05-17 14:32:21,241 [main] WARN  c.a.d.c.s.b.f.a.ServiceAnnotationBeanPostProcessor:71 -  [DUBBO] No Spring Bean annotating Dubbo's @Service was found under package[io.github.tesla.dubbo.impl], dubbo version: 2.0.1, current host: 10.12.128.89
+2018-05-17 14:32:21,247 [main] WARN  o.s.c.annotation.ConfigurationClassPostProcessor:373 - Cannot enhance @Configuration bean definition 'com.alibaba.boot.dubbo.autoconfigure.DubboAutoConfiguration' since its singleton instance has been created too early. The typical cause is a non-static @Bean method with a BeanDefinitionRegistryPostProcessor return type: Consider declaring such methods as 'static'.
+2018-05-17 14:32:21,487 [main] INFO  c.a.d.c.s.b.f.a.DubboConfigBindingBeanPostProcessor:73 - The properties of bean [name : tesla-dubbo] have been binding by values : [bean property 'id', bean property 'name']
+2018-05-17 14:32:21,497 [main] INFO  c.a.d.c.s.b.f.a.DubboConfigBindingBeanPostProcessor:73 - The properties of bean [name : tesla-registry] have been binding by values : [bean property 'address', bean property 'id']
+2018-05-17 14:32:21,518 [main] INFO  c.a.d.c.s.b.f.a.DubboConfigBindingBeanPostProcessor:73 - The properties of bean [name : dubbo] have been binding by values : [bean property 'port', bean property 'id', bean property 'name']
+2018-05-17 14:32:21,852 [main] INFO  o.s.jmx.export.annotation.AnnotationMBeanExporter:431 - Registering beans for JMX exposure on startup
+2018-05-17 14:32:21,863 [main] INFO  io.github.tesla.dubbo.TeslaSampleDubbo:57 - Started TeslaSampleDubbo in 1.649 seconds (JVM running for 2.16)
+2018-05-17 14:32:21,865 [Thread-2] INFO  o.s.c.a.AnnotationConfigApplicationContext:984 - Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@5745ca0e: startup date [Thu May 17 14:32:20 CST 2018]; root of context hierarchy
+2018-05-17 14:32:21,866 [Thread-2] INFO  o.s.jmx.export.annotation.AnnotationMBeanExporter:449 - Unregistering JMX-exposed beans on shutdown
+2018-05-17 14:32:21,867 [DubboShutdownHook] INFO  com.alibaba.dubbo.config.AbstractConfig:59 -  [DUBBO] Run shutdown hook now., dubbo version: 2.0.1, current host: 10.12.128.89
+2018-05-17 14:32:21,867 [Thread-2] INFO  c.a.d.c.s.b.f.a.ReferenceAnnotationBeanPostProcessor:252 - class com.alibaba.dubbo.config.spring.beans.factory.annotation.ReferenceAnnotationBeanPostProcessor was destroying!
+2018-05-17 14:32:21,868 [DubboShutdownHook] INFO  c.a.dubbo.registry.support.AbstractRegistryFactory:59 -  [DUBBO] Close all registries [], dubbo version: 2.0.1, current host: 10.12.128.89

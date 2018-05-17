@@ -8,4 +8,4 @@ saluki:
     registryAddress: localhost:8500
     group: tesla
     version: 1.0.0
-    realityRpcPort: 12201
+    realityRpcPort: 1201
