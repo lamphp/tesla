@@ -199,13 +199,16 @@
 											</h3>
 											<div class="row">
 												<div class="col-sm-12" id="grid-table-width">
-													<blockquote>
-														<p>Http提交的JSON数据会系统会转化成json对象</p>
-														<small>
-															$(json.key)来获取json中的数据值，系统会解析该表达式从json中抽取数据
-															<cite title="Source Title">Source Title</cite>
-														</small>
-													</blockquote>
+													<div class="widget-body">
+														<h3 class="alert alert-success">
+															Notice:<br>
+															${header.get(**)}从header里获取数据<br>
+															$(jsonObj.**)系统已把body的字符串数据转化为了JSON对象，可以使用
+															<a href="https://github.com/json-path/JsonPath">JsonPath</a>
+															来获取数据，示例为:$(jsonObj.userId)<br>
+															$(jsonStr)直接获取body的JSON字符串<br>
+														</h3>
+													</div>
 													<table id="grid-table"></table>
 													<input id="dubboParamTemplate" name="dubboParamTemplate" type="hidden">
 												</div>

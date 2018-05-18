@@ -6,11 +6,11 @@ eureka:
     leaseExpirationDurationInSeconds: 2
   client:
     serviceUrl:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: http://eureka.springcloud.cn/eureka/
     healthcheck:
       enabled: true
     lease:
       duration: 5
 spring:
   application:
-    name: tesla-springcloud
+    name: tesla

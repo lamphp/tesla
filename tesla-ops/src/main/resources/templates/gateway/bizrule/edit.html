@@ -59,13 +59,21 @@
 									<section class="col col-10">
 										<label class="label">规则正则表达式内容：</label>
 										<label class="textarea textarea-resizable">
-											<textarea rows="50" class="custom-scroll rule" placeholder="URL参数黑名单正则表达式" th:field="${rule.rule}"></textarea>
+											<textarea rows="50" class="custom-scroll rule" th:field="${rule.rule}"></textarea>
 											<input id="rule" name="rule" class="form-control" type="hidden" />
-											<span class="help-block m-b-none">
-												<i class="fa fa-info-circle"></i>
-												每一条规则需要以换行符分割，文本支持换行符
-											</span>
 										</label>
+										<div class="widget-body">
+												<h3 class="alert alert-success">
+													Notice:<br>
+													1):${header.get(**)}从header里获取数据<br>
+													2):<a href="https://github.com/json-path/JsonPath">JsonPath</a>
+													用法：<br>
+													  &nbsp;&nbsp; A: 利用JsonPath把Body字符串解析为Json对象放在FreeMaker上下文中<br>
+													  &nbsp;&nbsp;&nbsp;&nbsp;<code><#assign json=input.path( "$")></code><br>
+													  &nbsp;&nbsp; B: 利用JsonPath表达式抽取数据<br>
+													  &nbsp;&nbsp;&nbsp;&nbsp;<code>$(json.***)</code><br>
+												</h3>
+											</div>
 									</section>
 								</div>
 							</fieldset>

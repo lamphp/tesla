@@ -45,7 +45,7 @@ public class HeaderMapping {
     this.uri = request.getRequestURI();
   }
 
-  public String header(String headerKey) {
+  public String get(String headerKey) {
     return headers.get(headerKey);
   }
 
