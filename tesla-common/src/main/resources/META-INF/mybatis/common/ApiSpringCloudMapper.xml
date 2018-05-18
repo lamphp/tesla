@@ -35,10 +35,6 @@
 
 	<insert id="save" parameterType="io.github.tesla.common.domain.ApiSpringCloudDO"
 		useGeneratedKeys="true" keyProperty="id">
-		<selectKey resultType="java.lang.Long" order="AFTER"
-			keyProperty="id">
-			SELECT LAST_INSERT_ID()
-		</selectKey>
 		insert into gateway_api_springcloud
 		(
 		`instance_id`,
@@ -49,10 +45,9 @@
 		values
 		(
 		#{instanceId},
-		#{path},
 		#{api.id},
 		sysdate(),
-		sysdate(),
+		sysdate()
 		)
 	</insert>
 

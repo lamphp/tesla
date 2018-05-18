@@ -1,6 +1,6 @@
-<#assign inputRoot= input.path("$")>
+<#assign json= input.path("$")>
 [
-  <#list inputRoot.photos as elem>
+  <#list json.photos as elem>
     {
       "id": ${elem.id},
       "owner": ${elem.owner},
