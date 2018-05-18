@@ -47,7 +47,7 @@ public class DubboTransformHttpRequestFilter extends HttpRequestFilter {
       uri = uri.substring(0, index);
     }
     ApiRpcDO rpc = routeRuleCache.getRpcRoute(uri);
-    if (rpc != null && rpc.getDubboParamTemplate() != null) {
+    if (rpc != null && rpc.getDubboParamTemplate() != null && dubboClient != null) {
       String jsonOutput = dubboClient.doRpcRemoteCall(rpc, servletRequest);
       HttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
           HttpResponseStatus.OK, Unpooled.wrappedBuffer(jsonOutput.getBytes(CharsetUtil.UTF_8)));
