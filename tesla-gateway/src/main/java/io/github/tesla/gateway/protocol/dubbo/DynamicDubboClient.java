@@ -31,8 +31,8 @@ import com.alibaba.dubbo.rpc.service.GenericService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.JSONOutputFormat;
@@ -85,7 +85,8 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
   private String buildFreemarkerTemplate(final String templateContent) {
     Object templateJson = JSON.parse(templateContent);
     StringBuilder sb = new StringBuilder();
-    sb.append("<#assign json = input.path(\"$\")>");
+    sb.append("<#assign jsonObj = input.path(\"$\")>");
+    sb.append("<#assign jsonStr = input.json(\"$\")>");
     sb.append("{");
     if (templateJson instanceof JSONArray) {
       for (Iterator<Object> it = ((JSONArray) templateJson).iterator(); it.hasNext();) {
@@ -101,7 +102,7 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
       JSONObject jsonObj = (JSONObject) templateJson;
       sb.append(jsonObj.getString("type"));
       sb.append(":");
-      sb.append(jsonObj.getString("expression"));
+      sb.append("\"" + jsonObj.getString("expression") + "\"");
     }
     sb.append("}");
     return sb.toString();
@@ -124,11 +125,23 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
       final NettyHttpServletRequest servletRequest) throws TemplateNotFoundException,
       MalformedTemplateNameException, ParseException, IOException, TemplateException {
     String outPutJson = this.doDataMapping(templateKey, servletRequest);
-    Map<String, Object> dubboParamters = JSON.parseObject(outPutJson);
+    Map<String, String> dubboParamters =
+        JSON.parseObject(outPutJson, new TypeReference<HashMap<String, String>>() {});
     List<String> type = Lists.newArrayList();
     List<Object> value = Lists.newArrayList();
-    type.addAll(dubboParamters.keySet());
-    value.addAll(dubboParamters.values());
+    for (Map.Entry<String, String> entry : dubboParamters.entrySet()) {
+      String type_ = entry.getKey();
+      String value_ = entry.getValue();
+      type.add(type_);
+      if (type_.startsWith("java")) {
+        value.add(value_);
+      } else {
+        Map<String, String> value_map =
+            JSON.parseObject(value_, new TypeReference<HashMap<String, String>>() {});
+        value_map.put("class", type_);
+        value.add(value_map);
+      }
+    }
     String[] typeArray = new String[type.size()];
     type.toArray(typeArray);
     return new ImmutablePair<String[], Object[]>(typeArray, value.toArray());
@@ -167,46 +180,49 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
   }
 
 
-
-  /**
-   * <pre>
-   <#assign inputRoot= input.path("$")>
-   [
-   <#list inputRoot.photos as elem>
-   {
-   "id": "${elem.id}",
-   "owner": "${elem.owner}",
-   "title": "${elem.title}",
-   "ispublic": ${elem.ispublic},
-   "isfriend": ${elem.isfriend},
-   "isfamily": ${elem.isfamily}
-   }<#if (elem_has_next)>,</#if>
-   </#list>
-   ]
-   * </pre>
-   */
-  public static void main(String[] args) {
-    Map<String, String> dataMapping = Maps.newHashMap();
-    dataMapping.put("java.lang.String", "${item.title}");
-    dataMapping.put("java.lang.Lang", "${item.title}");
-    dataMapping.put("com.data.pojo.bean", "${item.title}");
-    System.out.println(JSON.toJSON(dataMapping));
-    String json = //
-        "[{"//
-            + " \"type\": \"java.lang.Lang\","//
-            + " \"expression\": \"${item.title}\""//
-            + "},"//
-            + "{"//
-            + " \"type\": \"java.lang.Lang\","//
-            + " \"expression\": \"${item.title}\""//
-            + "},"//
-            + "{"//
-            + " \"type\": \"com.data.pojo.bean\","//
-            + " \"expression\": \"${item.title}\""//
-            + "}]";
-    // String template = buildFreemarkerTemplate(json);
-    // System.out.println(template);
-  }
+  //
+  // /**
+  // * <pre>
+  // <#assign inputRoot= input.path("$")>
+  // [
+  // <#list inputRoot.photos as elem>
+  // {
+  // "id": "${elem.id}",
+  // "owner": "${elem.owner}",
+  // "title": "${elem.title}",
+  // "ispublic": ${elem.ispublic},
+  // "isfriend": ${elem.isfriend},
+  // "isfamily": ${elem.isfamily}
+  // }<#if (elem_has_next)>,</#if>
+  // </#list>
+  // ]
+  // * </pre>
+  // *
+  // * @throws TemplateException
+  // * @throws IOException
+  // */
+  // public static void main(String[] args) throws IOException, TemplateException {
+  // String test = test();
+  // System.out.println(test);
+  // }
+  //
+  // private static String test() throws IOException, TemplateException {
+  // String freeMarkStr =
+  // "[{\"type\":\"io.github.tesla.dubbo.pojo.UserRequest\",\"expression\":\"${jsonStr}\"}]";
+  // String freeMark = buildFreemarkerTemplate(freeMarkStr);
+  // Template t = new Template(null, new StringReader(freeMark), null);
+  // Map<String, Object> map = new HashMap<String, Object>();
+  // String body = "{" + //
+  // "\"name\": \"linking12\"," + //
+  // "\"mobile\": \"18616705342\"," + //
+  // "\"idNo\": \"360731198312284358\"" + //
+  // "}";//
+  //
+  // map.put("input", new BodyMapping(body));
+  // StringWriter sw = new StringWriter();
+  // t.process(map, sw);
+  // return sw.toString();
+  // }
 
 
 

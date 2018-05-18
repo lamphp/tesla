@@ -15,6 +15,9 @@ package io.github.tesla.gateway.netty.filter.help;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.alibaba.fastjson.JSON;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
@@ -50,6 +53,14 @@ public class BodyMapping {
         .jsonProvider().parse(body);
   }
 
+  public BodyMapping(String body) {
+    this.body = body;
+    this.document = Configuration.builder()//
+        .options(Option.DEFAULT_PATH_LEAF_TO_NULL)//
+        .build()//
+        .jsonProvider().parse(body);
+  }
+
 
 
   /**
@@ -60,7 +71,7 @@ public class BodyMapping {
    */
   public String json(String expression) {
     Object json = JsonPath.parse(document).read(expression);
-    return json.toString();
+    return StringUtils.replaceAll(JSON.toJSONString(json), "\"", "\\\\\"");
   }
 
   /**

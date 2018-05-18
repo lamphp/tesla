@@ -88,6 +88,7 @@ public class GateWayProxyConfig {
       return registryConfig;
     }
 
+    @Bean
     protected DynamicDubboClient dynamicDubboClient(ApplicationConfig applicationConfig,
         RegistryConfig registryConfig) {
       return new DynamicDubboClient(applicationConfig, registryConfig);
