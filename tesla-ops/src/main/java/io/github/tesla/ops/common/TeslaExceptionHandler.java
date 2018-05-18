@@ -18,9 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class TeslaExceptionHandler {
   private Logger logger = LoggerFactory.getLogger(getClass());
 
-  /**
-   * 自定义异常
-   */
+
   @ExceptionHandler(TeslaException.class)
   public CommonResponse handleBDException(TeslaException e) {
     CommonResponse r = new CommonResponse();
@@ -67,9 +65,4 @@ public class TeslaExceptionHandler {
     return CommonResponse.error("用户被锁，请联系管理员");
   }
 
-  @ExceptionHandler(Exception.class)
-  public CommonResponse handleException(Exception e) {
-    logger.error(e.getMessage(), e);
-    return CommonResponse.error("服务器错误，请联系管理员");
-  }
 }

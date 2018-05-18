@@ -23,6 +23,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
+import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
@@ -36,6 +37,7 @@ public class BodyMapping {
 
   private final Object document;
 
+
   public BodyMapping(NettyHttpServletRequest request) throws IOException {
     final byte[] bodyContent = request.getRequestBody();
     this.body = new String(bodyContent, CharsetUtil.UTF_8);;
@@ -43,6 +45,7 @@ public class BodyMapping {
         .options(Option.DEFAULT_PATH_LEAF_TO_NULL)//
         .build()//
         .jsonProvider().parse(body);
+
   }
 
   public BodyMapping(ByteBuf byteBuf) throws IOException {
@@ -71,10 +74,15 @@ public class BodyMapping {
    */
   public String json(String expression) {
     Object json = path(expression);
-    String jsonStr = JSON.toJSONString(json);
-    // is right?
-    return StringUtils.replaceAll(jsonStr, "\"", "\\\\\"");
+    String jsonStr = (String) json;
+    if (JsonUtils.isJson(jsonStr)) {
+      return StringUtils.replaceAll(JSON.toJSONString(json), "\"", "\\\\\"");
+    } else {
+      return jsonStr;
+    }
   }
+
+
 
   /**
    * <pre>

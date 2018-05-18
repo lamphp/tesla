@@ -229,17 +229,16 @@ $(document).ready(function() {
             "drools": value
           },
           success: function(result) {
-            if (result == 'true') {
-              layer.open({
-                title: '校验结果',
-                content: 'Drools脚本校验失败!'
-              });
-            } else {
-              layer.open({
-                title: '校验结果',
-                content: 'Drools脚本校验成功!'
-              });
-            }
+            layer.open({
+              title: '校验结果',
+              content: 'Drools脚本校验成功!'
+            });
+          },
+          error: function(XMLHttpRequest, textStatus, errorThrown) {
+            layer.open({
+              title: '校验结果',
+              content: 'Drools脚本校验失败!'
+            });
           }
         });
       }

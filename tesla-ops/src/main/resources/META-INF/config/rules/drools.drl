@@ -4,11 +4,11 @@ import io.github.tesla.gateway.netty.filter.help.BodyMapping
 import io.github.tesla.gateway.netty.filter.help.HeaderMapping
 import io.github.tesla.gateway.netty.filter.help.DroolsContext
 
-global com.alibaba.fastjson.JSON JSON
 
 declare User
     name : String
-    phone : String
+    mobile : String
+    idNo : String
 end
 
 rule "condition: call userService to judge user is normal"
@@ -19,18 +19,19 @@ when
     $context:DroolsContext()
 then
     User user = new User();
-    user.setName($body.json("$.photos[0].owner"));
-    user.setPhone($body.json("$.photos[0].id"));
-    String userInfo = JSON.toJSONString(user);
-    userInfo = $context.callService("customer-service","/default/user",userInfo, "POST");
-    user = JSON.parseObject(userInfo,User.class);
-    insert(user);
+    user.setName($body.json("$.name"));
+    user.setMobile($body.json("$.mobile"));
+    user.setIdNo($body.json("$.idNo"));
+    String userInfo = $context.toJSONString(user);
+    String returnUserInfo = $context.callService("tesla","/user",userInfo, "POST");
+    User returnUser = $context.parseObject(returnUserInfo,User.class);
+    insert(returnUser);
 end
 
 rule "condition: judge to jingdong or internal service"
 no-loop true
 when
-     $user:User(name=="test",phone=="18616705342")
+     $user:User(name=="test",mobile=="123")
      $context:DroolsContext()
 then
      $context.setResponse("www.baidu.com");

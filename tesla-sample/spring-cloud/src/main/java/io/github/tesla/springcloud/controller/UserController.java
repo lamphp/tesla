@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.github.tesla.springcloud.pojo.User;
+import io.github.tesla.springcloud.pojo.Users;
 
 /**
  * @author liushiming
@@ -28,8 +29,13 @@ import io.github.tesla.springcloud.pojo.User;
 public class UserController {
 
   @RequestMapping(value = "user", method = RequestMethod.POST)
-  public User setterMessage1(@RequestBody User user) {
+  public User user(@RequestBody User user) {
     return user;
+  }
+
+  @RequestMapping(value = "users", method = RequestMethod.POST)
+  public Users users(@RequestBody Users users) {
+    return users;
   }
 
 }

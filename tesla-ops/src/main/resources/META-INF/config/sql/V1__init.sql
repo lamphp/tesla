@@ -411,7 +411,7 @@ CREATE TABLE `gateway_api` (
   `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
   `group_id` bigint(20) unsigned NOT NULL COMMENT '分组Id',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_path` (`url`,`path`),
+  UNIQUE KEY `unique_url` (`url`),
   KEY `fk_group` (`group_id`),
   CONSTRAINT `fk_group` FOREIGN KEY (`group_id`) REFERENCES `gateway_api_group` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='api';
@@ -431,7 +431,7 @@ CREATE TABLE `gateway_api_rpc` (
   `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
   `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_service` (`service_name`,`method_name`,`service_group`,`service_version`),
+  UNIQUE KEY `unique_service` (`service_name`,`method_name`,`service_group`,`service_version`,`api_id`),
   KEY `fk_rpc_api` (`api_id`),
   CONSTRAINT `fk_rpc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='rpc服务映射表';
@@ -446,7 +446,7 @@ CREATE TABLE `gateway_api_springcloud` (
   `gmt_modified` datetime DEFAULT NULL COMMENT '修改时间',
   `api_id` bigint(20) unsigned NOT NULL COMMENT 'apiId',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_instance` (`instance_id`),
+  UNIQUE KEY `unique_instance` (`instance_id`,`api_id`),
   KEY `fk_sc_api` (`api_id`),
   CONSTRAINT `fk_sc_api` FOREIGN KEY (`api_id`) REFERENCES `gateway_api` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='SpringCloud服务映射表';

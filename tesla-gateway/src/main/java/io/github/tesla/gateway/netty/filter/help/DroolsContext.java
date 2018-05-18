@@ -13,6 +13,8 @@
  */
 package io.github.tesla.gateway.netty.filter.help;
 
+import com.alibaba.fastjson.JSON;
+
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.protocol.springcloud.DynamicSpringCloudClient;
 
@@ -42,11 +44,19 @@ public class DroolsContext {
     this.response = response;
   }
 
-  public String callService(String serviceId, String path, String submitJSON,
-      String httpMethod) {
+  public String callService(String serviceId, String path, String submitJSON, String httpMethod) {
     DynamicSpringCloudClient springCloudClient =
         SpringContextHolder.getBean(DynamicSpringCloudClient.class);
-    return springCloudClient.doHttpRemoteCall(serviceId, path, httpMethod, submitJSON);
+    String response = springCloudClient.doHttpRemoteCall(serviceId, path, httpMethod, submitJSON);
+    return response;
+  }
+
+  public String toJSONString(Object obj) {
+    return JSON.toJSONString(obj);
+  }
+
+  public <T> T parseObject(String json, Class<T> clazz) {
+    return JSON.parseObject(json, clazz);
   }
 
 }

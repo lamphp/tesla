@@ -13,6 +13,7 @@
  */
 package io.github.tesla.gateway.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.jayway.jsonpath.spi.json.GsonJsonProvider;
 
 /**
@@ -27,5 +28,16 @@ public class JsonUtils {
     return jsonProvider.parse(json);
   }
 
+  public static boolean isJson(String content) {
+    try {
+      JSONObject.parseObject(content);
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
+  }
 
+  public static void main(String[] args) {
+    System.out.println(isJson("test"));
+  }
 }
