@@ -68,6 +68,10 @@ public class FilterRuleVo implements Serializable {
     return filterType.filterViewName();
   }
 
+  public Integer getFilterOrder() {
+    return filterType.order();
+  }
+
   public RequestFilterTypeEnum getFilterType() {
     return filterType;
   }

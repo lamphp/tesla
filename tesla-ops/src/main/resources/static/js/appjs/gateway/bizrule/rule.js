@@ -60,6 +60,9 @@ function load() {
     }, {
       field: 'filterName',
       title: '类型'
+    },{
+      field: 'filterOrder',
+      title: '执行顺序'
     }, {
       field: 'gmtCreate',
       title: '创建时间'
