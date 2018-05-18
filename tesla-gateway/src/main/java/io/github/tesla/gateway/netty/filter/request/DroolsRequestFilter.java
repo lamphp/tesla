@@ -43,6 +43,7 @@ import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.util.CharsetUtil;
 
@@ -101,8 +102,10 @@ public class DroolsRequestFilter extends HttpRequestFilter {
             realRequest.headers().set(HttpHeaderNames.HOST, hostAndPort);
           }
         } else if (response != null) {
-          return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
-              Unpooled.wrappedBuffer(response.getBytes(CharsetUtil.UTF_8)));
+          HttpResponse httpresponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+              HttpResponseStatus.OK, Unpooled.wrappedBuffer(response.getBytes(CharsetUtil.UTF_8)));
+          HttpUtil.setKeepAlive(httpresponse, false);
+          return httpresponse;
         }
       } catch (Throwable e) {
         LOG.error(e.getMessage(), e);
