@@ -70,8 +70,10 @@ public class BodyMapping {
    * </pre>
    */
   public String json(String expression) {
-    Object json = JsonPath.parse(document).read(expression);
-    return StringUtils.replaceAll(JSON.toJSONString(json), "\"", "\\\\\"");
+    Object json = path(expression);
+    String jsonStr = JSON.toJSONString(json);
+    // is right?
+    return StringUtils.replaceAll(jsonStr, "\"", "\\\\\"");
   }
 
   /**
@@ -81,7 +83,7 @@ public class BodyMapping {
    * </pre>
    */
   public Object path(String expression) {
-    Object obj = JsonPath.parse(document).read(expression, Object.class);
+    Object obj = JsonPath.parse(document).read(expression);
     return obj;
   }
 
