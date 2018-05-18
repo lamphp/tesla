@@ -25,7 +25,7 @@ import io.github.tesla.dubbo.user.UserService;
  * @author liushiming
  * @version UserServiceImpl.java, v 0.0.1 2018年5月17日 下午2:20:27 liushiming
  */
-@Service(version = "1.0.0", application = "${dubbo.application.id}",
+@Service(version = "1.0.0", application = "${dubbo.application.id}", group = "tesla",
     protocol = "${dubbo.protocol.id}", registry = "${dubbo.registry.id}")
 public class UserServiceImpl implements UserService {
 
