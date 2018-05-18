@@ -23,7 +23,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.github.tesla.gateway.utils.JsonUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
 
@@ -37,6 +36,7 @@ public class BodyMapping {
 
   private final Object document;
 
+  private Boolean replace = false;
 
   public BodyMapping(NettyHttpServletRequest request) throws IOException {
     final byte[] bodyContent = request.getRequestBody();
@@ -64,6 +64,9 @@ public class BodyMapping {
         .jsonProvider().parse(body);
   }
 
+  public void shouldReplace() {
+    this.replace = true;
+  }
 
 
   /**
@@ -74,11 +77,16 @@ public class BodyMapping {
    */
   public String json(String expression) {
     Object json = path(expression);
-    String jsonStr = (String) json;
-    if (JsonUtils.isJson(jsonStr)) {
-      return StringUtils.replaceAll(JSON.toJSONString(json), "\"", "\\\\\"");
+    if (json instanceof String) {
+      return (String) json;
     } else {
-      return jsonStr;
+      String jsonStr = JSON.toJSONString(json);
+      // 对于dubbo而言，这里需要特殊处理一下，需要把"进行处理，其他需要不需要暂时还不确定。。
+      if (this.replace) {
+        return StringUtils.replaceAll(jsonStr, "\"", "\\\\\"");
+      } else {
+        return jsonStr;
+      }
     }
   }
 

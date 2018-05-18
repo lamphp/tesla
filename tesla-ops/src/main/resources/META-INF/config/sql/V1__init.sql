@@ -480,14 +480,14 @@ VALUES
 ---------------add test data--------------
 INSERT INTO `gateway_api_group` (`id`, `name`, `describe`, `backend_host`, `backend_port`, `backend_path`, `gmt_create`, `gmt_modified`)
 VALUES
-	(1,'DefaultGroup','标准分组','','','','2018-02-03 03:52:00','2018-02-03 03:52:00');
+	(1,'服务化','服务化标准分组','','','','2018-02-03 03:52:00','2018-02-03 03:52:00');
 	
 INSERT INTO `gateway_api` (`id`, `name`, `describe`, `url`, `path`, `routes`, `gmt_create`, `gmt_modified`, `group_id`)
 VALUES
 	(1,'grpc测试','grpc','/grpc/user','',2,'2018-05-17 11:59:11','2018-05-17 11:59:11',1),
 	(2,'dubbo测试','dubbo','/dubbo/user','',1,'2018-05-18 03:13:17','2018-05-18 03:13:17',1),
-	(3,'spring测试','springcloud','/springcloud/user','/user',3,'2018-05-18 09:07:31','2018-05-18 09:07:31',1);
-
+	(3,'spring测试','springcloud','/springcloud/user','/user',3,'2018-05-18 09:07:31','2018-05-18 09:07:31',1),
+	(4,'drools测试','drools','/drools','/users',3,'2018-05-18 10:49:04','2018-05-18 10:49:04',1);
 
 INSERT INTO `gateway_api_rpc` (`id`, `service_name`, `method_name`, `service_group`, `service_version`, `proto_context`, `dubbo_param_template`, `gmt_create`, `gmt_modified`, `api_id`)
 VALUES
@@ -496,7 +496,17 @@ VALUES
 
 INSERT INTO `gateway_api_springcloud` (`id`, `instance_id`, `gmt_create`, `gmt_modified`, `api_id`)
 VALUES
-	(1,'tesla','2018-05-18 09:07:31','2018-05-18 09:07:31',3);
+	(1,'tesla','2018-05-18 09:07:31','2018-05-18 09:07:31',3),
+	(2,'tesla','2018-05-18 10:49:04','2018-05-18 10:49:04',4);
+
+
+INSERT INTO `gateway_filter` (`id`, `name`, `describe`, `filter_type`, `rule`, `api_id`, `group_id`, `gmt_create`, `gmt_modified`)
+VALUES
+	(1,'Cookie黑名单','标准的Cookie黑名单','BlackCookieHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.methodaccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n',NULL,NULL,'2018-05-18 10:48:00','2018-05-18 10:48:00'),
+	(2,'URL参数黑名单','标准的URL参数黑名单','URLParamHttpRequestFilter','\\.\\./\n\\:\\$\n\\$\\{\nselect.+(from|limit)\n(?:(union(.*?)select))\nhaving|rongjitest\nsleep\\((\\s*)(\\d*)(\\s*)\\)\nbenchmark\\((.*)\\,(.*)\\)\nbase64_decode\\(\n(?:from\\W+information_schema\\W)\n(?:(?:current_)user|database|schema|connection_id)\\s*\\(\n(?:etc\\/\\W*passwd)\ninto(\\s+)+(?:dump|out)file\\s*\ngroup\\s+by.+\\(\nxwork.methodaccessor\n(?:define|eval|file_get_contents|include|require|require_once|shell_exec|phpinfo|system|passthru|preg_\\w+|execute|echo|print|print_r|var_dump|(fp)open|alert|showmodaldialog)\\(\nxwork\\.MethodAccessor\n(gopher|doc|php|glob|file|phar|zlib|ftp|ldap|dict|ogg|data)\\:\\/\njava\\.lang\n\\$_(get|post|cookie|files|session|env|phplib|globals|server)\\[\n\\<(iframe|script|body|img|layer|div|meta|style|base|object|input)\n(onmouseover|onerror|onload)\\=\n',NULL,NULL,'2018-05-18 10:48:00','2018-05-18 10:48:00'),
+	(3,'URL黑名单','标准的URL黑名单','BlackURLHttpRequestFilter','\\.(svn|git|htaccess|bash_history)\n\\.(bak|inc|old|mdb|sql|backup|java|class)$\n(vhost|bbs|host|wwwroot|www|site|root|hytop|flashfxp).*\\.rar\n(phpmyadmin|jmx-console|jmxinvokerservlet)\njava\\.lang\n/(attachments|upimg|images|css|uploadfiles|html|uploads|templets|static|template|data|inc|forumdata|upload|includes|cache|avatar)/(\\\\w+).(php|jsp)\n',NULL,NULL,'2018-05-18 10:48:00','2018-05-18 10:48:00'),
+	(4,'Drools测试','Drools测试','DroolsRequestFilter','package io.github.tesla.gateway.netty.filter.drools\n\nimport io.github.tesla.gateway.netty.filter.help.BodyMapping\nimport io.github.tesla.gateway.netty.filter.help.HeaderMapping\nimport io.github.tesla.gateway.netty.filter.help.DroolsContext\n\n\ndeclare User\n    name : String\n    mobile : String\n    idNo : String\nend\n\nrule \"condition: call userService to judge user is normal\"\nno-loop true\nwhen\n    $body:BodyMapping()\n    $header:HeaderMapping()\n    $context:DroolsContext()\nthen\n    User user = new User();\n    user.setName($body.json(\"$.name\"));\n    user.setMobile($body.json(\"$.mobile\"));\n    user.setIdNo($body.json(\"$.idNo\"));\n    String userInfo = $context.toJSONString(user);\n    String returnUserInfo = $context.callService(\"tesla\",\"/user\",userInfo, \"POST\");\n    User returnUser = $context.parseObject(returnUserInfo,User.class);\n    insert(returnUser);\nend\n\nrule \"condition: judge to jingdong or internal service\"\nno-loop true\nwhen\n     $user:User(name==\"test\",mobile==\"123\")\n     $context:DroolsContext()\nthen\n     $context.setResponse(\"www.baidu.com\");\nend',4,NULL,'2018-05-18 11:00:58','2018-05-18 11:00:58');
+
 
 DROP TABLE IF EXISTS logging_event_property;
 DROP TABLE IF EXISTS logging_event_exception;

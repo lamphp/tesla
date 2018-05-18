@@ -112,8 +112,10 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
       final NettyHttpServletRequest servletRequest) throws TemplateNotFoundException,
       MalformedTemplateNameException, ParseException, IOException, TemplateException {
     Map<String, Object> templateContext = new HashMap<String, Object>();
+    BodyMapping body = new BodyMapping(servletRequest);
+    body.shouldReplace();
     templateContext.put("header", new HeaderMapping(servletRequest));
-    templateContext.put("input", new BodyMapping(servletRequest));
+    templateContext.put("input", body);
     Template template = configuration.getTemplate(templateKey);
     StringWriter outPutWrite = new StringWriter();
     template.process(templateContext, outPutWrite);
