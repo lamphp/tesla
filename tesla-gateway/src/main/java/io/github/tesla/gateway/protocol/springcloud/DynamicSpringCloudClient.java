@@ -14,6 +14,7 @@
 package io.github.tesla.gateway.protocol.springcloud;
 
 import java.net.URI;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.EurekaClient;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -50,7 +50,7 @@ public class DynamicSpringCloudClient {
 
   private final int httpPort;
 
-  private EurekaClient eurekaClient;
+  private DiscoveryClient eurekaClient;
 
   public DynamicSpringCloudClient(EurekaInstanceConfigBean instanceConfig,
       EurekaClientConfigBean eurekaClientConfig, int httpPort) {
@@ -70,8 +70,16 @@ public class DynamicSpringCloudClient {
 
   private InstanceInfo nextServer(String serviceId) {
     this.createEurekaClient();
-    InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka(serviceId, false);
-    return instanceInfo;
+    try {
+      return eurekaClient.getNextServerFromEureka(serviceId, false);
+    } catch (Throwable e) {
+      try {
+        TimeUnit.SECONDS.sleep(30);
+      } catch (InterruptedException e1) {
+      }
+      // retry
+      return eurekaClient.getNextServerFromEureka(serviceId, false);
+    }
   }
 
 

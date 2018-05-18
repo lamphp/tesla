@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +152,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
     else if (apiClone.isSpringCloud()) {
       final String backEndPath = group.getBackendPath();
       final String urlPath;
-      if (backEndPath != null) {
+      if (StringUtils.isNoneBlank(backEndPath)) {
         urlPath = path(backEndPath) + path(apiClone.getPath());
       } else {
         urlPath = apiClone.getPath();

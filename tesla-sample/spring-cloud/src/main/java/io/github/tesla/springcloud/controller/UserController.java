@@ -18,20 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.github.tesla.springcloud.pojo.Users;
+import io.github.tesla.springcloud.pojo.User;
 
 /**
  * @author liushiming
  * @version BackEndController.java, v 0.0.1 2018年4月24日 上午11:51:00 liushiming
  */
 @RestController
-@RequestMapping("springcloud")
 public class UserController {
 
-
   @RequestMapping(value = "user", method = RequestMethod.POST)
-  public Users setterMessage1(@RequestBody Users users) {
-    return users;
+  public User setterMessage1(@RequestBody User user) {
+    return user;
   }
 
 }
