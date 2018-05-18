@@ -39,6 +39,7 @@ import freemarker.core.JSONOutputFormat;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.DefaultObjectWrapperBuilder;
 import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -72,6 +73,9 @@ public class DynamicDubboClient extends MicroserviceDynamicClient {
     configuration_.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_26));
     configuration_.setOutputFormat(JSONOutputFormat.INSTANCE);
     configuration_.setTemplateLoader(templateHolder);
+    DefaultObjectWrapperBuilder owb = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_26);
+    owb.setIterableSupport(true);
+    configuration_.setObjectWrapper(owb.build());
     this.configuration = configuration_;
   }
 
