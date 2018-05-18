@@ -13,8 +13,8 @@
 		<module>tesla-authz</module>
 	</modules>
 	<properties>
-		<springboot.version>1.5.4.RELEASE</springboot.version>
-		<saluki.version>1.5.9-SNAPSHOT</saluki.version>
+		<springboot.version>1.5.10.RELEASE</springboot.version>
+		<saluki.version>1.5.8.RELEASE</saluki.version>
 		<dubbo.version>2.6.0</dubbo.version>
 		<netty.version>4.1.16.Final</netty.version>
 		<drools.version>6.4.0.Final</drools.version>

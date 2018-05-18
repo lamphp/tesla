@@ -12,7 +12,7 @@
 		<module>grpc</module>
 	</modules>
 	<properties>
-		<saluki.version>1.5.9-SNAPSHOT</saluki.version>
+		<saluki.version>1.5.8.RELEASE</saluki.version>
 		<dubbo.version>0.1.0</dubbo.version>
 		<springcloud.version>Dalston.SR3</springcloud.version>
 	</properties>
