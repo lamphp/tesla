@@ -14,7 +14,7 @@
 package io.github.tesla.gateway.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,7 +37,7 @@ public class GateWayProxyConfig {
 
 
   @Configuration
-  @ConditionalOnClass(io.github.saluki.grpc.service.GenericService.class)
+  @ConditionalOnProperty(prefix = "saluki.grpc", name = "registryAddress")
   protected class GrpcConfig {
 
     @SalukiReference(group = "default", version = "1.0.0")
@@ -50,7 +50,7 @@ public class GateWayProxyConfig {
 
   }
   @Configuration
-  @ConditionalOnClass(com.netflix.discovery.EurekaClientConfig.class)
+  @ConditionalOnProperty(prefix = "eureka.client.serviceUrl", name = "defaultZone")
   protected class SpringCloudConfig {
 
     @Value("${server.port}")
@@ -65,7 +65,7 @@ public class GateWayProxyConfig {
   }
 
   @Configuration
-  @ConditionalOnClass(com.alibaba.dubbo.rpc.service.GenericService.class)
+  @ConditionalOnProperty(prefix = "dubbo", name = "registryAddress")
   protected class DubboCoonfig {
     @Value("${dubbo.registryAddress}")
     private String registry;
