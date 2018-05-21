@@ -37,7 +37,7 @@
 	<logger name="gatewaytrace">
 		<appender-ref ref="database" />
 	</logger>
-	<root level="INFO">
+	<root level="DEBUG">
 		<appender-ref ref="logfile" />
 		<appender-ref ref="stdout" />
 	</root>
