@@ -19,7 +19,7 @@ import io.github.tesla.gateway.cache.GroovyFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.filter.request.HttpRequestFilter;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
-import io.github.tesla.gateway.utils.ClassUtil;
+import io.github.tesla.gateway.utils.ClassUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
@@ -33,7 +33,7 @@ public class HttpRequestFilterChain {
       "io.github.tesla.gateway.netty.filter.request";
 
   static {
-    Set<Class<?>> requestFilterClazzs = ClassUtil.getClassSet(REQUEST_FILTER_PACKAGENAME);
+    Set<Class<?>> requestFilterClazzs = ClassUtils.findAllClasses(REQUEST_FILTER_PACKAGENAME);
     for (Class<?> clazz : requestFilterClazzs) {
       if (HttpRequestFilter.class.isAssignableFrom(clazz)
           && !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
