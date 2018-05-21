@@ -29,6 +29,7 @@ services:
     image: tesla-gateway:1.0.0
     depends_on:
     - tesla-mysql
+    - tesla-ops
     ports:
     - 9000:9000
     environment:
