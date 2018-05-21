@@ -1,5 +1,4 @@
 #!/bin/sh
-LOCAL_IP=`ifconfig eth0|grep inet|grep -v 127.0.0.1|grep -v inet6|awk '{print $2}'|tr -d "addr:"`
 JAVA_OPTS="-server -Xss256k $JAVA_OPTS"
 JAVA_OPTS="${JAVA_OPTS} -XX:SurvivorRatio=10"
 JAVA_OPTS="${JAVA_OPTS} -XX:+UseConcMarkSweepGC  -XX:CMSMaxAbortablePrecleanTime=5000 -XX:+CMSClassUnloadingEnabled -XX:CMSInitiatingOccupancyFraction=80"
