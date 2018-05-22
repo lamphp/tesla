@@ -23,13 +23,14 @@ public enum ResponseFilterTypeEnum {
   /**
    * 各种限制
    */
+  JWTSetCookieResponseFilter(1), //
   ClickjackHttpResponseFilter(1), //
   DataMappingHttpResponseFilter(2);
 
   private int filterOrder;
 
-  ResponseFilterTypeEnum(int filteOrder) {
-    this.filterOrder = filteOrder;
+  ResponseFilterTypeEnum(int filterOrder) {
+    this.filterOrder = filterOrder;
   }
 
   public int order() {
