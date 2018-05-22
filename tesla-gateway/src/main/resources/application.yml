@@ -29,9 +29,9 @@ mybatis:
   mapper-locations: classpath*:META-INF/mybatis/**/*Mapper.xml
 saluki:
   grpc:
-    registryAddress: 10.12.128.89:8500
+    registryAddress: consul:8500
 dubbo:
-  registryAddress: zookeeper://10.12.128.89:2181
+  registryAddress: zookeeper://zookeeper:2181
 eureka:
   client:
     registerWithEureka: false

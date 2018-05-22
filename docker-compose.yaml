@@ -37,4 +37,7 @@ services:
     - DATABASE_PASSWORD=123
     - DATABASE_NAME=gateway
     - DATABASE_PORT=3306
+    extra_hosts:
+    - consul:10.12.128.89
+    - zookeeper:10.12.128.89
     restart: always
