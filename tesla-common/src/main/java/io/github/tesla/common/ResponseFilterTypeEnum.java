@@ -24,8 +24,8 @@ public enum ResponseFilterTypeEnum {
    * 各种限制
    */
   JWTSetCookieResponseFilter(1), //
-  ClickjackHttpResponseFilter(1), //
-  DataMappingHttpResponseFilter(2);
+  ClickjackHttpResponseFilter(2), //
+  DataMappingHttpResponseFilter(3);
 
   private int filterOrder;
 
