@@ -96,6 +96,12 @@
 			<groupId>com.netflix.eureka</groupId>
 			<artifactId>eureka-client</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>com.bkjk.common</groupId>
+			<artifactId>auth-sdk-for-java</artifactId>
+			<version>1.0.1.RELEASE</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
