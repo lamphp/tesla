@@ -14,7 +14,7 @@
 * 支持通过规则引擎及参数转换支持API的编排
 * 有OPS管理控制平台，维护简单
 * 不依赖于Web容器，基于Netty的开发，在性能上要比Zuul要好
-* 支持Docker一键部署，动态扩容 
+* 支持Docker
 
 
 # 详细说明
@@ -36,12 +36,9 @@
  ```
  docker-compose up -d
  ```
- ![avatar](docker.jpg)
  
  * 访问ops控制台,维护规则
  http://localhost:8080
- 
- ![avatar](ops.jpg)
  
  * 访问gateway真正路由转发
   http://localhost:9000
