@@ -22,5 +22,5 @@ RUN chmod +x /root/*.sh;mkdir /root/logs
 ENV APP_NAME tesla-gateway
 ENV JAVA_OPTS ""
 WORKDIR /root
-EXPOSE 8181
+EXPOSE 9000
 CMD ["./start.sh"]
