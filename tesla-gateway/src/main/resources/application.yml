@@ -4,7 +4,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://tesla-mysql:3306/gateway?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://10.12.128.89:3306/gateway?useUnicode=true&characterEncoding=utf8
     username: root
     password: 123
     initialSize: 1

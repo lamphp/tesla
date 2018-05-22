@@ -47,6 +47,7 @@ public class TeslaGateWayApplication implements CommandLineRunner {
         .withPort(httpPort)//
         .withFiltersSource(new HttpFiltersSourceAdapter())//
         .withAllowRequestToOriginServer(true)//
+        .withAllowLocalOnly(false)//
         .start();
   }
 
