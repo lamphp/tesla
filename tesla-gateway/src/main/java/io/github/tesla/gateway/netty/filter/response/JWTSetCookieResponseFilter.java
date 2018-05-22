@@ -23,33 +23,33 @@ import javax.servlet.http.Cookie;
 import static io.github.tesla.gateway.netty.filter.help.JWTFilterConstant.*;
 
 public class JWTSetCookieResponseFilter extends HttpResponseFilter {
-    @Override
-    public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpResponse httpResponse) {
-        String keId = (String) servletRequest.getAttribute(KE_ID_NAME);
-        String uusId = (String) servletRequest.getAttribute(UUS_ID_NAME);
+  @Override
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpResponse httpResponse) {
+    String keId = (String) servletRequest.getAttribute(KE_ID_NAME);
+    String uusId = (String) servletRequest.getAttribute(UUS_ID_NAME);
 
-        if (StringUtils.isEmpty(keId) || StringUtils.isEmpty(uusId)) {
-            return null;
-        }
-
-        setCookies(httpResponse, keId, uusId);
-        return null;
+    if (StringUtils.isEmpty(keId) || StringUtils.isEmpty(uusId)) {
+      return null;
     }
 
-    @Override
-    public ResponseFilterTypeEnum filterType() {
-        return ResponseFilterTypeEnum.JWTSetCookieResponseFilter;
-    }
+    setCookies(httpResponse, keId, uusId);
+    return null;
+  }
 
-    private void setCookies(HttpResponse response, String keId, String uusId) {
-        Cookie keIdCookie = new Cookie(KE_ID_COOKIE_NAME, keId);
-        keIdCookie.setMaxAge(EXPIRY_SECONDS);
-        keIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
-        response.headers().add(HttpHeaderNames.SET_COOKIE, keIdCookie);
+  @Override
+  public ResponseFilterTypeEnum filterType() {
+    return ResponseFilterTypeEnum.JWTSetCookieResponseFilter;
+  }
 
-        Cookie uusIdCookie = new Cookie(UUS_ID_COOKIE_NAME, uusId);
-        uusIdCookie.setMaxAge(EXPIRY_SECONDS);
-        uusIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
-        response.headers().add(HttpHeaderNames.SET_COOKIE, uusIdCookie);
-    }
+  private void setCookies(HttpResponse response, String keId, String uusId) {
+    Cookie keIdCookie = new Cookie(KE_ID_COOKIE_NAME, keId);
+    keIdCookie.setMaxAge(EXPIRY_SECONDS);
+    keIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
+    response.headers().add(HttpHeaderNames.SET_COOKIE, keIdCookie);
+
+    Cookie uusIdCookie = new Cookie(UUS_ID_COOKIE_NAME, uusId);
+    uusIdCookie.setMaxAge(EXPIRY_SECONDS);
+    uusIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
+    response.headers().add(HttpHeaderNames.SET_COOKIE, uusIdCookie);
+  }
 }

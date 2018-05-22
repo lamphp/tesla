@@ -7,9 +7,6 @@ $(document).ready(function() {
         name: {
           required: true
         },
-        backendPath: {
-          required: true
-        },
         describe: {
           required: true
         }
@@ -17,9 +14,6 @@ $(document).ready(function() {
       messages: {
         name: {
           required: "请输入分组名称"
-        },
-        backendPath: {
-          required: "请输入分组服务通用URL前缀"
         },
         describe: {
           required: "请输入分组描述"

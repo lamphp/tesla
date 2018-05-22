@@ -176,7 +176,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   }
 
   private String path(String path) {
-    if (path.startsWith("/")) {
+    if (path.startsWith("/") || path.startsWith("http://")) {
       return path;
     } else {
       return "/" + path;
