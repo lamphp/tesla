@@ -4,7 +4,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://tesla-mysql:3306/gateway?useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://10.12.128.89:3306/gateway?useUnicode=true&characterEncoding=utf8
     username: root
     password: 123
     initialSize: 1
@@ -22,16 +22,16 @@ spring:
     filters: stat,wall,slf4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 server:
-  port: 9000
+  port: 8181
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath*:META-INF/mybatis/**/*Mapper.xml
 saluki:
   grpc:
-    registryAddress: localhost:8500
+    registryAddress: 10.12.128.89:8500
 dubbo:
-  registryAddress: zookeeper://127.0.0.1:2181
+  registryAddress: zookeeper://10.12.128.89:2181
 eureka:
   client:
     registerWithEureka: false

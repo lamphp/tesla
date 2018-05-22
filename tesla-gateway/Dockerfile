@@ -1,34 +1,26 @@
 FROM ubuntu:16.04
-ENV TZ="Asia/Shanghai"
-ENV LANG C.UTF-8
-ENV VERSION 8
-ENV UPDATE 172
-ENV BUILD 11
-ENV SIG 512cd62ec5174c3487ac17c61aaa89e8
 
-ENV JAVA_HOME /usr/lib/jvm/java-${VERSION}-oracle
-ENV JRE_HOME ${JAVA_HOME}/jre
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JRE_HOME /usr/lib/jvm/java-8-oracle/jre
+    
+ADD server-jre-8u172-linux-x64.tar.gz /tmp
 
-RUN apt-get update && apt-get install ca-certificates curl \
-        -y --no-install-recommends && \
-	curl --silent --location --retry 3 --cacert /etc/ssl/certs/GeoTrust_Global_CA.pem \
-	--header "Cookie: oraclelicense=accept-securebackup-cookie;" \
-	http://download.oracle.com/otn-pub/java/jdk/"${VERSION}"u"${UPDATE}"-b"${BUILD}"/"${SIG}"/server-jre-"${VERSION}"u"${UPDATE}"-linux-x64.tar.gz \
-	| tar xz -C /tmp && \
-	mkdir -p /usr/lib/jvm && mv /tmp/jdk1.${VERSION}.0_${UPDATE} "${JAVA_HOME}" && \
-	apt-get autoclean && apt-get --purge -y autoremove && \
+RUN mkdir -p /usr/lib/jvm && mv /tmp/jdk1.8.0_172 "${JAVA_HOME}" && \
+    sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.163\.com\/ubuntu\//g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y curl net-tools && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+    
 RUN update-alternatives --install "/usr/bin/java" "java" "${JRE_HOME}/bin/java" 1 && \
 	update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 1 && \
 	update-alternatives --set java "${JRE_HOME}/bin/java" && \
 	update-alternatives --set javac "${JAVA_HOME}/bin/javac"
-	
+
 ADD target/tesla-gateway-1.0.0.jar /root/app.jar
-ADD bin/ /root/
-RUN chmod +x /root/*.sh;mkdir /root/logs
+ADD bin/start.sh /root/
+RUN chmod +x /root/*.sh;mkdir /root/logs 
 ENV APP_NAME tesla-gateway
 ENV JAVA_OPTS ""
 WORKDIR /root
-EXPOSE 9000
+EXPOSE 8181
 CMD ["./start.sh"]

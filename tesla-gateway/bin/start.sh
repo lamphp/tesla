@@ -1,5 +1,5 @@
 #!/bin/sh
-JAVA_OPTS="-server -Xss256k $JAVA_OPTS"
+JAVA_OPTS="-server -Xss500m $JAVA_OPTS"
 JAVA_OPTS="${JAVA_OPTS} -XX:SurvivorRatio=10"
 JAVA_OPTS="${JAVA_OPTS} -XX:+UseConcMarkSweepGC  -XX:CMSMaxAbortablePrecleanTime=5000 -XX:+CMSClassUnloadingEnabled -XX:CMSInitiatingOccupancyFraction=80"
 JAVA_OPTS="${JAVA_OPTS} -XX:+UseCMSInitiatingOccupancyOnly"
