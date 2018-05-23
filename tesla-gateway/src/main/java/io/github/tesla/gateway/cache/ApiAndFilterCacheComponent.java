@@ -165,7 +165,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
       String backEndPort = group.getBackendPort();
       final String backEndPath = group.getBackendPath();
       final String urlPath;
-      if (backEndPath != null) {
+      if (StringUtils.isNotBlank(backEndPath)) {
         urlPath = path(backEndPath) + path(apiClone.getPath());
       } else {
         urlPath = apiClone.getPath();
@@ -176,7 +176,7 @@ public class ApiAndFilterCacheComponent extends AbstractScheduleCache {
   }
 
   private String path(String path) {
-    if (path.startsWith("/") || path.startsWith("http://")) {
+    if (path.startsWith("/") || path.startsWith("http")) {
       return path;
     } else {
       return "/" + path;
