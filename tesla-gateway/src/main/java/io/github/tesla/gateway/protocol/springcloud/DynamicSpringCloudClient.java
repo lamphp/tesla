@@ -96,7 +96,7 @@ public class DynamicSpringCloudClient {
       InstanceInfo serviceInstance = this.nextServer(submitServiceId);
       httpUrl = buildUrl(submitUrl, serviceInstance.getHostName(), serviceInstance.getPort());
     } else {
-      httpUrl = buildUrl(submitUrl, "127.0.0.1", httpPort);
+      httpUrl = buildUrl(submitUrl, "localhost", httpPort);
     }
     final Response response;
     final Request request;
