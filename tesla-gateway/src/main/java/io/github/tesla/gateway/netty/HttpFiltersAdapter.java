@@ -46,15 +46,15 @@ import io.netty.handler.codec.http.HttpVersion;
 public class HttpFiltersAdapter {
   private static Logger logger = LoggerFactory.getLogger(HttpFiltersAdapter.class);
 
-  protected final NettyHttpServletRequest serveletRequest;
+  private final NettyHttpServletRequest serveletRequest;
 
-  protected final ChannelHandlerContext ctx;
+  private final ChannelHandlerContext ctx;
 
   private final ApiAndFilterCacheComponent dynamicsRouteCache;
 
   private final MetricsExporter metricExporter;
 
-  private Object requestStart;
+  private volatile Object requestStart;
 
   public HttpFiltersAdapter(HttpRequest originalRequest, ChannelHandlerContext ctx,
       MetricsExporter metricExporter) {
