@@ -96,7 +96,23 @@
 			<groupId>com.netflix.eureka</groupId>
 			<artifactId>eureka-client</artifactId>
 		</dependency>
-
+		<!-- prometheus -->
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_httpserver</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_hotspot</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+		<!-- JWT -->
 		<dependency>
 			<groupId>com.bkjk.common</groupId>
 			<artifactId>auth-sdk-for-java</artifactId>

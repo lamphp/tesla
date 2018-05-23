@@ -22,11 +22,14 @@ import org.slf4j.LoggerFactory;
 
 import io.github.tesla.gateway.cache.ApiAndFilterCacheComponent;
 import io.github.tesla.gateway.config.SpringContextHolder;
+import io.github.tesla.gateway.metrics.MetricsExporter;
 import io.github.tesla.gateway.netty.filter.HttpRequestFilterChain;
 import io.github.tesla.gateway.netty.filter.HttpResponseFilterChain;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
@@ -48,18 +51,31 @@ public class HttpFiltersAdapter {
 
   private final ApiAndFilterCacheComponent dynamicsRouteCache;
 
-  public HttpFiltersAdapter(HttpRequest originalRequest, ChannelHandlerContext ctx) {
+  private final MetricsExporter metricExporter;
+
+  private final FullHttpRequest msg;
+
+  private Object requestStart;
+
+  public HttpFiltersAdapter(HttpRequest originalRequest, ChannelHandlerContext ctx,
+      MetricsExporter metricExporter) {
     this.originalRequest = originalRequest;
     this.ctx = ctx;
+    this.metricExporter = metricExporter;
+    if (originalRequest instanceof FullHttpRequest) {
+      this.msg = (FullHttpRequest) originalRequest;
+    } else {
+      this.msg = null;
+    }
     this.dynamicsRouteCache = SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
-  }
-
-  public HttpFiltersAdapter(HttpRequest originalRequest) {
-    this(originalRequest, null);
   }
 
 
   public HttpResponse clientToProxyRequest(HttpObject httpObject) {
+    if (msg != null) {
+      requestStart = metricExporter.requestStart(msg.method().name(), msg.uri());
+      metricExporter.requestSize(msg.content().readableBytes());
+    }
     HttpResponse httpResponse = null;
     try {
       httpResponse =
@@ -74,9 +90,19 @@ public class HttpFiltersAdapter {
   public HttpObject proxyToClientResponse(HttpObject httpObject) {
     if (httpObject instanceof HttpResponse) {
       HttpResponse response = (HttpResponse) httpObject;
-      HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest, response);
+      try {
+        HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest, response);
+        if (response instanceof FullHttpResponse) {
+          metricExporter.responseSize(((FullHttpResponse) response).content().readableBytes());
+        }
+        return httpObject;
+      } finally {
+        metricExporter.requestEnd(msg.method().name(), msg.uri(), response.status().code(),
+            requestStart);
+      }
+    } else {
+      return httpObject;
     }
-    return httpObject;
   }
 
   public void proxyToServerResolutionSucceeded(String serverHostAndPort,

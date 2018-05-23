@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.github.tesla.gateway.metrics.MetricsExporter;
 import io.github.tesla.gateway.netty.transmit.connection.ClientToProxyConnection;
 import io.github.tesla.gateway.netty.transmit.support.HostResolver;
 import io.github.tesla.gateway.netty.transmit.support.ServerGroup;
@@ -42,6 +43,7 @@ public class HttpProxyServer {
 
   private final ServerGroup serverGroup;
   private final HttpFiltersSourceAdapter filtersSource;
+  private final MetricsExporter metricsExporter;
   private final boolean transparent;
   private final InetSocketAddress requestedAddress;
   private final HostResolver serverResolver;
@@ -92,14 +94,16 @@ public class HttpProxyServer {
 
 
   public HttpProxyServer(ServerGroup serverGroup, InetSocketAddress requestedAddress,
-      HttpFiltersSourceAdapter filtersSource, boolean transparent, int idleConnectionTimeout,
-      Collection<ActivityTracker> activityTrackers, int connectTimeout, HostResolver serverResolver,
-      long readThrottleBytesPerSecond, long writeThrottleBytesPerSecond,
-      InetSocketAddress localAddress, String proxyAlias, int maxInitialLineLength,
-      int maxHeaderSize, int maxChunkSize, boolean allowRequestsToOriginServer) {
+      HttpFiltersSourceAdapter filtersSource, MetricsExporter metricExporter, boolean transparent,
+      int idleConnectionTimeout, Collection<ActivityTracker> activityTrackers, int connectTimeout,
+      HostResolver serverResolver, long readThrottleBytesPerSecond,
+      long writeThrottleBytesPerSecond, InetSocketAddress localAddress, String proxyAlias,
+      int maxInitialLineLength, int maxHeaderSize, int maxChunkSize,
+      boolean allowRequestsToOriginServer) {
     this.serverGroup = serverGroup;
     this.requestedAddress = requestedAddress;
     this.filtersSource = filtersSource;
+    this.metricsExporter = metricExporter;
     this.transparent = transparent;
     this.idleConnectionTimeout = idleConnectionTimeout;
     if (activityTrackers != null) {
@@ -342,6 +346,11 @@ public class HttpProxyServer {
   public HttpFiltersSourceAdapter getFiltersSource() {
     return filtersSource;
   }
+
+  public MetricsExporter getMetricsExporter() {
+    return metricsExporter;
+  }
+
 
   public Collection<ActivityTracker> getActivityTrackers() {
     return activityTrackers;

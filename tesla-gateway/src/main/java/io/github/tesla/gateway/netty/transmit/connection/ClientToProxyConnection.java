@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
+import io.github.tesla.gateway.metrics.MetricsExporter;
 import io.github.tesla.gateway.netty.ActivityTracker;
 import io.github.tesla.gateway.netty.ChannelThreadLocal;
 import io.github.tesla.gateway.netty.HttpFiltersAdapter;
@@ -73,6 +74,7 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
 
   private volatile ProxyToServerConnection currentServerConnection;
   private volatile HttpFiltersAdapter currentFilters;
+  private volatile MetricsExporter metricExporter;
   private volatile HttpRequest currentRequest;
 
   public ClientToProxyConnection(final HttpProxyServer proxyServer, ChannelPipeline pipeline,
@@ -109,7 +111,8 @@ public class ClientToProxyConnection extends ProxyConnection<HttpRequest> {
   private ConnectionState doReadHTTPInitial(HttpRequest httpRequest) {
     // Make a copy of the original request
     this.currentRequest = copy(httpRequest);
-    currentFilters = proxyServer.getFiltersSource().filterRequest(currentRequest, ctx);
+    currentFilters =
+        proxyServer.getFiltersSource().filterRequest(currentRequest, ctx, metricExporter);
     HttpResponse clientToProxyFilterResponse = currentFilters.clientToProxyRequest(httpRequest);
     if (clientToProxyFilterResponse != null) {
       LOG.debug("Responding to client with short-circuit response from filter: {}",

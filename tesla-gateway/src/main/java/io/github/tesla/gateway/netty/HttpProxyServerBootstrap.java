@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import io.github.tesla.gateway.metrics.MetricsExporter;
 import io.github.tesla.gateway.netty.transmit.ThreadPoolConfiguration;
 import io.github.tesla.gateway.netty.transmit.support.DefaultHostResolver;
 import io.github.tesla.gateway.netty.transmit.support.DnsSecServerResolver;
@@ -41,6 +42,7 @@ public class HttpProxyServerBootstrap {
   private int port = 8080;
   private boolean allowLocalOnly = true;
   private HttpFiltersSourceAdapter filtersSource = new HttpFiltersSourceAdapter();
+  private MetricsExporter metricExporter = new MetricsExporter();
   private boolean transparent = false;
   private int idleConnectionTimeout = 70;
   private Collection<ActivityTracker> activityTrackers =
@@ -240,8 +242,8 @@ public class HttpProxyServerBootstrap {
           proxyToServerWorkerThreads);
     }
 
-    return new HttpProxyServer(serverGroup, determineListenAddress(), filtersSource, transparent,
-        idleConnectionTimeout, activityTrackers, connectTimeout, serverResolver,
+    return new HttpProxyServer(serverGroup, determineListenAddress(), filtersSource, metricExporter,
+        transparent, idleConnectionTimeout, activityTrackers, connectTimeout, serverResolver,
         readThrottleBytesPerSecond, writeThrottleBytesPerSecond, localAddress, proxyAlias,
         maxInitialLineLength, maxHeaderSize, maxChunkSize, allowRequestToOriginServer);
   }

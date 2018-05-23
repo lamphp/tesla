@@ -290,7 +290,8 @@ public abstract class ProxyConnection<I extends HttpObject>
   }
 
   public HttpFiltersAdapter getHttpFiltersFromProxyServer(HttpRequest httpRequest) {
-    return proxyServer.getFiltersSource().filterRequest(httpRequest, ctx);
+    return proxyServer.getFiltersSource().filterRequest(httpRequest, ctx,
+        proxyServer.getMetricsExporter());
   }
 
   public ProxyConnectionLogger getLOG() {

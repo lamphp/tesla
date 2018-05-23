@@ -13,6 +13,8 @@
  */
 package io.github.tesla.gateway;
 
+import java.io.IOException;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +26,8 @@ import org.springframework.boot.autoconfigure.validation.ValidationAutoConfigura
 
 import io.github.tesla.gateway.netty.HttpFiltersSourceAdapter;
 import io.github.tesla.gateway.netty.HttpProxyServer;
+import io.prometheus.client.exporter.HTTPServer;
+import io.prometheus.client.hotspot.DefaultExports;
 
 /**
  * @author liushiming
@@ -37,18 +41,34 @@ public class TeslaGateWayApplication implements CommandLineRunner {
   @Value("${server.port}")
   private int httpPort;
 
+
   public static void main(String[] args) {
     SpringApplication.run(TeslaGateWayApplication.class, args);
   }
 
   @Override
   public void run(String... arg0) throws Exception {
+    runPrometheusServer();
+    runNettyServer();
+  }
+
+  private void runNettyServer() {
     HttpProxyServer.bootstrap()//
         .withPort(httpPort)//
         .withFiltersSource(new HttpFiltersSourceAdapter())//
         .withAllowRequestToOriginServer(true)//
         .withAllowLocalOnly(false)//
         .start();
+  }
+
+  private void runPrometheusServer() throws IOException {
+    final int metricePort = httpPort + 1;
+    DefaultExports.initialize();
+    try {
+      new HTTPServer(metricePort, true);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }
