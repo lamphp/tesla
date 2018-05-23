@@ -135,7 +135,8 @@ public class NettyHttpServletRequest implements HttpServletRequest {
         for (io.netty.handler.codec.http.Cookie c : cookies) {
           Cookie cookie = new Cookie(c.getName(), c.getValue());
           cookie.setComment(c.getComment());
-          cookie.setDomain(c.getDomain());
+          if (c.getDomain() != null)
+            cookie.setDomain(c.getDomain());
           cookie.setMaxAge((int) c.getMaxAge());
           cookie.setPath(c.getPath());
           cookie.setSecure(c.isSecure());
