@@ -30,7 +30,7 @@ public class HttpResponseFilterChain {
   static {
     Set<Class<?>> requestFilterClazzs = ClassUtils.findAllClasses(RESPONSE_FILTER_PACKAGENAME);
     for (Class<?> clazz : requestFilterClazzs) {
-      if (clazz.isAssignableFrom(HttpResponseFilter.class)
+      if (HttpResponseFilter.class.isAssignableFrom(clazz)
           && !Modifier.isAbstract(clazz.getModifiers()) && !clazz.isInterface()) {
         try {
           HttpResponseFilter filter = (HttpResponseFilter) clazz.newInstance();
