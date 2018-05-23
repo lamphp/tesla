@@ -47,8 +47,8 @@ public class JWTRequestFilter extends HttpRequestFilter {
 
     if (cookieMap.containsKey(KE_ID_COOKIE_NAME) && cookieMap.containsKey(UUS_ID_COOKIE_NAME)) {
       // set attribute for @see JWTSetCookieResponseFilter
-      servletRequest.setAttribute(KE_ID_COOKIE_NAME, cookieMap.get(KE_ID_COOKIE_NAME));
-      servletRequest.setAttribute(UUS_ID_COOKIE_NAME, cookieMap.get(UUS_ID_COOKIE_NAME));
+      servletRequest.setAttribute(KE_ID_NAME, cookieMap.get(KE_ID_COOKIE_NAME));
+      servletRequest.setAttribute(UUS_ID_NAME, cookieMap.get(UUS_ID_COOKIE_NAME));
       return null;
     }
 
@@ -71,14 +71,14 @@ public class JWTRequestFilter extends HttpRequestFilter {
           if (StringUtils.isEmpty(keId)) {
             throw new Exception("jwt token payload not contains ke_id.");
           }
-          servletRequest.setAttribute(KE_ID_COOKIE_NAME, keId);
+          servletRequest.setAttribute(KE_ID_NAME, keId);
 
           final String uusId = JWT.decode(token)//
               .getClaim(UUS_ID_NAME).asString();
           if (StringUtils.isEmpty(uusId)) {
             throw new Exception("jwt token payload not contains uus_id.");
           }
-          servletRequest.setAttribute(UUS_ID_COOKIE_NAME, uusId);
+          servletRequest.setAttribute(UUS_ID_NAME, uusId);
 
         } catch (Exception e) {
           super.writeFilterLog(authorizationHeaderValue, JWTRequestFilter.class, e.getMessage());

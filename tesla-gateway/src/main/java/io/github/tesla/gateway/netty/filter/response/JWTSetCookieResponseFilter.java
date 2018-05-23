@@ -18,8 +18,8 @@ import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponse;
 import org.springframework.util.StringUtils;
-
-import javax.servlet.http.Cookie;
+import io.netty.handler.codec.http.cookie.Cookie;
+import io.netty.handler.codec.http.cookie.DefaultCookie;
 import static io.github.tesla.gateway.netty.filter.help.JWTFilterConstant.*;
 
 public class JWTSetCookieResponseFilter extends HttpResponseFilter {
@@ -42,12 +42,12 @@ public class JWTSetCookieResponseFilter extends HttpResponseFilter {
   }
 
   private void setCookies(HttpResponse response, String keId, String uusId) {
-    Cookie keIdCookie = new Cookie(KE_ID_COOKIE_NAME, keId);
+    Cookie keIdCookie = new DefaultCookie(KE_ID_COOKIE_NAME, keId);
     keIdCookie.setMaxAge(EXPIRY_SECONDS);
     keIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
     response.headers().add(HttpHeaderNames.SET_COOKIE, keIdCookie);
 
-    Cookie uusIdCookie = new Cookie(UUS_ID_COOKIE_NAME, uusId);
+    Cookie uusIdCookie = new DefaultCookie(UUS_ID_COOKIE_NAME, uusId);
     uusIdCookie.setMaxAge(EXPIRY_SECONDS);
     uusIdCookie.setDomain(DOMAIN_COOKIE_BKJK);
     response.headers().add(HttpHeaderNames.SET_COOKIE, uusIdCookie);
