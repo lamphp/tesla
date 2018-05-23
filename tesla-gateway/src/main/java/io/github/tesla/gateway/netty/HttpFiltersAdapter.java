@@ -25,6 +25,7 @@ import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.metrics.MetricsExporter;
 import io.github.tesla.gateway.netty.filter.HttpRequestFilterChain;
 import io.github.tesla.gateway.netty.filter.HttpResponseFilterChain;
+import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
@@ -45,7 +46,7 @@ import io.netty.handler.codec.http.HttpVersion;
 public class HttpFiltersAdapter {
   private static Logger logger = LoggerFactory.getLogger(HttpFiltersAdapter.class);
 
-  protected final HttpRequest originalRequest;
+  protected final NettyHttpServletRequest serveletRequest;
 
   protected final ChannelHandlerContext ctx;
 
@@ -53,35 +54,28 @@ public class HttpFiltersAdapter {
 
   private final MetricsExporter metricExporter;
 
-  private final FullHttpRequest msg;
-
   private Object requestStart;
 
   public HttpFiltersAdapter(HttpRequest originalRequest, ChannelHandlerContext ctx,
       MetricsExporter metricExporter) {
-    this.originalRequest = originalRequest;
     this.ctx = ctx;
     this.metricExporter = metricExporter;
-    if (originalRequest instanceof FullHttpRequest) {
-      this.msg = (FullHttpRequest) originalRequest;
-    } else {
-      this.msg = null;
-    }
+    this.serveletRequest = new NettyHttpServletRequest((FullHttpRequest) originalRequest);
     this.dynamicsRouteCache = SpringContextHolder.getBean(ApiAndFilterCacheComponent.class);
   }
 
 
   public HttpResponse clientToProxyRequest(HttpObject httpObject) {
-    if (msg != null) {
-      requestStart = metricExporter.requestStart(msg.method().name(), msg.uri());
-      metricExporter.requestSize(msg.content().readableBytes());
-    }
+    requestStart =
+        metricExporter.requestStart(serveletRequest.getMethod(), serveletRequest.getRequestURI());
+    metricExporter.requestSize(serveletRequest.getNettyRequest().content().readableBytes());
     HttpResponse httpResponse = null;
     try {
       httpResponse =
-          HttpRequestFilterChain.requestFilterChain().doFilter(originalRequest, httpObject, ctx);
+          HttpRequestFilterChain.requestFilterChain().doFilter(serveletRequest, httpObject, ctx);
     } catch (Throwable e) {
-      httpResponse = createResponse(HttpResponseStatus.BAD_GATEWAY, originalRequest);
+      httpResponse =
+          createResponse(HttpResponseStatus.BAD_GATEWAY, serveletRequest.getNettyRequest());
       logger.error("Client connectTo proxy request failed", e);
     }
     return httpResponse;
@@ -91,14 +85,14 @@ public class HttpFiltersAdapter {
     if (httpObject instanceof HttpResponse) {
       HttpResponse response = (HttpResponse) httpObject;
       try {
-        HttpResponseFilterChain.responseFilterChain().doFilter(originalRequest, response);
+        HttpResponseFilterChain.responseFilterChain().doFilter(serveletRequest, response);
         if (response instanceof FullHttpResponse) {
           metricExporter.responseSize(((FullHttpResponse) response).content().readableBytes());
         }
         return httpObject;
       } finally {
-        metricExporter.requestEnd(msg.method().name(), msg.uri(), response.status().code(),
-            requestStart);
+        metricExporter.requestEnd(serveletRequest.getMethod(), serveletRequest.getRequestURI(),
+            response.status().code(), requestStart);
       }
     } else {
       return httpObject;
@@ -108,7 +102,8 @@ public class HttpFiltersAdapter {
   public void proxyToServerResolutionSucceeded(String serverHostAndPort,
       InetSocketAddress resolvedRemoteAddress) {
     if (resolvedRemoteAddress == null) {
-      ctx.writeAndFlush(createResponse(HttpResponseStatus.BAD_GATEWAY, originalRequest));
+      ctx.writeAndFlush(
+          createResponse(HttpResponseStatus.BAD_GATEWAY, serveletRequest.getNettyRequest()));
     }
   }
 

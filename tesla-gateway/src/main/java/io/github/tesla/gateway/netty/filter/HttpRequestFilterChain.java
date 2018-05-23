@@ -22,7 +22,6 @@ import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.ClassUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpObject;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 public class HttpRequestFilterChain {
@@ -70,7 +69,7 @@ public class HttpRequestFilterChain {
   }
 
 
-  public HttpResponse doFilter(HttpRequest originalRequest, HttpObject httpObject,
+  public HttpResponse doFilter(NettyHttpServletRequest servletRequest, HttpObject httpObject,
       ChannelHandlerContext channelHandlerContext) {
     List<Map.Entry<String, HttpRequestFilter>> list = Lists.newArrayList(filters.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<String, HttpRequestFilter>>() {
@@ -80,7 +79,6 @@ public class HttpRequestFilterChain {
 
     });
 
-    final NettyHttpServletRequest servletRequest = new NettyHttpServletRequest(originalRequest);
     for (Iterator<Map.Entry<String, HttpRequestFilter>> it = list.iterator(); it.hasNext();) {
       HttpRequestFilter filter = it.next().getValue();
       LOGGER.debug("do filter,the name is:" + filter.filterName());

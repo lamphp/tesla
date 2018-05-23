@@ -48,7 +48,6 @@ import io.netty.handler.codec.http.CookieDecoder;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpHeaders.Names;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.ssl.SslHandler;
 
@@ -56,7 +55,7 @@ import io.netty.handler.ssl.SslHandler;
 public class NettyHttpServletRequest implements HttpServletRequest {
 
   private static final Locale DEFAULT_LOCALE = Locale.getDefault();
-  private final HttpRequest request;
+  private final FullHttpRequest request;
   private final Map<String, Object> attributes = new HashMap<String, Object>();
   private final QueryStringDecoder queryStringDecoder;
   private final Map<String, String[]> parameterMap;
@@ -66,7 +65,7 @@ public class NettyHttpServletRequest implements HttpServletRequest {
   private String queryString;
   private byte[] requestBody;
 
-  public NettyHttpServletRequest(HttpRequest httpRequest) {
+  public NettyHttpServletRequest(FullHttpRequest httpRequest) {
     this.request = httpRequest;
     this.queryStringDecoder = new QueryStringDecoder(this.request.uri());
     Map<String, List<String>> parameters = this.queryStringDecoder.parameters();
@@ -115,7 +114,7 @@ public class NettyHttpServletRequest implements HttpServletRequest {
     return buffer;
   }
 
-  public HttpRequest getNettyRequest() {
+  public FullHttpRequest getNettyRequest() {
     return this.request;
   }
 

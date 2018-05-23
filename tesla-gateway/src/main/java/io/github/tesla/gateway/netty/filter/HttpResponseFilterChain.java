@@ -17,7 +17,6 @@ import io.github.tesla.gateway.config.SpringContextHolder;
 import io.github.tesla.gateway.netty.filter.response.HttpResponseFilter;
 import io.github.tesla.gateway.netty.servlet.NettyHttpServletRequest;
 import io.github.tesla.gateway.utils.ClassUtils;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
 
@@ -65,7 +64,7 @@ public class HttpResponseFilterChain {
   }
 
 
-  public void doFilter(HttpRequest originalRequest, HttpResponse httpResponse) {
+  public void doFilter(NettyHttpServletRequest servletRequest, HttpResponse httpResponse) {
     List<Map.Entry<String, HttpResponseFilter>> list = Lists.newArrayList(filters.entrySet());
     Collections.sort(list, new Comparator<Map.Entry<String, HttpResponseFilter>>() {
       public int compare(Entry<String, HttpResponseFilter> o1,
@@ -74,7 +73,6 @@ public class HttpResponseFilterChain {
       }
 
     });
-    final NettyHttpServletRequest servletRequest = new NettyHttpServletRequest(originalRequest);
     for (Iterator<Map.Entry<String, HttpResponseFilter>> it = list.iterator(); it.hasNext();) {
       HttpResponseFilter filter = it.next().getValue();
       filter.doFilter(servletRequest, httpResponse);
